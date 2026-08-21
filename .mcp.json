@@ -1,0 +1,11 @@
+{
+  "mcp_servers": {
+    "promptmika": {
+      "type": "url",
+      "url": "https://promptmika.vercel.app/api/mcp",
+      "headers": {
+        "Accept": "application/json, text/event-stream"
+      }
+    }
+  }
+}

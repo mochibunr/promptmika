@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptMika Scaffold</title>
+</head>
+<body>
+  <div id="app" hidden>
+    <header class="hdr">
+      <div class="hdr-top">
+        <div class="logo">PM</div>
+        <div>
+          <div class="title" id="title">Project Scaffold</div>
+          <div class="sub" id="subtitle">PromptMika generator</div>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge" id="lang-badge">—</span>
+        <span class="badge" id="type-badge">app</span>
+        <span class="badge accent" id="count-badge">0 files</span>
+      </div>
+    </header>
+
+    <section class="cmd">
+      <div class="cmd-label">Build &amp; test</div>
+      <div class="cmd-row">
+        <code id="build-cmd">—</code>
+        <button class="copy" id="copy-cmd" title="Copy">Copy</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="cmd-label">Files <span id="file-note">(assistant will create these)</span></div>
+      <div id="tree" class="tree"></div>
+    </section>
+
+    <footer class="foot">
+      PromptMika scaffold — secure defaults, CI/CD, security scan included.
+    </footer>
+  </div>
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div>Waiting for scaffold result…</div>
+  </div>
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-box">
+      <div class="overlay-hdr">
+        <span id="overlay-title" class="overlay-title">file</span>
+        <div>
+          <button class="copy small" id="overlay-copy">Copy</button>
+          <button class="view small" id="overlay-close">Close</button>
+        </div>
+      </div>
+      <pre id="overlay-code" class="overlay-code"></pre>
+    </div>
+  </div>
+  <link rel="stylesheet" href="/src/style.css" />
+  <script type="module" src="/src/app.ts"></script>
+</body>
+</html>
