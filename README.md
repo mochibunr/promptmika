@@ -49,8 +49,8 @@ Or use the bundled plugin in this repo (`.codex-plugin/`).
 
 | Pack | Files | Description |
 |------|-------|-------------|
-| `load_contract` | 2 | Skill definition + policy digest. Load first. |
-| `load_frontend_design` | 4 | Design philosophy, component patterns, responsive layout, anti-slop rules |
+| `load_contract` | 3 | Skill definition + policy digest + project design language. Load first. |
+| `load_frontend_design` | 5 | Project design language + design philosophy, component patterns, responsive layout, anti-slop rules |
 | `load_design_systems` | 3 | System selection guide, index, full catalog |
 | `load_horizontal_craft` | 12 | Typography, animation, color, icons, accessibility, UX laws |
 | `load_backend_api` | 2 | Backend patterns, API design, integration |
@@ -63,7 +63,41 @@ Or use the bundled plugin in this repo (`.codex-plugin/`).
 | `load_context_engine` | 3 | Context retention, iteration workflow |
 | `load_specialized_pages` | 10 | Landing pages, portfolios, prototypes |
 
-All packs are token-budgeted (2400 tokens max). Files are paginated at 800 lines — use `file_offset` to page through large packs.
+All packs are token-budgeted (10,000 lines per call). Files are served whole up to 10,000 lines — longer files are paginated; use `file_offset` to page through large packs.
+
+## Web Library (TS/JS/Node.js)
+
+The web tools (`fetch`, `crawl`, `search`, `scrape`) are also available as a standalone library. Zero external dependencies, SSRF-guarded, free search (no API keys).
+
+```ts
+import { fetchGuarded, crawlSite, searchWeb, scrapeUrl } from "./lib/web";
+
+// Fetch a page as markdown
+const page = await fetchGuarded("https://example.com", { extract: "markdown" });
+
+// Crawl a site
+const { pages, skipped, errors } = await crawlSite("https://docs.example.com", {
+  maxPages: 10,
+  maxDepth: 3,
+  extract: "markdown",
+  delayMs: 500,  // rate limiting
+});
+
+// Search the web
+const { results, source } = await searchWeb("react hooks patterns", { count: 5 });
+
+// Scrape JS-rendered / Cloudflare-protected pages
+const scraped = await scrapeUrl("https://example.com", {
+  strategies: ["cloudflare-worker", "jina", "direct"],
+  cfWorkerUrl: "https://your-worker.workers.dev",
+});
+
+// Retry with exponential backoff
+import { fetchWithRetry } from "./lib/web";
+const res = await fetchWithRetry("https://unstable-api.example.com", {}, 3);
+```
+
+All functions are fully typed. See `lib/web/types.ts` for the full API.
 
 ## Local dev
 
@@ -83,7 +117,21 @@ curl -X POST http://localhost:3000/api/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
 ```
 
-## Deploy
+## Deploy to Cloudflare
+
+```bash
+# Set your Serper API key
+npx wrangler secret put SERPER_API_KEY
+
+# Build references + deploy
+npm run deploy:worker
+```
+
+Your MCP is live at `https://promptmika.<your-subdomain>.workers.dev/mcp`.
+
+Set `SERPER_API_KEY` as a Cloudflare Worker secret for Google search fallback. Without it, DDG → Bing still works.
+
+## Deploy to Vercel
 
 ```bash
 npx vercel --prod
@@ -92,17 +140,41 @@ npx vercel --prod
 ## Structure
 
 ```
-├── app/api/mcp/route.js        # MCP endpoint
+├── app/api/mcp/route.js        # MCP endpoint (Next.js/Vercel)
 ├── lib/
-│   ├── mcp-server.js           # Tool definitions, request handler
-│   ├── references.js           # File loader, resolver
-│   ├── pack-core.js            # Pack logic (dependency-injected)
-│   ├── pack-tools.js           # MCP adapter for pack tools
-│   └── scaffold-generator.js   # Project scaffolding
+│   ├── mcp-server.ts           # Tool definitions, request handler
+│   ├── references.ts           # File loader, resolver
+│   ├── pack-core.ts            # Pack logic (dependency-injected)
+│   ├── pack-tools.ts           # MCP adapter for pack tools
+│   ├── scaffold-generator.ts   # Project scaffolding
+│   └── web/                    # Standalone web library (TS/JS/Node.js)
+│       ├── index.ts            # Library entry point
+│       ├── types.ts            # TypeScript types
+│       ├── ssrf.ts             # SSRF guard (private IP blocking)
+│       ├── fetch.ts            # fetchGuarded, fetchWithRetry
+│       ├── html.ts             # HTML→markdown/text extraction
+│       ├── crawl.ts            # Breadth-first crawler
+│       ├── search.ts           # DuckDuckGo + Serper + Bing search
+│       └── scrape.ts           # Jina/direct scrape chain
+├── worker/                     # Cloudflare Worker (standalone, no Node.js deps)
+│   ├── index.ts                # Worker entry point (MCP JSON-RPC handler)
+│   ├── tools.ts                # All tool definitions
+│   ├── refs.ts                 # Embedded reference resolver
+│   ├── search.ts               # DDG → Serper → Bing
+│   ├── crawl.ts                # Crawler
+│   ├── scrape.ts               # Scraper
+│   ├── fetch.ts                # SSRF-guarded fetch
+│   ├── html.ts                 # HTML extraction
+│   ├── ssrf.ts                 # Pattern-based SSRF guard
+│   └── embedded-refs.json      # 162 references bundled at build time
+├── scripts/
+│   └── build-references.ts     # Bundles references into Worker
 ├── references/                 # Knowledge base (markdown)
 ├── skills/                     # Codex plugin skills
 ├── .codex-plugin/              # Codex plugin manifest
 ├── .mcp.json                   # Codex MCP server config
 ├── promptmika-pack.ts          # opencode plugin
-└── SKILL.md                    # Skill definition
+├── wrangler.toml               # Cloudflare Worker config
+├── SKILL.md                    # Skill definition
+└── DESIGN.md                   # Project design language (served at design://DESIGN.md, rendered at /design)
 ```

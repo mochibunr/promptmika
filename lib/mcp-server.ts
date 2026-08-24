@@ -3,7 +3,7 @@ import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from "@model
 import { z } from "zod";
 import fs from "node:fs";
 import path from "node:path";
-import { readReference, listReferences, searchReferences, readSkillFile, readClaudeFile, readClaudeDigestFile, resolveDocument } from "./references";
+import { readReference, listReferences, searchReferences, readSkillFile, readDesignFile, readClaudeFile, readClaudeDigestFile, resolveDocument } from "./references";
 import { scanPath, summarize, type Finding, type Severity } from "./security-scanner";
 import { generateScaffold, SUPPORTED_LANGUAGES, PROJECT_TYPES } from "./scaffold-generator";
 import { registerPackTools } from "./pack-tools";
@@ -12,7 +12,7 @@ import { registerWebTools } from "./web-crawler";
 export function createServer() {
   const server = new McpServer({
     name: "promptmika",
-    version: "3.4.2",
+    version: "3.5.0",
   });
 
 // ---------------------------------------------------------------------------
@@ -38,13 +38,28 @@ server.registerResource(
   "PromptMika skill definition",
   "skill://SKILL.md",
   {
-    description: "The full PromptMika skill: silent refinement workflow, minimalism mindset, and coding directives. READ THIS FIRST on initialization — it is the contract for how to use the MCP. Do not guess, do not pretend: batch-read via load_reference if over 200 lines.",
+    description: "The full PromptMika skill: silent refinement workflow, minimalism mindset, and coding directives. READ THIS FIRST on initialization — it is the contract for how to use the MCP. Do not guess, do not pretend: batch-read via load_reference if over 10000 lines.",
   },
   async (uri) => {
     const skill = readSkillFile();
     if (!skill) return { contents: [] };
     return {
       contents: [{ uri: uri.href, mimeType: skill.mimeType, text: skill.content }],
+    };
+  }
+);
+
+server.registerResource(
+  "PromptMika design language",
+  "design://DESIGN.md",
+  {
+    description: "The project's DESIGN.md — the handmade papercut editorial design language this product ships with. Load it before ANY UI/design/frontend work: palette tokens (paper/ink/leaf/orange), typography rules, layout composition, motion vocabulary, and the anti-pattern ban list.",
+  },
+  async (uri) => {
+    const design = readDesignFile();
+    if (!design) return { contents: [] };
+    return {
+      contents: [{ uri: uri.href, mimeType: design.mimeType, text: design.content }],
     };
   }
 );
@@ -101,15 +116,15 @@ server.tool(
   }
 );
 
-const BATCH_DEFAULT = 200;
+const BATCH_DEFAULT = 10000;
 
 server.tool(
   "load_reference",
-  "Load a knowledge file by URI: references://{path}, skill://SKILL.md, claude://CLAUDE.digest.md (condensed policy — read this first), claude://CLAUDE.md (full policy, on demand only). Files over 200 lines are returned in 200-line batches — page through with offset/limit. NEVER claim to know a file you have not fully read; read large files batch by batch.",
+  "Load a knowledge file by URI: references://{path}, skill://SKILL.md, design://DESIGN.md (project design language), claude://CLAUDE.digest.md (condensed policy — read this first), claude://CLAUDE.md (full policy, on demand only). Files over 10000 lines are returned in 10000-line batches — page through with offset/limit. NEVER claim to know a file you have not fully read; read large files batch by batch.",
   {
-    path: z.string().describe("File URI, e.g. 'references://DESIGN_BIBLE.md', 'skill://SKILL.md', 'claude://CLAUDE.digest.md', 'claude://CLAUDE.md' (bare names like 'DESIGN_BIBLE.md' are treated as references://DESIGN_BIBLE.md; 'claude://digest' aliases the digest)"),
+    path: z.string().describe("File URI, e.g. 'references://DESIGN_BIBLE.md', 'design://DESIGN.md', 'skill://SKILL.md', 'claude://CLAUDE.digest.md', 'claude://CLAUDE.md' (bare names like 'DESIGN_BIBLE.md' are treated as references://DESIGN_BIBLE.md; 'claude://digest' aliases the digest)"),
     offset: z.number().int().min(0).optional().describe("0-based line offset for paging (default 0)"),
-    limit: z.number().int().min(1).max(1000).optional().describe("Max lines to return (default: whole file if 200 lines or fewer, otherwise 200)"),
+    limit: z.number().int().min(1).max(10000).optional().describe("Max lines to return (default: whole file if 10000 lines or fewer, otherwise 10000)"),
   },
   async ({ path, offset, limit }) => {
     const doc = resolveDocument(path);

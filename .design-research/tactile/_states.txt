@@ -1,0 +1,476 @@
+
+########## evervault ##########
+SEL: [data-framer-component-type=Text] a:hover,[data-framer-component-type=Text] a div span:hover,[data-framer-component-type=Text] a span span span:hover,[data-framer-component-type=Text] a p span span:hover,[data-framer-component-type=Text] a h1 span span:hover,[data-framer-component-type=Text] a h2 span span:hover,[data-framer-component-type=Text] a h3 span span:hover,[data-framer-component-type=Text] a h4 span span:hover,[data-framer-component-type=Text] a h5 span span:hover,[data-framer-component-type=Text] a h6 span span:hover
+  {--font-family:var(--framer-link-hover-font-family,var(--framer-link-font-family,var(--framer-font-family)));--font-style:var(--framer-link-hover-font-style,var(--framer-link-font-style,var(--framer-font-style)));--font-weight:var(--framer-link-hover-font-weight,var(--framer-link-font-weight,var(--framer-font-weight)));--text-color:var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-text-color)));--font-size:var(--framer-link-hover-font-size,var(--framer-link-font-size,var(--framer-font-size)));--text-transform:var(--framer-link-hover-text-transform,var(--framer-link-text-transform,var(--framer-text-transform)));--text-decoration:var(--framer-link-hover-text-decoration-style,var(--framer-link-text-decoration-style,var(--framer-text-decoration-style,solid)))var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)))var(--framer-link-hover-text-decoration-color,var(--framer-link-text-decoration-color,var(--framer-text-decoration-color,currentcolor)))var(--framer-link-hover-text-decoration-thickness,var(--framer-link-text-decoration-thickness,var(--framer-text-decoration-thickness,auto)));--text-decoration-skip-ink:var(--framer-link-hover-text-decoration-skip-ink,var(--framer-link-text-decoration-skip-ink,var(--framer-text-decoration-skip-ink)));--text-underline-offset:var(--framer-link-hover-text-decoration-offset,var(--framer-link-text-decoration-offset,var(--framer-text-decoration-offset)))}
+SEL: a.framer-text:hover,a.framer-text:hover span.framer-text:not([data-text-fill]),span.framer-text[data-nested-link]:hover,span.framer-text[data-nested-link]:hover span.framer-text:not([data-text-fill])
+  {font-family:var(--framer-font-family-preview,var(--framer-link-hover-font-family,var(--framer-link-font-family,var(--framer-blockquote-font-family,var(--framer-font-family,Inter,Inter Placeholder,sans-serif)))));font-style:var(--framer-font-style-preview,var(--framer-link-hover-font-style,var(--framer-link-font-style,var(--framer-blockquote-font-style,var(--framer-font-style,normal)))));font-weight:var(--framer-font-weight-preview,var(--framer-link-hover-font-weight,var(--framer-link-font-weight,var(--framer-blockquote-font-weight,var(--framer-font-weight,400)))));font-size:calc(var(--framer-link-hover-font-size,var(--framer-blockquote-font-size,var(--framer-font-size,16px)))*var(--framer-font-size-scale,1));text-transform:var(--framer-link-hover-text-transform,var(--framer-link-text-transform,var(--framer-blockquote-text-transform,var(--framer-text-transform,none))));border-radius:var(--framer-link-hover-text-background-radius,var(--framer-link-text-background-radius,var(--framer-text-background-radius,initial)));corner-shape:var(--framer-link-hover-text-background-corner-shape,var(--framer-link-text-background-corner-shape,var(--framer-text-background-corner-shape,initial)));padding:var(--framer-link-hover-text-background-padding,var(--framer-link-text-background-padding,var(--framer-text-background-padding,initial)))}
+SEL: a.framer-text:hover,span.framer-text[data-nested-link]:hover
+  {color:var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-blockquote-text-color,var(--framer-text-color,#000))));-webkit-text-decoration-line:var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-blockquote-text-decoration,var(--framer-text-decoration,initial))));text-decoration-line:var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-blockquote-text-decoration,var(--framer-text-decoration,initial))));-webkit-text-decoration-style:var(--framer-link-hover-text-decoration-style,var(--framer-link-text-decoration-style,var(--framer-blockquote-text-decoration-style,var(--framer-text-decoration-style,initial))));text-decoration-style:var(--framer-link-hover-text-decoration-style,var(--framer-link-text-decoration-style,var(--framer-blockquote-text-decoration-style,var(--framer-text-decoration-style,initial))));-webkit-text-decoration-color:var(--framer-link-hover-text-decoration-color,var(--framer-link-text-decoration-color,var(--framer-blockquote-text-decoration-color,var(--framer-text-decoration-color,initial))));text-decoration-color:var(--framer-link-hover-text-decoration-color,var(--framer-link-text-decoration-color,var(--framer-blockquote-text-decoration-color,var(--framer-text-decoration-color,initial))));text-decoration-thickness:var(--framer-link-hover-text-decoration-thickness,var(--framer-link-text-decoration-thickness,var(--framer-blockquote-text-decoration-thickness,var(--framer-text-decoration-thickness,initial))));text-decoration-skip-ink:var(--framer-link-hover-text-decoration-skip-ink,var(--framer-link-text-decoration-skip-ink,var(--framer-blockquote-text-decoration-skip-ink,var(--framer-text-decoration-skip-ink,initial))));text-underline-offset:var(--framer-link-hover-text-decoration-offset,var(--framer-link-text-decoration-offset,var(--framer-blockquote-text-decoration-offset,var(--framer-text-decoration-offset,initial))));background-color:var(--framer-link-hover-text-background-color,var(--framer-link-text-background-color,var(--framer-text-background-color,initial)))}
+SEL: a.framer-text[data-framer-page-link-current]:hover,a.framer-text[data-framer-page-link-current]:hover span.framer-text:not([data-text-fill]),span.framer-text[data-framer-page-link-current]:hover,span.framer-text[data-framer-page-link-current]:hover span.framer-text:not([data-text-fill])
+  {color:inherit;font-family:var(--framer-font-family-preview,var(--framer-link-hover-font-family,var(--framer-link-current-font-family,var(--framer-link-font-family,var(--framer-font-family,Inter,Inter Placeholder,sans-serif)))));font-style:var(--framer-font-style-preview,var(--framer-link-hover-font-style,var(--framer-link-current-font-style,var(--framer-link-font-style,var(--framer-font-style,normal)))));font-weight:var(--framer-font-weight-preview,var(--framer-link-hover-font-weight,var(--framer-link-current-font-weight,var(--framer-link-font-weight,var(--framer-font-weight,400)))));font-size:calc(var(--framer-link-hover-font-size,var(--framer-link-current-font-size,var(--framer-link-font-size,var(--framer-font-size,16px))))*var(--framer-font-size-scale,1));text-transform:var(--framer-link-hover-text-transform,var(--framer-link-current-text-transform,var(--framer-link-text-transform,var(--framer-text-transform,none))));border-radius:var(--framer-link-hover-text-background-radius,var(--framer-link-current-text-background-radius,var(--framer-link-text-background-radius,initial)));corner-shape:var(--framer-link-hover-text-background-corner-shape,var(--framer-link-current-text-background-corner-shape,var(--framer-link-text-background-corner-shape,initial)));padding:var(--framer-link-hover-text-background-padding,var(--framer-link-current-text-background-padding,var(--framer-link-text-background-padding,initial)))}
+SEL: a.framer-text[data-framer-page-link-current]:hover,span.framer-text[data-framer-page-link-current]:hover
+  {color:var(--framer-link-hover-text-color,var(--framer-link-current-text-color,var(--framer-link-text-color,var(--framer-text-color,#000))));-webkit-text-decoration-line:var(--framer-link-hover-text-decoration,var(--framer-link-current-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,initial))));text-decoration-line:var(--framer-link-hover-text-decoration,var(--framer-link-current-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,initial))));-webkit-text-decoration-style:var(--framer-link-hover-text-decoration-style,var(--framer-link-current-text-decoration-style,var(--framer-link-text-decoration-style,var(--framer-text-decoration-style,initial))));text-decoration-style:var(--framer-link-hover-text-decoration-style,var(--framer-link-current-text-decoration-style,var(--framer-link-text-decoration-style,var(--framer-text-decoration-style,initial))));-webkit-text-decoration-color:var(--framer-link-hover-text-decoration-color,var(--framer-link-current-text-decoration-color,var(--framer-link-text-decoration-color,var(--framer-text-decoration-color,initial))));text-decoration-color:var(--framer-link-hover-text-decoration-color,var(--framer-link-current-text-decoration-color,var(--framer-link-text-decoration-color,var(--framer-text-decoration-color,initial))));text-decoration-thickness:var(--framer-link-hover-text-decoration-thickness,var(--framer-link-current-text-decoration-thickness,var(--framer-link-text-decoration-thickness,var(--framer-text-decoration-thickness,initial))));text-decoration-skip-ink:var(--framer-link-hover-text-decoration-skip-ink,var(--framer-link-current-text-decoration-skip-ink,var(--framer-link-text-decoration-skip-ink,var(--framer-text-decoration-skip-ink,initial))));text-underline-offset:var(--framer-link-hover-text-decoration-offset,var(--framer-link-current-text-decoration-offset,var(--framer-link-text-decoration-offset,var(--framer-text-decoration-offset,initial))));background-color:var(--framer-link-hover-text-background-color,var(--framer-link-current-text-background-color,var(--framer-link-text-background-color,initial)))}
+SEL: [data-framer-component-type=DeprecatedRichText] a:hover,[data-framer-component-type=DeprecatedRichText] a:hover span:not([data-text-fill])
+  {font-family:var(--framer-link-hover-font-family,var(--framer-link-font-family,var(--framer-font-family,Inter,Inter Placeholder,sans-serif)));font-style:var(--framer-link-hover-font-style,var(--framer-link-font-style,var(--framer-font-style,normal)));font-weight:var(--framer-link-hover-font-weight,var(--framer-link-font-weight,var(--framer-font-weight,400)));color:var(--framer-link-hover-text-color,var(--framer-link-text-color,var(--framer-text-color,#000)));font-size:var(--framer-link-hover-font-size,var(--framer-link-font-size,var(--framer-font-size,16px)));text-transform:var(--framer-link-hover-text-transform,var(--framer-link-text-transform,var(--framer-text-transform,none)));-webkit-text-decoration:var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)));text-decoration:var(--framer-link-hover-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none)))}
+SEL: [data-framer-component-type=DeprecatedRichText] a[data-framer-page-link-current]:hover,[data-framer-component-type=DeprecatedRichText] a[data-framer-page-link-current]:hover span:not([data-text-fill]):not([data-nested-link])
+  {font-family:var(--framer-link-hover-font-family,var(--framer-link-current-font-family,var(--framer-link-font-family,var(--framer-font-family,Inter,Inter Placeholder,sans-serif))));font-style:var(--framer-link-hover-font-style,var(--framer-link-current-font-style,var(--framer-link-font-style,var(--framer-font-style,normal))));font-weight:var(--framer-link-hover-font-weight,var(--framer-link-current-font-weight,var(--framer-link-font-weight,var(--framer-font-weight,400))));color:var(--framer-link-hover-text-color,var(--framer-link-current-text-color,var(--framer-link-text-color,var(--framer-text-color,#000))));font-size:var(--framer-link-hover-font-size,var(--framer-link-current-font-size,var(--framer-link-font-size,var(--framer-font-size,16px))));text-transform:var(--framer-link-hover-text-transform,var(--framer-link-current-text-transform,var(--framer-link-text-transform,var(--framer-text-transform,none))));-webkit-text-decoration:var(--framer-link-hover-text-decoration,var(--framer-link-current-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none))));text-decoration:var(--framer-link-hover-text-decoration,var(--framer-link-current-text-decoration,var(--framer-link-text-decoration,var(--framer-text-decoration,none))))}
+SEL: .hubspot-form-143289760c61aafb89ab14deeb2d71b4cfc698e65:focus-within
+  { box-shadow: inset 0px 0px 0px 2px rgb(190, 167, 255); transition: color 0.15s cubic-bezier(0.44,0,0.56,1), background-color 0.15s cubic-bezier(0.44,0,0.56,1), border-color 0.15s cubic-bezier(0.44,0,0.56,1), border-width 0.15s cubic-bezier(0.44,0,0.56,1), border-radius 0.15s cubic-bezier(0.44,0,0.56,1), box-shadow 0.15s cubic-bezier(0.44,0,0.56,1); }
+SEL: button.hubspot-form-143289760c61aafb89ab14deeb2d71b4cfc698e65-submit:hover
+  { background-color: rgba(190, 167, 255, 0.25); transition: color 0.15s cubic-bezier(0.44,0,0.56,1), background-color 0.15s cubic-bezier(0.44,0,0.56,1), border-color 0.15s cubic-bezier(0.44,0,0.56,1), border-width 0.15s cubic-bezier(0.44,0,0.56,1), border-radius 0.15s cubic-bezier(0.44,0,0.56,1), box-shadow 0.15s cubic-bezier(0.44,0,0.56,1); }
+
+########## todesktop ##########
+SEL: ::-webkit-scrollbar-thumb:hover
+  {background:#0f071d99;border:1px solid transparent;background-clip:padding-box}
+SEL: .hover\:-translate-y-0\.5:hover
+  {--tw-translate-y: -.125rem;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:bg-\[\#00000005\]:hover
+  {background-color:#00000005}
+SEL: .hover\:bg-\[\#37373711\]:hover
+  {background-color:#37373711}
+SEL: .hover\:bg-\[\#F7F7F7\]:hover
+  {--tw-bg-opacity: 1;background-color:rgb(247 247 247 / var(--tw-bg-opacity, 1))}
+SEL: .hover\:bg-body-light-bg-muted:hover
+  {background-color:var(--body-light-bg-muted)}
+SEL: .hover\:bg-body-stroke-lighter:hover
+  {background-color:var(--body-stroke-lighter)}
+SEL: .hover\:bg-gray-100:hover
+  {--tw-bg-opacity: 1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}
+SEL: .hover\:bg-white\/5:hover
+  {background-color:#ffffff0d}
+SEL: .hover\:bg-white\/6:hover
+  {background-color:#ffffff0f}
+SEL: .hover\:bg-gradient-to-tl:hover
+  {background-image:linear-gradient(to top left,var(--tw-gradient-stops))}
+SEL: .focus\:ring-2:focus
+  {--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow, 0 0 #0000)}
+SEL: .active\:translate-y-1:active
+  {--tw-translate-y: 1px;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .active\:bg-black\/10:active
+  {background-color:#0000001a}
+SEL: .group:hover .group-hover\:-translate-y-full
+  {--tw-translate-y: -100%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .group:hover .group-hover\:scale-100
+  {--tw-scale-x: 1;--tw-scale-y: 1;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .group:hover .group-hover\:scale-125
+  {--tw-scale-x: 1.25;--tw-scale-y: 1.25;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .group:hover .group-hover\:blur-\[0px\]
+  {--tw-blur: blur(0px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}
+SEL: .button-primary:active
+  {box-shadow:0 1px 2px -.5px #001b8729 inset,0 .5px .5px #001c8829 inset,0 8px 24px -4px #001c8829 inset,0 8px 8px -3px #09011408,0 5px 5px -2.5px #09011408,0 3px 3px -1.5px #08011408,0 2px 2px -1px #08011408,0 1px 1px -.5px #08011408,0 .5px .5px #08011408;box-shadow:0 1px 2px -.5px color(display-p3 0 .1041 .5095 / .16) inset,0 .5px .5px color(display-p3 0 .1059 .5098 / .16) inset,0 8px 24px -4px color(display-p3 0 .1059 .5098 / .16) inset,0 8px 8px -3px #09011408,0 5px 5px -2.5px #09011408,0 3px 3px -1.5px #08011408,0 2px 2px -1px #08011408,0 1px 1px -.5px #08011408,0 .5px .5px #08011408}
+SEL: .button-light:hover
+  {box-shadow:0 16px 16px -8px #00000014,0 3px 3px -1.5px #0000000a,0 2px 2px -1px #00000008,0 1px 1px -.5px #00000008,0 .5px .5px #00000008,0 0 0 1px #0000000a}
+SEL: .button-light:active
+  {box-shadow:0 8px 8px -3px #00000005,0 3px 3px -1.5px #00000005,0 2px 2px -1px #00000005,0 1px 1px -.5px #00000005,0 .5px .5px #00000008,0 0 0 1px #00000008}
+SEL: .button-dark:hover
+  {background-color:#ffffff1a}
+SEL: .button-dark:active
+  {background-color:#ffffff05;box-shadow:0 4px 8px #12072b29 inset,0 3px 6px #12072b0f inset,0 .5px .5px #12072b1f inset,0 8px 8px -3px #0901140f,0 3px 3px -1.5px #0801140f,0 2px 2px -1px #0801140a,0 1px 1px -.5px #08011408,0 .5px .5px #08011408}
+SEL: .button-gray:active
+  {background-color:#292929;box-shadow:0 4px 8px #0003 inset,0 3px 6px #00000026 inset,0 .5px .5px #0000001a inset,0 8px 8px -3px #0000001a,0 3px 3px -1.5px #0000001a,0 2px 2px -1px #00000014}
+SEL: .wall-testimonials-dock:hover img
+  {scale:var(--scale);transform-origin:bottom}
+SEL: .footer-status-pill:hover
+  {background-color:#16161605}
+
+########## firecrawl ##########
+SEL: ::-webkit-scrollbar-thumb:hover
+  {background-color:var(--black-alpha-48)}
+SEL: ::-webkit-scrollbar-thumb:active
+  {background-color:var(--black-alpha-48)}
+SEL: .focus-within\:\!bg-surface:focus-within
+  {background-color:var(--surface)!important}
+SEL: .focus-within\:shadow-\[0_0_0_3px_rgba\(255\,100\,50\,0\.06\)\]:focus-within
+  {--tw-shadow:0 0 0 3px #ff64320f;--tw-shadow-colored:0 0 0 3px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:-translate-y-1:hover
+  {--tw-translate-y:-1px;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:scale-105:hover
+  {--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:scale-\[1\.02\]:hover
+  {--tw-scale-x:1.02;--tw-scale-y:1.02;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:\!bg-heat-12:hover
+  {background-color:var(--heat-12)!important}
+SEL: .hover\:\!bg-surface:hover
+  {background-color:var(--surface)!important}
+SEL: .hover\:bg-\[\#f4f4f4\]:hover
+  {--tw-bg-opacity:1;background-color:rgb(244 244 244/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-\[color\:var\(--heat-90\)\]:hover
+  {background-color:var(--heat-90)}
+SEL: .hover\:bg-accent-crimson:hover
+  {background-color:var(--accent-crimson)}
+SEL: .hover\:bg-background-lighter:hover
+  {background-color:var(--background-lighter)}
+SEL: .hover\:bg-black-alpha-1:hover
+  {background-color:var(--black-alpha-1)}
+SEL: .hover\:bg-black-alpha-10:hover
+  {background-color:var(--black-alpha-10)}
+SEL: .hover\:bg-black-alpha-2:hover
+  {background-color:var(--black-alpha-2)}
+SEL: .hover\:bg-black-alpha-24:hover
+  {background-color:var(--black-alpha-24)}
+SEL: .hover\:bg-black-alpha-3:hover
+  {background-color:var(--black-alpha-3)}
+SEL: .hover\:bg-black-alpha-4:hover
+  {background-color:var(--black-alpha-4)}
+SEL: .hover\:bg-black-alpha-5:hover
+  {background-color:var(--black-alpha-5)}
+SEL: .hover\:bg-black-alpha-6:hover
+  {background-color:var(--black-alpha-6)}
+SEL: .hover\:bg-black-alpha-7:hover
+  {background-color:var(--black-alpha-7)}
+SEL: .hover\:bg-black-alpha-8:hover
+  {background-color:var(--black-alpha-8)}
+SEL: .hover\:bg-black-alpha-88:hover
+  {background-color:var(--black-alpha-88)}
+SEL: .hover\:bg-black\/20:hover
+  {background-color:#0003}
+SEL: .hover\:bg-border-faint:hover
+  {background-color:var(--border-faint)}
+SEL: .hover\:bg-current:hover
+  {background-color:currentColor}
+SEL: .hover\:bg-gray-100:hover
+  {--tw-bg-opacity:1;background-color:rgb(243 244 246/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-heat-100:hover
+  {background-color:var(--heat-100)}
+SEL: .hover\:bg-heat-12:hover
+  {background-color:var(--heat-12)}
+SEL: .hover\:bg-heat-16:hover
+  {background-color:var(--heat-16)}
+SEL: .hover\:bg-heat-4:hover
+  {background-color:var(--heat-4)}
+SEL: .hover\:bg-heat-40:hover
+  {background-color:var(--heat-40)}
+SEL: .hover\:bg-heat-8:hover
+  {background-color:var(--heat-8)}
+SEL: .hover\:bg-heat-90:hover
+  {background-color:var(--heat-90)}
+SEL: .hover\:bg-orange-600:hover
+  {--tw-bg-opacity:1;background-color:rgb(234 88 12/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-red-50:hover
+  {--tw-bg-opacity:1;background-color:rgb(254 242 242/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-red-600:hover
+  {--tw-bg-opacity:1;background-color:rgb(220 38 38/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-red-700:hover
+  {--tw-bg-opacity:1;background-color:rgb(185 28 28/var(--tw-bg-opacity,1))}
+SEL: .hover\:bg-surface:hover
+  {background-color:var(--surface)}
+SEL: .hover\:bg-transparent:hover
+  {background-color:#0000}
+SEL: .hover\:bg-white\/10:hover
+  {background-color:#ffffff1a}
+SEL: .hover\:bg-white\/20:hover
+  {background-color:#fff3}
+SEL: .hover\:bg-white\/3:hover
+  {background-color:#ffffff08}
+SEL: .hover\:bg-white\/90:hover
+  {background-color:#ffffffe6}
+SEL: .hover\:shadow-\[0_4px_12px_-4px_rgba\(250\,93\,25\,0\.25\)\]:hover
+  {--tw-shadow:0 4px 12px -4px #fa5d1940;--tw-shadow-colored:0 4px 12px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-\[0_4px_12px_rgba\(0\,0\,0\,0\.15\)\]:hover
+  {--tw-shadow:0 4px 12px #00000026;--tw-shadow-colored:0 4px 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-\[0_4px_12px_rgba\(250\,93\,25\,0\.25\)\]:hover
+  {--tw-shadow:0 4px 12px #fa5d1940;--tw-shadow-colored:0 4px 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-\[0_4px_12px_var\(--black-alpha-16\)\]:hover
+  {--tw-shadow:0 4px 12px var(--black-alpha-16);--tw-shadow-colored:0 4px 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-lg:hover
+  {--tw-shadow:0 10px 15px -3px #0000001a, 0 4px 6px -4px #0000001a;--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-md:hover
+  {--tw-shadow:0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-none:hover
+  {--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:shadow-sm:hover
+  {--tw-shadow:0 1px 2px 0 #0000000d;--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000), var(--tw-ring-shadow,0 0 #0000), var(--tw-shadow)}
+SEL: .hover\:grayscale-0:hover
+  {--tw-grayscale:grayscale(0);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}
+SEL: .hover\:before\:scale-100:hover:before
+  {content:var(--tw-content);--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+...(cap)
+
+########## julius ##########
+SEL: input:where(:not([type])):focus,input:where([type=date]):focus,input:where([type=datetime-local]):focus,input:where([type=email]):focus,input:where([type=month]):focus,input:where([type=number]):focus,input:where([type=password]):focus,input:where([type=search]):focus,input:where([type=tel]):focus,input:where([type=text]):focus,input:where([type=time]):focus,input:where([type=url]):focus,input:where([type=week]):focus,select:focus,select:where([multiple]):focus,textarea:focus
+  {outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);border-color:#2563eb}
+SEL: input:where([type=checkbox]):focus,input:where([type=radio]):focus
+  {outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: input:where([type=checkbox]):checked,input:where([type=radio]):checked
+  {border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:50%;background-repeat:no-repeat}
+SEL: input:where([type=checkbox]):checked
+  {background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e")}
+SEL: input:where([type=radio]):checked
+  {background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e")}
+SEL: input:where([type=checkbox]):checked:focus,input:where([type=checkbox]):checked:hover,input:where([type=radio]):checked:focus,input:where([type=radio]):checked:hover
+  {border-color:transparent;background-color:currentColor}
+SEL: input:where([type=checkbox]):indeterminate:focus,input:where([type=checkbox]):indeterminate:hover
+  {border-color:transparent;background-color:currentColor}
+SEL: .overlay-scrollbar:hover::-webkit-scrollbar-thumb
+  {background-color:rgba(136,136,136,.5)}
+SEL: .overlay-scrollbar::-webkit-scrollbar-thumb:hover
+  {background-color:rgba(136,136,136,.8)}
+SEL: .dark.mixedContentDisplayComponent tr:hover
+  {background-color:var(--surface-4)}
+SEL: .form-input:focus,.form-multiselect:focus,.form-select:focus,.form-textarea:focus
+  {outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);border-color:#2563eb}
+SEL: .interactive:hover
+  {background-color:var(--hover-overlay)}
+SEL: .interactive:active
+  {background-color:var(--active-overlay)}
+SEL: .interactive:focus-visible,.interactive[data-highlighted]
+  {background-color:var(--hover-overlay)}
+SEL: .interactive.selected,.interactive[aria-selected=true],.interactive[data-state=open]
+  {background-color:var(--selected-overlay)}
+SEL: .interactive-overlay:hover:before
+  {background-color:var(--hover-overlay)}
+SEL: .interactive-overlay:active:before
+  {background-color:var(--active-overlay)}
+SEL: ::-webkit-scrollbar-thumb:hover
+  {background-color:#aaa}
+SEL: .hover\:sidesecondary:hover
+  {background-color:var(--sidesecondary)}
+SEL: .tab-trigger[data-state=active]
+  {--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity))}
+SEL: .custom-focus-outline,.custom-focus-outline *,.custom-focus-outline:focus,.custom-focus-outline:focus:after,.custom-focus-outline:focus:before
+  {--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:transparent!important;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000);outline:2px solid transparent;outline-offset:2px}
+SEL: .focus-within\:bg-\[var\(--hover-overlay\)\]:focus-within
+  {background-color:var(--hover-overlay)}
+SEL: .focus-within\:ring:focus-within
+  {--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}
+SEL: .focus-within\:ring-2:focus-within
+  {--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}
+SEL: .hover\:-translate-y-0\.5:hover,.hover\:translate-y-\[-2px\]:hover
+  {transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:scale-105:hover,.hover\:scale-110:hover
+  {transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:scale-\[101\%\]:hover,.hover\:scale-\[1\.01\]:hover
+  {transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:scale-\[103\%\]:hover
+  {--tw-scale-x:103%;--tw-scale-y:103%;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+SEL: .hover\:\!bg-neutral-800:hover
+  {--tw-bg-opacity:1!important;background-color:rgb(38 38 38/var(--tw-bg-opacity))!important}
+SEL: .hover\:\!bg-surface-2:hover
+  {background-color:var(--surface-2)!important}
+SEL: .hover\:\!bg-transparent:hover
+  {background-color:transparent!important}
+SEL: .hover\:bg-\[\#1a1333\]:hover
+  {--tw-bg-opacity:1;background-color:rgb(26 19 51/var(--tw-bg-opacity))}
+SEL: .hover\:bg-\[\#1d4ed8\]:hover
+  {--tw-bg-opacity:1;background-color:rgb(29 78 216/var(--tw-bg-opacity))}
+SEL: .hover\:bg-\[rgba\(60\2c 60\2c 80\2c 1\)\]:hover
+  {background-color:rgba(60,60,80,1)}
+SEL: .hover\:bg-\[var\(--hover-overlay\)\]:hover
+  {background-color:var(--hover-overlay)}
+SEL: .hover\:bg-\[var\(--surface-2\)\]:hover
+  {background-color:var(--surface-2)}
+SEL: .hover\:bg-accent:hover
+  {background-color:hsl(var(--accent))}
+SEL: .hover\:bg-accent\/40:hover
+  {background-color:hsl(var(--accent)/.4)}
+SEL: .hover\:bg-accent\/50:hover
+  {background-color:hsl(var(--accent)/.5)}
+SEL: .hover\:bg-background:hover
+  {background-color:hsl(var(--background))}
+SEL: .hover\:bg-background\/80:hover
+  {background-color:hsl(var(--background)/.8)}
+SEL: .hover\:bg-background\/85:hover
+  {background-color:hsl(var(--background)/.85)}
+SEL: .hover\:bg-background\/90:hover
+  {background-color:hsl(var(--background)/.9)}
+SEL: .hover\:bg-black\/30:hover
+  {background-color:rgb(0 0 0/.3)}
+SEL: .hover\:bg-black\/5:hover
+  {background-color:rgb(0 0 0/.05)}
+SEL: .hover\:bg-black\/60:hover
+  {background-color:rgb(0 0 0/.6)}
+SEL: .hover\:bg-black\/75:hover
+  {background-color:rgb(0 0 0/.75)}
+SEL: .hover\:bg-black\/90:hover
+  {background-color:rgb(0 0 0/.9)}
+SEL: .hover\:bg-blue-100:hover
+  {--tw-bg-opacity:1;background-color:rgb(219 234 254/var(--tw-bg-opacity))}
+SEL: .hover\:bg-blue-500\/90:hover
+  {background-color:rgb(59 130 246/.9)}
+SEL: .hover\:bg-blue-600:hover
+  {--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity))}
+SEL: .hover\:bg-blue-700:hover
+  {--tw-bg-opacity:1;background-color:rgb(29 78 216/var(--tw-bg-opacity))}
+SEL: .hover\:bg-destructive:hover
+  {background-color:hsl(var(--destructive))}
+SEL: .hover\:bg-destructive\/10:hover
+  {background-color:hsl(var(--destructive)/.1)}
+SEL: .hover\:bg-destructive\/80:hover
+  {background-color:hsl(var(--destructive)/.8)}
+...(cap)
+
+########## whalesync ##########
+SEL: .w-slider-dot:focus
+  {outline:none;box-shadow:0 0 0 2px #fff}
+SEL: .w-slider-dot:focus.w-active
+  {box-shadow:none}
+SEL: .container.cc-nav-banner:hover
+  {background-color:var(--colors-primary--brand-blue-accent)}
+SEL: .btn:hover
+  {background-color:var(--colors-primary--brand-blue-accent);color:#fff;box-shadow:0 8px 12px #0000000a,0 4px 8px #0000000f,0 1px 2px #00000014,inset 0 2px 1px #ffffff29}
+SEL: .btn:active
+  {box-shadow:0 3px 6px #00000005,0 2px 4px #00000005,0 0 2px #0000000a,inset 0 2px 1px #ffffff03}
+SEL: .btn.cc-light:hover
+  {background-color:var(--colors-primary--light-blue-accent)}
+SEL: .btn.cc-secondary:hover
+  {border-color:var(--colors-primary--brand-blue);background-color:var(--colors-primary--light-blue-accent)}
+SEL: .btn.cc-secondary.cc-light:hover
+  {border-color:var(--colors-primary--brand-blue);background-color:var(--colors-primary--mid-blue-accent);box-shadow:inset 0 0 0 100px #ffffff26}
+SEL: .card:hover
+  {border-color:var(--colors-body-modes--light-card-border-hover);box-shadow:none;background-color:#0000}
+SEL: .card.cc-dark:hover
+  {border-color:var(--colors-body-modes--dark-card-border-hover);background-color:var(--colors-body-modes--dark-bg);box-shadow:none}
+SEL: .card.cc-dark.cc-not-linked:hover
+  {border-color:var(--colors-primary--brand-blue-accent);background-color:var(--colors-primary--dark-blue-accent)}
+SEL: .card.cc-dark.cc-accent:hover
+  {background-color:var(--colors-body-modes--dark-bg-accent)}
+SEL: .card.cc-light-blue:hover
+  {border-color:var(--colors-body-modes--light-card-border-hover);background-color:var(--colors-body-modes--light-bg-accent)}
+SEL: .card.cc-light:hover
+  {border-color:var(--colors-body-modes--light-card-border-hover);background-color:var(--colors-body-modes--light-bg)}
+SEL: .card.cc-light.cc-accent:hover
+  {background-color:var(--colors-body-modes--light-bg-accent)}
+SEL: .input-group.cc-toggle.cc-icon-card-checkbox:hover
+  {background-color:var(--colors-body-modes--light-bg-accent)}
+SEL: .input-radio:hover
+  {border-color:var(--colors-primary--brand-blue);background-color:var(--colors-primary--light-blue-accent)}
+SEL: .input-radio.cc-light:hover
+  {background-color:var(--colors-primary--mid-blue)}
+SEL: .input-check.cc-light:hover
+  {background-color:var(--colors-primary--mid-blue)}
+SEL: .nav_menu-link:hover
+  {background-color:var(--colors-primary--light-blue-accent)}
+SEL: .connector_icon.cc-connection-card.cc-checkbox:hover
+  {background-color:var(--colors-body-modes--light-bg-accent)}
+SEL: .tag:hover
+  {background-color:var(--colors-primary--light-blue)}
+SEL: .tag.cc-no-hover:hover
+  {background-color:var(--colors-primary--light-blue-accent)}
+SEL: .tag.cc-dark:hover
+  {background-color:var(--colors-primary--mid-blue)}
+SEL: .bg-video_playback-btn-state:hover
+  {background-color:var(--colors-primary--light-blue)}
+SEL: .sync-tables_table-cell.editable:hover
+  {background-color:var(--colors-body-modes--light-bg)}
+SEL: .sync-tables_table-cell.cc-dark.editable:hover
+  {background-color:#0000}
+SEL: .sync-tables_dropdown-btn:hover
+  {box-shadow:inset 0 80px #0000001a}
+SEL: .styles__nav-link.cc-cta:hover
+  {background-color:#0000;text-decoration:underline}
+SEL: .styles__nav-btn:hover
+  {background-color:var(--colors-neutral--dark-gray\<deleted\|variable-8b5806af\>)}
+
+########## navattic ##########
+SEL: :is([type=text],[type=email],[type=url],[type=password],[type=number],[type=date],[type=datetime-local],[type=month],[type=search],[type=tel],[type=time],[type=week],[multiple],textarea,select):focus
+  {outline-offset:2px;--tw-ring-inset:var(--tw-empty, );--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:hsl(var(--color-blue-600)/1);--tw-ring-offset-shadow:var(--tw-ring-inset)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset)0 0 0 calc(1px + var(--tw-ring-offset-width))var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);border-color:hsl(var(--color-blue-600)/1);outline:2px solid #0000}
+SEL: [type=checkbox]:focus,[type=radio]:focus
+  {outline-offset:2px;--tw-ring-inset:var(--tw-empty, );--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:hsl(var(--color-blue-600)/1);--tw-ring-offset-shadow:var(--tw-ring-inset)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);outline:2px solid #0000}
+SEL: [type=checkbox]:checked,[type=radio]:checked
+  {background-color:currentColor;background-position:50%;background-repeat:no-repeat;background-size:100% 100%;border-color:#0000}
+SEL: [type=checkbox]:checked
+  {background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e")}
+SEL: [type=radio]:checked
+  {background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e")}
+SEL: [type=checkbox]:checked:focus,[type=checkbox]:checked:hover,[type=radio]:checked:focus,[type=radio]:checked:hover
+  {background-color:currentColor;border-color:#0000}
+SEL: [type=checkbox]:indeterminate:focus,[type=checkbox]:indeterminate:hover
+  {background-color:currentColor;border-color:#0000}
+SEL: .listbox-base:focus
+  {border-color:hsl(var(--color-blue-500)/1);--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);--tw-ring-color:hsl(var(--color-blue-200)/1);--tw-outline-style:none;outline-style:none}
+SEL: .input-base,.input-base:focus
+  {box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .input-base:focus
+  {border-color:hsl(var(--color-blue-500)/1);--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);--tw-ring-color:hsl(var(--color-blue-200)/1);--tw-outline-style:none;outline-style:none}
+SEL: .form-input:focus
+  {outline-offset:2px;--tw-ring-inset:var(--tw-empty, );--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:hsl(var(--color-blue-600)/1);--tw-ring-offset-shadow:var(--tw-ring-inset)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset)0 0 0 calc(1px + var(--tw-ring-offset-width))var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);border-color:hsl(var(--color-blue-600)/1);outline:2px solid #0000}
+SEL: .group-hover\:transform:is(:where(.group):hover *)
+  {transform:var(--tw-rotate-x,)var(--tw-rotate-y,)var(--tw-rotate-z,)var(--tw-skew-x,)var(--tw-skew-y,)}
+SEL: .group-hover\:bg-blue-500\/20:is(:where(.group):hover *)
+  {background-color:color-mix(in srgb,hsl(hsl(var(--color-blue-500)/1)/1)20%,transparent)}
+SEL: .group-hover\:bg-gray-400:is(:where(.group):hover *)
+  {background-color:hsl(var(--color-gray-400)/1)}
+SEL: .group-hover\:bg-white\/5:is(:where(.group):hover *)
+  {background-color:color-mix(in srgb,hsl(hsl(var(--color-white)/1)/1)5%,transparent)}
+SEL: .group-hover\:shadow-\[inset_0px_3px_8px_0px_rgba\(255\,255\,255\,0\.3\)\,inset_0px_-0px_0\.5px_0px_rgba\(0\,0\,0\,0\.3\)\]:is(:where(.group):hover *)
+  {--tw-shadow:inset 0px 3px 8px 0px var(--tw-shadow-color,#ffffff4d),inset 0px -0px .5px 0px var(--tw-shadow-color,#0000004d);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .group-hover\:blur-\[2px\]:is(:where(.group):hover *)
+  {--tw-blur:blur(2px);filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}
+SEL: .group-hover\:grayscale-0:is(:where(.group):hover *)
+  {--tw-grayscale:grayscale(0%);filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}
+SEL: .group-hover\/cell\:blur-none\!:is(:where(.group\/cell):hover *)
+  {--tw-blur: !important;filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)!important}
+SEL: .group-hover\/grid\:blur-\[0px\]:is(:where(.group\/grid):hover *)
+  {--tw-blur:blur(0px);filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}
+SEL: .group-hover\/item\:ring-4:is(:where(.group\/item):hover *)
+  {--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(4px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .group-data-\[state\=checked\]\/checkbox\:bg-black:is(:where(.group\/checkbox)[data-state=checked] *)
+  {background-color:hsl(var(--color-black)/1)}
+SEL: .group-data-\[state\=checked\]\/checkbox\:group-focus\/checkbox\:ring-1:is(:where(.group\/checkbox)[data-state=checked] *):is(:where(.group\/checkbox):focus *)
+  {--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(1px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .group-data-\[state\=checked\]\/checkbox\:group-focus\/checkbox\:ring-offset-1:is(:where(.group\/checkbox)[data-state=checked] *):is(:where(.group\/checkbox):focus *)
+  {--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color)}
+SEL: .group-data-\[state\=checked\]\/item\:bg-gray-900:is(:where(.group\/item)[data-state=checked] *)
+  {background-color:hsl(var(--color-gray-900)/1)}
+SEL: .group-data-\[state\=checked\]\/item\:group-focus\/item\:ring-2:is(:where(.group\/item)[data-state=checked] *):is(:where(.group\/item):focus *)
+  {--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(2px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .group-data-\[state\=checked\]\/item\:group-focus\/item\:ring-offset-2:is(:where(.group\/item)[data-state=checked] *):is(:where(.group\/item):focus *)
+  {--tw-ring-offset-width:2px;--tw-ring-offset-shadow:var(--tw-ring-inset,)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color)}
+SEL: .group-data-\[state\=closed\]\/content\:blur-\[2px\]:is(:where(.group\/content)[data-state=closed] *)
+  {--tw-blur:blur(2px);filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}
+SEL: .group-data-\[state\=unchecked\]\/checkbox\:bg-white:is(:where(.group\/checkbox)[data-state=unchecked] *)
+  {background-color:hsl(var(--color-white)/1)}
+SEL: .group-data-\[state\=unchecked\]\/item\:group-data-disabled\/item\:bg-emphasis:is(:where(.group\/item)[data-state=unchecked] *):is(:where(.group\/item)[data-disabled] *)
+  {background-color:hsl(var(--color-gray-200)/1)}
+SEL: .focus-within\:bg-subtle:focus-within
+  {background-color:hsl(var(--color-gray-100)/1)}
+SEL: .focus-within\:ring-1:focus-within
+  {--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(1px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: .focus-within\:ring-offset-1:focus-within
+  {--tw-ring-offset-width:1px;--tw-ring-offset-shadow:var(--tw-ring-inset,)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color)}
+SEL: :is(.\*\:focus-within\:ring-0>*):focus-within
+  {--tw-ring-shadow:var(--tw-ring-inset,)0 0 0 calc(0px + var(--tw-ring-offset-width))var(--tw-ring-color,currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}
+SEL: :is(.\*\:focus-within\:ring-offset-0>*):focus-within
+  {--tw-ring-offset-width:0px;--tw-ring-offset-shadow:var(--tw-ring-inset,)0 0 0 var(--tw-ring-offset-width)var(--tw-ring-offset-color)}
+SEL: .hover\:bg-accent:hover
+  {background-color:hsl(var(--accent))}
+SEL: .hover\:bg-black\/5:hover
+  {background-color:color-mix(in srgb,hsl(hsl(var(--color-black)/1)/1)5%,transparent)}
+SEL: .hover\:bg-blue-200:hover
+  {background-color:hsl(var(--color-blue-200)/1)}
+SEL: .hover\:bg-error-emphasis:hover
+  {background-color:hsl(var(--color-red-500)/1)}
+SEL: .hover\:bg-gray-50:hover
+  {background-color:hsl(var(--color-gray-50)/1)}
+SEL: .hover\:bg-gray-50\/50:hover
+  {background-color:color-mix(in srgb,hsl(hsl(var(--color-gray-50)/1)/1)50%,transparent)}
+SEL: .hover\:bg-gray-100:hover
+  {background-color:hsl(var(--color-gray-100)/1)}
+SEL: .hover\:bg-gray-200:hover
+  {background-color:hsl(var(--color-gray-200)/1)}
+SEL: .hover\:bg-gray-400:hover
+  {background-color:hsl(var(--color-gray-400)/1)}
+SEL: .hover\:bg-gray-700:hover
+  {background-color:hsl(var(--color-gray-700)/1)}
+SEL: .hover\:bg-gray-800:hover
+  {background-color:hsl(var(--color-gray-800)/1)}
+SEL: .hover\:bg-green-200:hover
+  {background-color:hsl(var(--color-green-200)/1)}
+SEL: .hover\:bg-inherit:hover
+  {background-color:inherit}
+SEL: .hover\:bg-muted:hover
+  {background-color:hsl(var(--color-gray-50)/1)}
+SEL: .hover\:bg-muted\/50:hover
+  {background-color:color-mix(in srgb,hsl(hsl(var(--color-gray-50)/1)/1)50%,transparent)}
+SEL: .hover\:bg-orange-200:hover
+  {background-color:hsl(var(--color-orange-200)/1)}
+SEL: .hover\:bg-pink-200:hover
+  {background-color:hsl(var(--color-pink-200)/1)}
+SEL: .hover\:bg-purple-200:hover
+  {background-color:hsl(var(--color-purple-200)/1)}
+SEL: .hover\:bg-red-200:hover
+  {background-color:hsl(var(--color-red-200)/1)}
+SEL: .hover\:bg-slate-100:hover
+  {background-color:var(--color-slate-100)}
+...(cap)
+

@@ -1,0 +1,21 @@
+{
+  "name": "promptmika",
+  "version": "3.4.2",
+  "description": "PromptMika — elite frontend/backend/design/security knowledge packs via MCP. Load domain-specific reference bundles into any AI coding session.",
+  "author": {
+    "name": "PromptMika"
+  },
+  "license": "MIT",
+  "keywords": ["frontend", "backend", "design", "security", "references", "mcp"],
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "PromptMika",
+    "shortDescription": "Elite knowledge packs for AI coding sessions",
+    "longDescription": "Load curated frontend, backend, design, security, and systems engineering reference bundles into your AI coding session via MCP.",
+    "developerName": "PromptMika",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "brandColor": "#6366f1"
+  }
+}

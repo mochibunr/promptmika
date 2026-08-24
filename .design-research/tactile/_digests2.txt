@@ -1,0 +1,454 @@
+
+##### evervault
+-- GRADIENTS top18:
+1x linear-gradient(180deg,#0a0024 0%,var(--token-3cfa774c-9001-40f5-a3d5-d16b738c74e5,#010314)7.0%)
+1x linear-gradient(180deg,var(--token-3cfa774c-9001-40f5-a3d5-d16b738c74e5,#010314)0%,#01031400 100%)
+1x linear-gradient(270deg,#01031400 0%,#2b2e44 100%)
+1x linear-gradient(270deg,#32354d 0%,#01031400 100%)
+1x linear-gradient(270deg,#32354d 0%,var(--token-3cfa774c-9001-40f5-a3d5-d16b738c74e5,#010314)100%)
+1x linear-gradient(270deg,var(--token-3cfa774c-9001-40f5-a3d5-d16b738c74e5,#010314)0%,#2b2e44 100%)
+1x radial-gradient(115.017% 33% at 107% -3.2%,var(--token-961ec1f8-60d5-4d90-8a9a-6cf1e9311441,#8e64ff)0%,#63e 25%,#0000 62.5869%)
+1x radial-gradient(115.017% 55.492% at 107% -3.2%,#fff 0%,#63e 25%,#0000 62.5869%)
+1x radial-gradient(115.017% 55.492% at 107% -3.2%,var(--token-961ec1f8-60d5-4d90-8a9a-6cf1e9311441,#8e64ff)0%,#63e 25%,#0000 62.5869%)
+1x radial-gradient(135% 65.7035% at 1.84783% 102.295%,var(--token-961ec1f8-60d5-4d90-8a9a-6cf1e9311441,#8e64ff)0%,#63e 25%,#0000 62.5869%)
+1x radial-gradient(220% 25% at 107% -3.2%,#fff 0%,#63e 25%,#0000 62.5869%)
+-- HEX COLORS top24:
+37x #000
+25x #fff9
+14x #010314
+12x #32354d
+9x #ffffffe6
+7x #fff
+7x #63e
+6x #0000
+5x #8e64ff
+3x #141626
+3x #0b0d1c
+3x #0000002b
+3x #09f
+3x #32354d80
+3x #0000004d
+3x #1a1c2c
+3x #00000040
+3x #01031433
+3x #fffc
+3x #01031400
+3x #252738
+2x #b1b3c3
+2x #d9d9d9
+2x #60616c
+-- FONT-SIZE top16:
+11x calc(var(--framer-root-font-size,1rem)*1)
+11x calc(var(--framer-root-font-size,1rem)*.8)
+4x calc(var(--framer-root-font-size,1rem)*2)
+4x calc(var(--framer-blockquote-font-size,var(--framer-font-size,16px))*var(--framer-font-size-scale,1))
+2x calc(var(--framer-root-font-size,1rem)*1.45)
+2x var(--font-size)
+2x calc(var(--framer-root-font-size,1rem)*1.3)
+2x calc(var(--framer-root-font-size,1rem)*1.2)
+2x var(--framer-font-size)
+2x calc(var(--framer-root-font-size,1rem)*3.5)
+2x calc(var(--framer-root-font-size,1rem)*.9)
+2x calc(var(--framer-link-current-font-size,var(--framer-link-font-size,var(--framer-font-size,16px)))*var(--framer-font-size-scale,1))
+2x 16px
+2x calc(var(--framer-root-font-size,1rem)*1.85)
+1x var(--framer-link-current-font-size,var(--framer-link-font-size,var(--framer-font-size)))
+1x var(--framer-link-font-size,var(--framer-font-size,16px))
+-- ANIMATIONS top14:
+-- KEYFRAMES names:
+liveGradientPulse
+-- URL ASSETS sample12:
+url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w0aXpsog.woff2
+url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w9aXpsog.woff2
+url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w2aXpsog.woff2
+url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w3aXpsog.woff2
+url(https://fonts.gstatic.com/s/montserrat/v31/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCu173w5aXo.woff2
+url(https://fonts.gstatic.com/s/fragmentmono/v6/4iCr6K5wfMRRjxp0DA6-2CLnB45HhrUI.woff2
+url(https://fonts.gstatic.com/s/fragmentmono/v6/4iCr6K5wfMRRjxp0DA6-2CLnB41HhrUI.woff2
+url(https://fonts.gstatic.com/s/fragmentmono/v6/4iCr6K5wfMRRjxp0DA6-2CLnB4NHhg.woff2
+url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrodmgPn.woff2
+url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrMdmgPn.woff2
+url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFg08vz7ehw.woff2
+url(https://fonts.gstatic.com/s/geistmono/v6/or3nQ6H-1_WfwkMZI_qYFrgdmgPn.woff2
+
+##### todesktop
+-- GRADIENTS top18:
+5x linear-gradient(180deg,#ffffff1f,#ffffff0f)
+4x linear-gradient(#fff 0 0)
+4x linear-gradient(to bottom,rgba(0,0,0,1) 0%,transparent 100%)
+4x linear-gradient(180deg,#ffffff0f,#ffffff0f)
+4x linear-gradient(180deg,#ffffff0f,#fff0)
+4x linear-gradient(180deg,#fff,#fffc)
+4x linear-gradient(180deg,#f2f2f2,#ededed)
+3x linear-gradient(to right,var(--body-light-loud) 40%,var(--body-light-ghost) 50%,var(--body-light-loud) 60%)
+2x linear-gradient(to right,transparent 0%,#fff 20%,#fff 80%,transparent 100%)
+2x linear-gradient(to bottom,#000 30%,transparent 90%)
+2x linear-gradient(to bottom,transparent 0%,#fff 20%,#fff 80%,transparent 100%)
+2x linear-gradient(to left,rgba(0,0,0,1) 0%,transparent 100%)
+2x linear-gradient(to right,rgba(0,0,0,1) 0%,transparent 100%)
+2x linear-gradient(to right,rgba(0,0,0,1) 70%,transparent 100%)
+2x linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.24) 70%,transparent 80%)
+2x linear-gradient(to bottom,#fff 50%,transparent 100%)
+2x linear-gradient(180deg,#d9d9d9 65%,transparent 100%)
+2x linear-gradient(180deg,#d9d9d9 40%,transparent 100%)
+-- HEX COLORS top24:
+38x #0000000a
+37x #ffffff0f
+35x #fff
+33x #08011408
+32x #00000008
+30x #00000005
+29x #ffffff1f
+24x #0000
+21x #00000014
+20x #0000000f
+14x #ffffff29
+12x #ffffff14
+10x #09011408
+10x #ffffff52
+9x #FFFFFFE0
+9x #ffffff1a
+9x #ffffff0a
+8x #03082329
+8x #0f071d
+7x #0000001a
+7x #fff0
+6x #d9d9d9
+6x #13023a
+6x #fffc
+-- FONT-SIZE top16:
+15x 14px
+11x 12px
+4x 16px
+2x 1.125rem
+2x 18px
+2x 13px
+2x 2.25rem
+1x .75rem
+1x 36px
+1x 36px!important
+1x 3rem
+1x 46px
+1x 48px
+1x 64px
+1x 74px
+1x 75%
+-- ANIMATIONS top14:
+3x unset!important
+2x features-smoke-check-loading 2.5s infinite
+2x features-smoke-check-loading 2.5s both
+1x rotate-1turn 1s linear infinite
+1x none
+1x macbook-lid-base 1.5s 1s cubic-bezier(.76,0,.24,1) both
+1x macbook-lid 1.5s 1s cubic-bezier(.76,0,.24,1) both
+1x footer-status-pulse 4.8s ease-out infinite
+1x features-smoke-check-pie-progress 2s .3s ease-in-out both
+1x rotate-1turn 6s linear infinite
+1x features-measure-chart-item-bar-initial .45s cubic-bezier(.76,0,.24,1) both
+1x features-distribution-badge-download 1.5s infinite ease-out both
+1x features-distribution-apps-inner 20s linear infinite
+1x features-distribution-apps-3 1.4s 2.1s cubic-bezier(.87,-.41,.19,1.44) both
+-- KEYFRAMES names:
+rotate-1turn, features-code-animation-magnified, features-code-animation-magnifier
+-- URL ASSETS sample12:
+url(/electron/fonts/inter/400.woff2
+url(/electron/fonts/inter/500.woff2
+url(/electron/fonts/inter/600.woff2
+url(/electron/fonts/aeonik-pro/500.woff2
+url(/electron/fonts/geist-mono/400.woff2
+url(/electron/fonts/geist-mono/500.woff2
+
+##### firecrawl
+-- GRADIENTS top18:
+4x linear-gradient(#fff 0 0)
+2x radial-gradient(#000 60%,#0000 100%)
+1x linear-gradient(to bottom right, var(--tw-gradient-stops))
+1x linear-gradient(to bottom, var(--tw-gradient-stops))
+1x linear-gradient(to left, var(--tw-gradient-stops))
+1x linear-gradient(to right, var(--tw-gradient-stops))
+1x linear-gradient(to top, var(--tw-gradient-stops))
+-- HEX COLORS top24:
+163x #0000
+18x #fff
+17x #0000001a
+15x #fff0
+12x #111827
+9x #9ca3af
+9x #ffffff4d
+9x #e5e7eb
+8x #374151
+8x #d1d5db
+7x #00000008
+6x #4b5563
+6x #0000000f
+5x #0000000d
+4x #00000040
+4x #FA5D19
+4x #0003
+4x #0000000a
+4x #6b7280
+4x #00000014
+3x #dc2626b3
+3x #eab308
+3x #FA4500
+3x #fa5d1940
+-- FONT-SIZE top16:
+14x 14px
+13x .875em
+11x 13px
+9x .9em
+9x 16px
+7x 11px
+6x 12px
+6x .888889em
+5x .857143em
+5x 22px
+4x 10px
+4x 20px
+4x 1.25em
+4x 15px
+3x 1.5em
+3x inherit
+-- ANIMATIONS top14:
+2x 1s linear infinite spin
+2x 2s cubic-bezier(.4,0,.6,1) infinite pulse
+1x .22s ease-out both parseSlideIn
+1x .5s ease-out both fade-in-up
+1x .7s infinite cursor-blink
+1x 1s cubic-bezier(0,0,.2,1) infinite ping
+1x 1s infinite bounce
+1x 1s linear infinite spin-reverse
+1x linear infinite snowfall
+-- KEYFRAMES names:
+cursor-blink, spin-reverse, fade-in-up, bounce, ping, pulse, snowfall, spin
+-- URL ASSETS sample12:
+url(/assets-original/features/cached-separator-mobile.png
+
+##### julius
+-- GRADIENTS top18:
+2x linear-gradient(#000,#000)
+2x linear-gradient(90deg,transparent,black 10%,black 90%,transparent)
+2x linear-gradient(transparent,transparent)
+2x radial-gradient(#fff,transparent,75%)
+2x radial-gradient(100% 100% at top right,white,transparent)
+2x radial-gradient(ellipse at center,transparent 20%,black)
+1x linear-gradient(90deg,transparent 0,black 50%,transparent)
+1x linear-gradient(90deg,transparent 0,white 50%,transparent)
+1x linear-gradient(to bottom right,var(--tw-gradient-stops))
+1x linear-gradient(to bottom,var(--tw-gradient-stops))
+1x linear-gradient(to left,var(--tw-gradient-stops))
+1x linear-gradient(to right,var(--tw-gradient-stops))
+1x linear-gradient(to top,var(--tw-gradient-stops))
+1x radial-gradient(75% 100% at 50% 0,rgba(30,144,255,.6) 0,rgba(30,144,255,0) 75%)
+1x radial-gradient(88% 100% at top,rgba(255,255,255,.8),rgba(255,255,255,0))
+1x radial-gradient(ellipse,var(--tw-gradient-stops))
+-- HEX COLORS top24:
+112x #0000
+25x #fff
+17x #2563eb
+10x #6b7280
+9x #000
+7x #111827
+7x #171717
+6x #9ca3af
+6x #404040
+6x #e5e7eb
+5x #d1d5db
+5x #d4d4d4
+5x #86efac
+5x #e5e5e5
+5x #16a34a
+5x #374151
+5x #fafafa
+4x #737373
+4x #4b5563
+4x #525252
+4x #a3a3a3
+3x #71717a
+3x #006ED6
+3x #a1a1aa
+-- FONT-SIZE top16:
+13x 1rem
+7x 1.125rem
+7x .875em
+7x .875rem
+6x .8888889em
+6x 1.25rem
+6x 2.25rem
+5x 3rem
+5x .8571429em
+5x 3.75rem
+4x 1.875rem
+4x 1.5rem
+3x 32px
+3x .75rem
+3x inherit
+3x 17px
+-- ANIMATIONS top14:
+3x enter
+2x none
+1x accordion-down .2s ease-out
+1x slideDown 75ms ease-in-out
+1x slide-out-bottom .3s ease-in forwards
+1x slide-in-bottom .3s ease-out forwards
+1x shine 3s linear infinite
+1x scroll-up 10s linear infinite
+1x pulse 2s cubic-bezier(.4,0,.6,1) infinite
+1x pingPulse 2s cubic-bezier(0,.1,.8,1) infinite
+1x loop-scroll 40s linear infinite
+1x g-container-move calc(var(--speed) * var(--s)) steps(var(--s)) infinite
+1x g-container-liMove var(--speed) infinite
+1x fadeInTop .25s cubic-bezier(.4,0,.2,1)
+-- KEYFRAMES names:
+bounce, pulse, spin, enter, exit, fadeInTop, cycle, shine, conversation-feedback-dismiss, slideDown, slideUp, blink, pingPulse, fadeIn, loop-scroll, scroll-up, g-container-move, g-container-liMove, blob, accordion-up
+-- URL ASSETS sample12:
+
+##### whalesync
+-- GRADIENTS top18:
+2x linear-gradient(180deg,transparent,var(--colors-body-modes--dark-bg))
+1x linear-gradient(180deg,transparent,var(--colors-body-modes--light-bg))
+1x linear-gradient(90deg,transparent 40%,var(--colors-primary--brand-blue))
+1x linear-gradient(90deg,var(--colors-primary--brand-blue),transparent 60%)
+-- HEX COLORS top24:
+32x #0000
+18x #fff
+7x #ccc
+6x #222
+6x #ddd
+6x #333
+5x #fafafa
+5x #75869600
+5x #fff0
+4x #3898ec
+3x #0000001a
+3x #c8c8c8
+2x #e2e2e2
+2x #031a260a
+2x #02a2f233
+2x #999
+2x #5d6c7b
+2x #0082f3
+2x #0006
+2x #00000014
+2x #0000000f
+2x #0000000a
+2x #00000005
+1x #aaadb0
+-- FONT-SIZE top16:
+8x 14px
+7x 1em
+5x 18px
+3x .85rem
+3x min(2vw,.85rem)
+3x 1rem
+2x var(--type-h3--font-size-xs)
+2x var(--type-h3--font-size-sm)
+2x var(--type-h3--font-size-md)
+2x 24px
+2x var(--type-h3--font-size-lg)
+2x 2rem
+2x var(--type-h2--font-size-xs)
+2x var(--type-h2--font-size-sm)
+2x var(--type-h2--font-size-md)
+2x var(--type-h1--font-size-xs)
+-- ANIMATIONS top14:
+1x .8s linear infinite spin
+-- KEYFRAMES names:
+spin
+-- URL ASSETS sample12:
+url(https://www-static.whalesync.com/theme/geistvf.woff2
+url(https://www-static.whalesync.com/theme/geistmonovf.woff2
+url(https://www-static.whalesync.com/theme/select-arrow-white.svg
+url(https://www-static.whalesync.com/theme/dot-pattern-light-blue.svg
+
+##### navattic
+-- GRADIENTS top18:
+14x linear-gradient(#fff,#fff)
+8x linear-gradient(var(--tw-gradient-stops))
+8x linear-gradient(to left,var(--tw-mask-left-from-color)var(--tw-mask-left-from-position),var(--tw-mask-left-to-color)var(--tw-mask-left-to-position))
+7x linear-gradient(in lab,red,red)
+5x linear-gradient(to bottom,var(--tw-mask-bottom-from-color)var(--tw-mask-bottom-from-position),var(--tw-mask-bottom-to-color)var(--tw-mask-bottom-to-position))
+3x linear-gradient(to right,var(--tw-mask-right-from-color)var(--tw-mask-right-from-position),var(--tw-mask-right-to-color)var(--tw-mask-right-to-position))
+2x linear-gradient(#0000 62.5%,#000 75% 87.5%,#0000)
+2x linear-gradient(#0000 75%,#000 87.5% 100%)
+2x linear-gradient(#0000 87.5%,#000)
+2x linear-gradient(#0000 37.5%,#000 50% 62.5%,#0000 75%)
+2x linear-gradient(#fff 0 0)
+2x linear-gradient(#0000 25%,#000 37.5% 50%,#0000 62.5%)
+2x linear-gradient(90deg,#0000,#000 20% 80%,#0000)
+2x linear-gradient(to top,var(--tw-mask-top-from-color)var(--tw-mask-top-from-position),var(--tw-mask-top-to-color)var(--tw-mask-top-to-position))
+2x linear-gradient(#0000 12.5%,#000 25% 37.5%,#0000 50%)
+2x linear-gradient(#0000 50%,#000 62.5% 75%,#0000 87.5%)
+2x linear-gradient(#0000,#000 12.5% 25%,#0000 37.5%)
+1x radial-gradient(#fff 0 30%,#0000 70%)
+-- HEX COLORS top24:
+87x #0000
+51x #fff
+33x #0000001a
+21x #000
+20x #0003
+18x #24315308
+12x #ccc
+12x #0000000d
+10x #3737500a
+9x #ffffff24
+9x #fff3
+6x #00000008
+6x #266DF0
+6x #1f283705
+4x #0000001f
+4x #1890ff
+4x #EBEFF5
+4x #0bbfd9
+4x #4F44E0
+4x #24245608
+4x #0006
+4x #00000014
+3x #f6f8f980
+3x #1C62E3
+-- FONT-SIZE top16:
+12x .875rem
+6x .75rem
+5x 2rem
+5x 1.125rem
+4x 1.6rem
+4x 1.5rem
+4x 1.25rem
+3x 1rem
+3x .875rem!important
+2x inherit
+2x 2.25rem
+1x 1.125rem!important
+1x calc(var(--ct-dialog-font-size)*.8)
+1x 9px
+1x 8px
+1x 80%
+-- ANIMATIONS top14:
+3x enter
+1x accordion-down .2s ease-out
+1x spin 4s linear infinite
+1x progressBar var(--duration)linear forwards
+1x none
+1x moveLine .5s linear infinite
+1x marquee2 25s linear infinite
+1x marquee 25s linear infinite
+1x fadeUp .7s ease-in-out .3s forwards
+1x fadeUp .5s ease-in-out .5s forwards
+1x fadeUp .3s ease-in-out 1s forwards
+1x fadeUp .3s ease-in-out .7s forwards
+1x fadeUp .3s ease-in-out .5s forwards
+1x exit
+-- KEYFRAMES names:
+moveLine, enter, exit, spin, pulse, fadeUp, marquee, marquee2, dot-progress, progressBar, accordion-down, accordion-up
+-- URL ASSETS sample12:
+url(/img/spinner.webp
+url(/_next/static/media/GeistMono[wght].b311a1a7.woff2
+url(/_next/static/media/ba9851c3c22cd980-s.woff2
+url(/_next/static/media/21350d82a1f187e9-s.woff2
+url(/_next/static/media/c5fe6dc8356a8c31-s.woff2
+url(/_next/static/media/19cfc7226ec3afaa-s.woff2
+url(/_next/static/media/df0a9ae256c0569c-s.woff2
+url(/_next/static/media/8e9860b6e62d6359-s.woff2
+url(/_next/static/media/e4af272ccee01ff0-s.p.woff2
+url(/_next/static/media/b54308ec8bdab50d-s.p.woff2
+

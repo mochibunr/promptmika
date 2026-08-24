@@ -1,0 +1,979 @@
+## DESIGN_BIBLE.md
+
+---
+version: 2.1.0
+last_updated: 2026-06-09
+related:
+  - RESPONSIVE_DESIGN.md (viewport and device categories)
+  - FRONTEND_PROMPTS.md (cross-skill injection from Design Bible)
+  - horizontal-craft/anti-ai-slop.md (slop avoidance rules)
+  - horizontal-craft/typography.md (typography craft)
+  - horizontal-craft/color.md (color craft)
+  - design-system.md (design system selection)
+---
+
+# Design Bible — Classical & Professional Composition
+
+## Zero Tolerance for AI Slop
+
+AI slop is visual noise generated without intention. The following are strictly forbidden:
+- Neon gradients on dark backgrounds without functional purpose
+- Generic 3D glassmorphism with no material logic or context
+- Purple-blue-pink gradient blobs used as meaningless decoration
+- Excessive rounded corners applied universally (not everything is a pill)
+- Random floating geometric shapes with no compositional reason
+- Futuristic sans-serif fonts used for every text element regardless of tone
+- Unnecessary motion and parallax that reduces usability or causes motion sickness
+- Generic isometric illustrations that communicate nothing
+- Overuse of emojis and icons as substitutes for actual content
+- Center-aligned text blocks wider than sixty characters
+
+## Foundational Layout Systems
+
+### 1. Rule of Thirds
+Divide the canvas into a three-by-three grid. Place focal points at the four intersection points or along the grid lines.
+- Hero sections: position the primary headline at the left-top intersection and the call-to-action at the right-bottom intersection.
+- Dashboards: place primary data visualizations at intersections, secondary metrics along edges.
+- Photography and imagery: align horizons along the top or bottom horizontal line, never the center.
+- Mobile adaptation: the grid collapses to a single column, but focal points still align to the upper or lower third of the viewport height.
+
+### 2. Golden Ratio (Phi, approximately 1.618)
+Apply to spacing scales, typography hierarchies, container proportions, and image cropping.
+- Base unit: eight pixels. Scale sequence: eight, thirteen, twenty-one, thirty-four, fifty-five, eighty-nine, one hundred forty-four.
+- Two-column layouts: sixty-one point eight percent content area, thirty-eight point two percent sidebar.
+- Typography: if body text is sixteen pixels, heading one equals sixteen multiplied by phi cubed (approximately sixty-seven pixels), heading two equals sixteen multiplied by phi squared (approximately forty-two pixels).
+- Image aspect ratios: prefer sixteen-by-ten (close to phi), eight-by-five, or custom crops using the golden spiral.
+- Mobile adaptation: maintain phi proportions in stacked layouts by using the ratio for section spacing rather than side-by-side columns.
+
+### 3. F-Pattern
+Users scan content in an F-shaped path: full width across the top, then down the left side with shorter horizontal scans.
+- Navigation and primary calls-to-action belong in the top horizontal bar.
+- Critical information and section headers belong along the left vertical axis.
+- Supporting details fill the right side where attention is weakest.
+- Ideal for: text-heavy pages, search results, news feeds, documentation.
+- Mobile adaptation: the F-pattern becomes a single vertical stack, but the top horizontal scan remains critical for the header and primary action.
+
+### 4. Z-Pattern
+The eye moves from top-left to top-right, diagonally down to bottom-left, then across to bottom-right, forming a Z.
+- Top-left: brand logo or back navigation.
+- Top-right: primary call-to-action or user account.
+- Center: large hero image or value proposition that bridges the diagonal.
+- Bottom-left: secondary information or trust signals.
+- Bottom-right: final conversion action.
+- Ideal for: landing pages with minimal text, splash screens, simple marketing pages.
+- Mobile adaptation: the Z collapses vertically but maintains the sequence: brand, then hero, then primary action, then secondary action.
+
+### 5. Visual Hierarchy & Scale
+Contrast creates hierarchy through size, weight, color, density, and whitespace. Without hierarchy, everything competes for attention and nothing wins.
+- Establish exactly ONE dominant element per viewport or screen. Everything else must support it.
+- The squint test: squint at the design. The hierarchy should remain visible even when details blur.
+- Minimum scale jump ratio between adjacent levels is one point five times.
+- Use scale to indicate importance, not just to fill space.
+- Mobile adaptation: reduce the number of hierarchy levels to three (primary, secondary, tertiary) to prevent clutter on small screens.
+
+### 6. Grid Systems
+- Baseline grid: four or eight pixel vertical rhythm. All vertical spacing must be exact multiples of the base unit. Text line heights must align to the grid.
+- Column grid: twelve columns for desktop web, six columns for tablet, four columns for mobile. Gutter equals twenty-four pixels on desktop, sixteen on tablet, twelve on mobile.
+- Modular grid: combine column grid with baseline grid for strict alignment of both horizontal and vertical elements. Used in editorial and data-dense interfaces.
+- Compound grid: overlay two grids with different rhythms (for example, a four-column grid over a twelve-column grid) to create more complex but still harmonious layouts.
+- Mobile adaptation: switch from multi-column to single-column stacking, but maintain baseline grid alignment for visual consistency.
+
+### 7. Symmetry & Balance
+- Symmetry: mirror layouts around a central axis. Creates formality, trust, and stability. Best for banking, legal, medical, and institutional contexts.
+- Asymmetry: balance visual weight rather than mirroring elements. Creates dynamism, energy, and visual interest. Best for creative portfolios, entertainment, and youth brands.
+- Radial balance: elements radiate from a central point. Creates focus and convergence. Best for dashboards with a central metric, loading states, and hero sections with a single focal product.
+- Crystallographic balance: uniform distribution of similar-sized elements across the canvas. Creates pattern and texture. Best for galleries, product grids, and icon sets.
+- Mobile adaptation: radial and crystallographic grids often require two-column or scrollable horizontal layouts on mobile to prevent excessive vertical length.
+
+### 8. White Space (Ma)
+Empty space is active, not wasted. It defines relationships, creates breathing room, and guides attention.
+- Minimum forty percent whitespace in content-heavy pages.
+- Proximity principle: elements close together are perceived as related. Use whitespace to group or separate information.
+- Macro whitespace: the space between major sections. Creates structure and rhythm.
+- Micro whitespace: the space between letters, lines, and small components. Affects readability and perceived quality.
+- Mobile adaptation: reduce macro whitespace by twenty to thirty percent on mobile to prevent excessive scrolling, but maintain micro whitespace for touch target separation.
+
+### 9. Framing & Containment
+Use containers, cards, borders, or negative space to isolate focal points and create visual boundaries.
+- Cards group related information and create scannable units.
+- Borders define territory without adding visual weight if kept to one pixel.
+- Negative space framing: surround a focal element with emptiness to draw the eye.
+- Overlapping elements: break the grid intentionally to create depth and visual interest, but only once per composition.
+- Mobile adaptation: full-bleed cards (edge to edge) work better on mobile than floating cards with margins, as they maximize limited screen real estate.
+
+### 10. Leading Lines
+Use subtle visual paths to guide the eye from one element to the next.
+- Explicit lines: borders, dividers, or connector graphics.
+- Implicit lines: alignment of text baselines, edges of images, or directional gaze in photography.
+- Curved lines: create flow and movement, guiding the eye gently through a narrative.
+- Diagonal lines: create energy and dynamism. Use sparingly.
+- Mobile adaptation: leading lines should guide vertically on mobile, supporting the natural scroll direction.
+
+### 11. Layering & Depth
+Create spatial relationships through overlapping, shadow, scale variation, and atmospheric perspective.
+- Overlap: the element in front is perceived as closer. Use to establish priority.
+- Shadow: subtle elevation shadows indicate interactivity (cards, buttons) or separation (modals, dropdowns).
+- Scale: larger elements appear closer. Use scale to create depth in hero sections.
+- Blur and opacity: reduce detail and contrast on background layers to push them back.
+- Mobile adaptation: minimize layered complexity on mobile. Flat designs with subtle shadows perform better on small screens and reduce rendering overhead.
+
+### 12. Repetition & Rhythm
+Repeating visual elements creates predictability, unity, and a sense of professional polish.
+- Repetition: use the same spacing, sizing, color, and shape language across all similar components.
+- Rhythm: variation within repetition creates visual interest. Alternate large and small elements, or light and dark sections.
+- Pattern: systematic repetition creates texture. Use for backgrounds, dividers, or data visualization.
+- Mobile adaptation: maintain repetition for component consistency, but simplify rhythms to prevent visual fatigue on small screens.
+
+## Typography
+
+### Scale (Golden Ratio Based)
+| Level | Desktop Size | Mobile Size | Weight | Line Height | Letter Spacing | Use Case |
+|-------|-------------|-------------|--------|-------------|----------------|----------|
+| Display | 89 pixels | 42 pixels | 700 | 1.05 | minus 0.02 em | Hero headlines |
+| H1 | 55 pixels | 32 pixels | 700 | 1.1 | minus 0.01 em | Page titles |
+| H2 | 34 pixels | 24 pixels | 600 | 1.2 | normal | Section headers |
+| H3 | 21 pixels | 18 pixels | 600 | 1.3 | normal | Subsections |
+| Body Large | 18 pixels | 16 pixels | 400 | 1.6 | normal | Lead paragraphs |
+| Body | 16 pixels | 15 pixels | 400 | 1.6 | normal | Paragraphs |
+| Caption | 13 pixels | 12 pixels | 400 | 1.5 | plus 0.01 em | Labels, metadata |
+| Micro | 11 pixels | 10 pixels | 500 | 1.4 | plus 0.02 em | Tags, badges, legal |
+
+### Pairing Rules
+- Maximum two font families per project.
+- Pair for contrast: a serif with a sans-serif, or a geometric sans with a humanist sans.
+- Never pair two fonts from the same category (for example, two geometric sans-serifs).
+- Recommended pairings:
+  - Editorial and long-form: Source Serif 4 paired with Inter
+  - Technical and developer tools: JetBrains Mono paired with IBM Plex Sans
+  - Premium and luxury: Playfair Display paired with Sora
+  - Friendly and approachable: Nunito paired with Merriweather
+  - Brutalist and utilitarian: Space Mono paired with Helvetica Now
+
+### Readability
+- Line length: forty-five to seventy-five characters per line is optimal. Never exceed ninety characters.
+- Paragraph spacing: one times the line height of the body text.
+- Justified text is forbidden on the web. It creates rivers of whitespace between words.
+- All caps: use only for short labels (three words maximum) with increased letter spacing.
+- Mobile adaptation: reduce line length naturally through narrower containers. Increase line height slightly (by 0.05 to 0.1) for better readability on small screens.
+
+## Color Theory
+
+### Palette Construction
+- Sixty-thirty-ten rule: sixty percent dominant color (backgrounds and large surfaces), thirty percent secondary color (containers and sections), ten percent accent color (calls-to-action, highlights, and critical indicators).
+- Build palettes in HSL (Hue, Saturation, Lightness) rather than HEX for systematic adjustments.
+- Minimum contrast ratios: four point five to one for body text against background, three to one for large text and user interface components.
+- Test palettes under color blindness: protanopia, deuteranopia, and tritanopia simulations.
+
+### Semantic Color
+- Error: red family, high saturation, medium lightness. Must be distinguishable from the accent color for colorblind users.
+- Warning: amber or orange family. Must not be confused with the primary brand color.
+- Success: emerald or green family. Should feel calm and confirming, not celebratory.
+- Information: blue family. Should feel neutral and trustworthy.
+- Neutral: slate or gray scale. Used for text, borders, dividers, and inactive states.
+
+### Dark Mode
+- Backgrounds: lightness between five and fifteen percent. Pure black causes eye strain and display blooming on OLED screens.
+- Surfaces: elevate by increasing lightness two to five percent above the background, not by adding white overlays.
+- Accents: reduce saturation by ten to fifteen percent in dark mode to prevent glowing artifacts.
+- Text: pure white is too harsh. Use ninety to ninety-five percent lightness instead.
+- Mobile adaptation: respect system dark mode preferences. Transition between modes should be smooth and respect reduced-motion preferences.
+
+## Spacing & Layout Tokens
+
+Strict token system. Arbitrary values are forbidden.
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| space-0 | 0 pixels | Reset |
+| space-1 | 4 pixels | Tight internal padding, icon gaps |
+| space-2 | 8 pixels | Component internal padding, tight gaps |
+| space-3 | 16 pixels | Standard component padding, list gaps |
+| space-4 | 24 pixels | Card padding, section internal spacing |
+| space-5 | 32 pixels | Component group spacing |
+| space-6 | 48 pixels | Section internal spacing |
+| space-7 | 64 pixels | Between related sections |
+| space-8 | 96 pixels | Between major sections |
+| space-9 | 128 pixels | Page-level section breaks |
+| space-10 | 192 pixels | Hero section margins |
+
+- Component internal padding: space-3 to space-4
+- Between components: space-4 to space-6
+- Between sections: space-8 to space-9
+- Page margins: space-6 on mobile, space-8 on desktop
+- Mobile adaptation: reduce page margins and section spacing by one to two token levels. Never reduce component internal padding below space-3 to maintain touch target separation.
+
+## Component Design
+
+### Cards
+- Elevation: either a one-pixel border in a neutral color OR a subtle shadow (zero offset, one pixel blur, three pixel spread, ten percent opacity). Never both simultaneously.
+- Border radius: eight pixels for content cards, four pixels for data tables, sixteen pixels for modals and dialogs.
+- Internal padding: space-4 (twenty-four pixels).
+- Mobile adaptation: use full-bleed cards on mobile (zero side margins) with space-3 internal padding to maximize content area.
+
+### Buttons
+- Primary: filled with the accent color, high contrast text.
+- Secondary: outlined with a one-pixel border, transparent background.
+- Tertiary: text-only with an underline on hover or focus.
+- Minimum touch target: forty-four by forty-four pixels. On desktop, the visual button can be smaller if the hit area extends to forty-four pixels.
+- Border radius: six pixels for standard buttons, four pixels for dense data interfaces, fully rounded only for pills and tags.
+- Mobile adaptation: increase button height to forty-eight pixels on mobile for easier thumb reach. Stack buttons vertically with space-3 between them rather than horizontal grouping.
+
+### Forms
+- Labels positioned above the input field, left-aligned. Floating labels are acceptable only if the implementation preserves accessibility and does not reduce click target size.
+- Error states: red border plus descriptive text below the field. Never rely on color alone to indicate errors.
+- Focus ring: two-pixel offset, primary color, solid outline. No box-shadow glow that bleeds into adjacent elements.
+- Input height: forty-four pixels minimum on mobile.
+- Mobile adaptation: increase tap targets, use native input types (tel, email, number) to trigger appropriate keyboards, and ensure dropdowns open native pickers on touch devices.
+
+### Tables & Data Grids
+- Header row: distinct background or bottom border, semibold text.
+- Row dividers: one-pixel lines, not zebra striping (which reduces scannability).
+- Row height: minimum forty-eight pixels for touch compatibility.
+- Horizontal scroll: acceptable on mobile if the first column is pinned and a scroll indicator is visible.
+- Mobile adaptation: consider card-based layouts for tabular data on mobile, or horizontal scroll with pinned first column.
+
+## Motion & Animation
+
+### Principles
+- Purposeful: every animation must guide attention, provide feedback, or reveal spatial relationships.
+- Subtle: two hundred to three hundred milliseconds duration for most transitions. Ease-out curves for entrances, ease-in-out for continuous motion.
+- Respectful: all animations must have a reduced-motion fallback using the prefers-reduced-motion media query. In reduced mode, use instant state changes or opacity fades only.
+
+### Patterns
+- Entrance: opacity transition from zero to one combined with a small vertical translation (eight to sixteen pixels). Duration two hundred fifty milliseconds.
+- Loading: skeleton screens that mimic the final layout structure, not generic spinners. Skeletons reduce perceived wait time.
+- Feedback: subtle scale reduction (ninety-eight percent) on button press. Immediate response, under one hundred milliseconds.
+- Page transitions: opacity crossfade only. Horizontal sliding is disorienting and can trigger vestibular disorders.
+- Stagger: when multiple elements enter, stagger by fifty to one hundred milliseconds per item. Maximum stagger delay of four hundred milliseconds total.
+- Mobile adaptation: reduce motion distances by fifty percent on mobile. Shorter travel distances feel more natural on small screens. Disable parallax entirely on mobile for performance and accessibility.
+
+## Responsive Design Strategy
+
+### Breakpoints
+| Name | Width Range | Layout Strategy |
+|------|-------------|----------------|
+| Mobile Portrait | under 640 pixels | Single column, stacked, full-bleed sections, thumb-friendly targets |
+| Mobile Landscape | 640 to 768 pixels | Two-column where appropriate, increased margins |
+| Tablet | 768 to 1024 pixels | Two to three columns, sidebar possible, hover states active |
+| Desktop | 1024 to 1440 pixels | Full multi-column layout, max-width containers, hover interactions |
+| Wide Desktop | over 1440 pixels | Centered content with increased whitespace, possibly side panels |
+
+### Fluid Typography
+Use clamp functions to scale typography smoothly between breakpoints rather than jumping at arbitrary widths. Minimum size ensures readability, maximum size prevents absurd scaling.
+
+### Touch vs. Pointer
+- Touch devices: minimum forty-four pixel targets, no hover-dependent interactions, swipe gestures where appropriate.
+- Pointer devices: hover states, right-click context menus, drag-and-drop, precise selection.
+- Hybrid devices (tablets with keyboards, laptops with touchscreens): support both paradigms simultaneously.
+
+### Image Handling
+- Art direction: serve different image crops for mobile versus desktop using the picture element. A wide hero image becomes a square or portrait crop on mobile.
+- Resolution: serve higher resolution images for high-density displays (two times or three times pixel density).
+- Format: WebP with JPEG fallback. AVIF for next-generation support.
+- Lazy loading: load images only when they approach the viewport. Exclude above-the-fold hero images from lazy loading.
+
+### Navigation Patterns
+- Desktop: horizontal top bar, dropdown menus, mega-menus for complex hierarchies.
+- Mobile: hamburger menu with slide-out drawer, bottom tab bar for primary actions, accordion submenus.
+- Tablet: hybrid approach. Consider a collapsible sidebar or a top bar with a condensed menu.
+
+## Asset Guidelines
+- Icons: monochrome, one point five pixel stroke weight, twenty-four by twenty-four pixel viewbox. Consistent corner radius across the icon set.
+- Images: provide descriptive alternative text for all informative images. Decorative images must have empty alt attributes.
+- Video: autoplay only if muted. Provide captions and transcripts. Never autoplay with sound.
+- Audio: provide visual alternatives or transcripts.
+
+
+---
+
+## FRONTEND_PROMPTS.md
+
+---
+version: 2.1.0
+last_updated: 2026-06-09
+related:
+  - DESIGN_BIBLE.md (classical composition)
+  - RESPONSIVE_DESIGN.md (breakpoints, touch targets)
+  - horizontal-craft/anti-ai-slop.md (slop avoidance)
+  - horizontal-craft/typography.md (typography craft)
+  - iteration-workflow.md (Build-Test-Loop)
+  - STATE_MANAGEMENT.md (frontend state patterns)
+  - TESTING_PATTERNS.md (frontend testing)
+---
+
+# Frontend Prompts — Web, Interface, and Visual Design
+
+## Domain-Specific Context to Inject
+When refining a frontend or web design prompt, automatically include context that users forget to mention.
+
+### Responsive Behavior
+- Specify breakpoint behavior: what changes at mobile portrait, mobile landscape, tablet, and desktop.
+- Specify touch versus pointer interactions and how hover states degrade on touch devices.
+- Specify font scaling strategy: fixed breakpoints, fluid clamp values, or container queries.
+- Specify image behavior: art direction crops, resolution switching, lazy loading thresholds.
+
+### Accessibility Requirements
+- Target compliance level: Web Content Accessibility Guidelines two point one level A, double A, or triple A.
+- Keyboard navigation requirements: all interactive elements must be reachable and operable without a mouse.
+- Screen reader requirements: semantic HTML, alternative text, accessible names, live regions.
+- Motion preferences: respect prefers-reduced-motion and provide instant-state fallbacks.
+- Color requirements: minimum contrast ratios, no color-only information conveyance.
+
+### Performance Budgets
+- First contentful paint target in milliseconds.
+- Largest contentful paint target in milliseconds.
+- Time to interactive target in milliseconds.
+- Cumulative layout shift target score.
+- Total bundle size budget in kilobytes.
+- Third-party script budget and restrictions.
+
+### Browser and Device Support
+- Minimum browser versions: Internet Explorer eleven, Safari fourteen, Chrome ninety, Firefox ninety.
+- Progressive enhancement versus graceful degradation strategy.
+- Feature detection approach: modernizr, built-in checks, or polyfills.
+- Mobile operating system support: iOS fifteen and above, Android twelve and above.
+
+### Design System Constraints
+- Existing component library: Material UI, Ant Design, Chakra, Tailwind UI, custom in-house.
+- Color palette: primary, secondary, accent, semantic colors, dark mode equivalents.
+- Typography system: font families, scale ratios, line heights, weights.
+- Spacing system: base unit, scale, token names.
+- Icon system: library name, stroke weight, corner radius consistency.
+
+## Cross-Skill Injection for Frontend
+When the user's prompt involves UI, UX, visual design, layout, or composition, inject the following knowledge into the refined prompt automatically. Do not ask the user. Do it silently.
+
+### From Design Bible
+- Layout must use classical composition: rule of thirds, golden ratio, grid systems, visual hierarchy, white space, and framing.
+- Typography must use a golden-ratio scale with exact sizes and weights. Maximum two font families per project.
+- Color must follow sixty-thirty-ten rule with HSL-based palette and minimum contrast ratios.
+- Spacing must use strict token system: zero, four, eight, sixteen, twenty-four, thirty-two, forty-eight, sixty-four, ninety-six, one hundred twenty-eight, one hundred ninety-two pixels.
+- Components must follow exact specifications: card elevation either border or shadow never both, button minimum touch target forty-four pixels, form labels above inputs, focus ring two-pixel offset.
+- Motion must be purposeful and subtle: two hundred to three hundred milliseconds, ease-out for entrances, respect prefers-reduced-motion.
+- No AI slop: no neon gradients without purpose, no generic glassmorphism, no random floating shapes, no excessive rounded corners.
+
+### From Responsive Design
+- Mobile portrait under six hundred forty pixels: single column, stacked, full-bleed sections, thumb-friendly targets.
+- Mobile landscape six hundred forty to seven hundred sixty-eight pixels: two-column where appropriate, increased margins.
+- Tablet seven hundred sixty-eight to one thousand twenty-four pixels: two to three columns, sidebar possible, hover and touch coexist.
+- Desktop one thousand twenty-four to one thousand four hundred forty pixels: full multi-column, max-width containers, hover interactions.
+- Wide desktop over one thousand four hundred forty pixels: centered content with increased whitespace, possibly side panels.
+- Fluid typography using clamp functions between breakpoints.
+- Touch targets minimum forty-four by forty-four pixels. Thumb zones: bottom center and corners most reachable.
+- Navigation: horizontal top bar on desktop, hamburger drawer on mobile, bottom tabs for mobile apps.
+- Forms: one field per row on mobile, native input types for appropriate keyboards, labels above inputs.
+- Test on actual devices, both orientations, with screen readers, at two hundred percent font size, on slow networks.
+
+### From Security Handbook
+- All user inputs must be validated for length, type, range, encoding, and structure.
+- No cross-site scripting: context-aware output encoding, content security policy headers, no inline scripts.
+- No cross-site request forgery: double-submit cookies, SameSite strict, state tokens for OAuth.
+- No SQL injection: parameterized queries exclusively.
+- No command injection: never pass user input to system execution functions.
+- No path traversal: canonicalize all paths before use.
+- No server-side request forgery: validate and sanitize URLs, block private IP ranges and metadata endpoints.
+- No insecure deserialization: never deserialize untrusted data with native formats.
+- Transport layer security minimum version one point three.
+- Session tokens cryptographically random with two hundred fifty-six bits, HttpOnly Secure SameSite Strict cookies.
+- Content security policy: script-src self, no unsafe-inline, no unsafe-eval.
+
+### From Context Engine
+- Track all design decisions, component names, color tokens, and spacing values across the conversation.
+- Never forget constraints or decisions made earlier. Quote exact identifiers from previous messages.
+- If user corrects a design choice, encode permanently. Never revert to previous error.
+- Maintain mental state map: file names, architecture decisions, open issues, design tokens.
+- Before answering, scan last ten exchanges. Search full history for references to earlier work.
+- If uncertain about previous decision, ask clarification rather than guessing.
+
+## Frontend Prompt Enhancement Patterns
+
+### Pattern One: From Vague to Specific
+User input: make a cool dashboard.
+Refinement additions:
+- Define the data domain: e-commerce analytics, server monitoring, financial trading.
+- Define the user persona: executive summary viewer, operator on call, analyst drilling down.
+- Define the primary action: identify anomalies, compare time periods, export reports.
+- Define the visual hierarchy: what metric is most important and how secondary metrics relate.
+- Define interactivity: real-time WebSocket updates, manual refresh, scheduled snapshots.
+- Inject design system constraints and responsive behavior automatically.
+
+### Pattern Two: From Feature List to Experience Flow
+User input: I need a login page, a signup page, and a profile page.
+Refinement additions:
+- Map the user journey across all three pages as a continuous flow.
+- Define error states and recovery paths for each step.
+- Define empty states and loading states for each page.
+- Define transitions between pages: animation, data persistence, state management.
+- Define security considerations: password requirements, session handling, logout behavior.
+- Inject accessibility requirements and responsive breakpoints automatically.
+
+### Pattern Three: From Visual Request to Design System Contract
+User input: make it look modern and clean.
+Refinement additions:
+- Translate subjective adjectives into objective design tokens.
+- Modern means: minimal chrome, generous whitespace, subtle shadows, eight-pixel grid, classical composition.
+- Clean means: high contrast text, consistent alignment, no decorative noise, purposeful animation only.
+- Specify the exact hex codes or HSL values for the palette rather than leaving it to interpretation.
+- Specify the exact font files and weights rather than generic sans-serif.
+- Inject golden-ratio typography scale and spacing token system automatically.
+
+### Pattern Four: From Component Request to Interaction Specification
+User input: add a dropdown menu.
+Refinement additions:
+- Trigger behavior: click, hover, or focus.
+- Keyboard interaction: arrow keys, escape, enter, tab order.
+- Mobile behavior: bottom sheet, full-screen overlay, or native select.
+- Multi-select or single-select. Searchable or static. Grouped or flat.
+- Async loading: skeleton state, error state, retry behavior.
+- Accessibility: aria-expanded, aria-activedescendant, focus trap, focus return.
+- Security: sanitize selected values before submission, validate against allowlist.
+
+## Anti-Patterns to Forbid in Frontend Prompts
+- Do not use subjective adjectives without translation: modern, sleek, beautiful, intuitive, user-friendly.
+- Do not omit responsive behavior. Desktop-only is not acceptable unless explicitly stated.
+- Do not omit accessibility. It is not an optional add-on.
+- Do not request animations without specifying purpose and reduced-motion fallback.
+- Do not request third-party integrations without specifying fallback behavior if the service is down.
+- Do not omit security considerations for any form, input, or data transmission.
+
+
+---
+
+## RESPONSIVE_DESIGN.md
+
+---
+version: 2.1.0
+last_updated: 2026-06-09
+related:
+  - DESIGN_BIBLE.md (layout systems)
+  - FRONTEND_PROMPTS.md (responsive behavior injection)
+  - horizontal-craft/accessibility.md (touch targets, screen readers)
+---
+
+# Responsive Design — Desktop & Mobile Compatibility
+
+## Philosophy
+Responsive design is not about making a desktop site fit on a phone. It is about designing a single system that serves the user's context, device capabilities, and environment. Every layout decision must answer: how does this work on a four-inch screen held in one hand, and on a thirty-two-inch monitor viewed from two feet away?
+
+## Viewport & Device Categories
+
+### Mobile Portrait (under 640 pixels)
+- Primary input: thumb, one-handed.
+- Reading distance: twelve to eighteen inches.
+- Connection: often cellular, potentially metered or slow.
+- Context: on-the-go, interrupted, partial attention.
+- Design response: single column, full-bleed sections, large touch targets, minimal text, progressive disclosure.
+
+### Mobile Landscape (640 to 768 pixels)
+- Primary input: two thumbs, potentially resting on a surface.
+- Reading distance: fourteen to twenty inches.
+- Context: brief tasks, media consumption, gaming.
+- Design response: two-column layouts possible, increased margins, side-by-side comparisons.
+
+### Tablet (768 to 1024 pixels)
+- Primary input: fingers, potentially with stylus or keyboard.
+- Reading distance: sixteen to twenty-four inches.
+- Context: couch browsing, light productivity, reading.
+- Design response: two to three columns, collapsible sidebars, hover and touch coexist.
+
+### Desktop (1024 to 1440 pixels)
+- Primary input: mouse and keyboard, precise pointing.
+- Reading distance: twenty to thirty inches.
+- Context: focused work, multitasking, productivity.
+- Design response: full multi-column, hover interactions, dense data, keyboard shortcuts.
+
+### Wide Desktop (over 1440 pixels)
+- Primary input: mouse and keyboard, potentially multiple monitors.
+- Context: professional work, development, design, trading.
+- Design response: centered content with generous whitespace, side panels, multi-pane layouts, data density.
+
+## Layout Adaptation Strategies
+
+### Reflow
+Elements that sit side-by-side on desktop stack vertically on mobile. The order of stacking must match the visual and logical priority.
+- Primary content reflows first.
+- Secondary content (sidebars, related links) follows.
+- Tertiary content (footer, legal, metadata) comes last.
+- Never hide critical functionality behind a breakpoint. If it exists on desktop, it must be accessible on mobile, even if the interaction pattern changes.
+
+### Resize
+Images, videos, and containers scale proportionally within their containers. Maximum widths prevent excessive scaling on large screens.
+- Images: max-width one hundred percent of container, height auto.
+- Videos: maintain sixteen-by-nine or custom aspect ratio using padding-bottom percentage technique.
+- Containers: max-width for readability (typically sixty to seventy-five characters for text blocks).
+
+### Recompose
+The layout structure changes between breakpoints. A three-column grid becomes a two-column grid, then a single column.
+- Grid columns: twelve on desktop, six on tablet, four on mobile.
+- Sidebar: collapses to a top bar or hamburger menu on mobile.
+- Card grids: three columns to two columns to one column.
+- Tables: transform to card-based layouts or horizontal scroll with pinned first column.
+
+### Replace
+Different assets or components are served for different contexts.
+- Hero images: wide landscape crop on desktop, square or portrait crop on mobile.
+- Navigation: horizontal menu on desktop, hamburger drawer on mobile, bottom tabs on mobile apps.
+- Input methods: date picker dropdown on desktop, native date spinner on mobile.
+- Video: high bitrate for desktop WiFi, lower bitrate for mobile cellular.
+
+## Touch Target Guidelines
+
+### Minimum Sizes
+- Recommended touch target: forty-eight by forty-eight pixels.
+- Absolute minimum: forty-four by forty-four pixels (iOS standard).
+- Spacing between targets: minimum eight pixels to prevent accidental activation.
+- Visual size can be smaller than the hit area if the touch target extends beyond the visual bounds.
+
+### Thumb Zones
+- One-handed mobile use: the bottom center and bottom corners are most reachable.
+- Primary actions should sit in the bottom third of the screen.
+- Destructive or infrequent actions can sit in the top corners (harder to reach, preventing accidental taps).
+- Two-handed use: the center and sides are reachable, but the top center remains difficult.
+
+## Typography Scaling
+
+### Fluid Type
+Use viewport-relative units combined with minimum and maximum constraints so text scales smoothly rather than jumping at breakpoints.
+- Body text: scales from fifteen pixels on small screens to eighteen pixels on large screens.
+- Headings: scale more aggressively. A heading one might range from thirty-two pixels to eighty-nine pixels.
+- Line height: slightly increase on mobile (1.6 to 1.7) for readability, slightly decrease on desktop (1.5 to 1.6) for density.
+
+### Legibility at Distance
+- Mobile: text must be readable at twelve inches. Minimum body size: fifteen pixels.
+- Desktop: text must be readable at twenty-four inches. Body size can be sixteen to eighteen pixels.
+- Wide desktop: consider slightly larger body text (eighteen to twenty pixels) to match the increased viewing distance.
+
+## Navigation Patterns by Device
+
+### Desktop Navigation
+- Horizontal top bar with dropdown menus for shallow hierarchies.
+- Mega-menus for deep catalogs with images and descriptions.
+- Sticky header that remains visible during scroll.
+- Breadcrumbs for deep page hierarchies.
+- Keyboard shortcuts for power users.
+
+### Mobile Navigation
+- Hamburger menu (three horizontal lines) or bottom sheet for primary navigation.
+- Bottom tab bar for three to five primary destinations. More than five items reduces usability.
+- Floating action button for the single most important action.
+- Swipe gestures for back navigation, dismissing modals, or switching tabs.
+- Pull-to-refresh for list and feed content.
+
+### Tablet Navigation
+- Collapsible sidebar that can be pinned open in landscape.
+- Split-view for master-detail patterns (email list on left, message on right).
+- Contextual menus that appear on long-press or right-click.
+- Hybrid top bar with condensed icons and a hamburger for overflow.
+
+## Form Adaptation
+
+### Mobile Forms
+- One field per row. Never side-by-side fields on mobile.
+- Use native input types to trigger appropriate keyboards: tel for phone numbers, email for email addresses, number for numeric values, date for dates.
+- Place labels above inputs, not to the left.
+- Error messages appear below the field, not in a separate summary at the top.
+- Step-by-step wizards for long forms. Show progress indicator.
+- Autofill and autocomplete attributes for faster completion.
+
+### Desktop Forms
+- Side-by-side fields acceptable for related data (first name and last name, city and state).
+- Inline validation with immediate feedback.
+- Tooltips or helper text beside fields.
+- Tab order must follow visual order logically.
+- Keyboard navigation: Enter to advance, Escape to cancel, Tab and Shift-Tab to move.
+
+## Performance by Context
+
+### Mobile Performance
+- Reduce image resolution and quality for cellular connections.
+- Defer non-critical JavaScript.
+- Minimize layout shifts by reserving space for dynamic content.
+- Avoid heavy animations that drain battery.
+- Respect data saver modes: load lower-resolution images, disable autoplay video.
+
+### Desktop Performance
+- Higher-resolution images and videos acceptable.
+- More complex animations and transitions.
+- Background processes and real-time updates.
+- Larger data payloads for richer experiences.
+
+## Testing Strategy
+- Test on actual devices, not just browser emulation. Touch behavior, scroll physics, and performance differ.
+- Test in both portrait and landscape orientations.
+- Test with keyboard navigation on desktop.
+- Test with screen readers on all breakpoints.
+- Test with slow network throttling to ensure graceful degradation.
+- Test with increased font sizes (two hundred percent) to ensure layouts do not break.
+
+
+---
+
+## horizontal-craft/anti-ai-slop.md
+
+---
+name: anti-ai-slop
+description: Anti-AI-default design craft rules. Use during generation and again as a quality-gate check to avoid generic model output, fake proof, decorative emoji, template layouts, and unearned visual effects.
+mode: reference
+platform: any
+scenario: horizontal-craft
+version: 2.1.0
+last_updated: 2026-06-09
+related:
+  - SKILL.md (Section 8.2: Anti-Slop Injection Protocol)
+  - DESIGN_BIBLE.md (design philosophy)
+  - horizontal-craft/link-and-proof.md (proof standards)
+  - horizontal-craft/typography.md (typography craft)
+  - horizontal-craft/animation-motion.md (motion craft)
+preview:
+  type: none
+default_for:
+  - anti AI slop
+  - AI味
+  - 反AI味
+  - generic design
+  - template-looking design
+  - design polish
+fidelity: system
+sources:
+  - adapted-from-open-design/craft/anti-ai-slop.md
+  - extracted-from-previous-quality-gate.md
+---
+
+# Anti-AI Slop
+
+This file is a generation-time craft reference. It defines what **not** to do by default.
+
+`quality-gate.md` should reference this file, not duplicate it.
+
+Core test:
+
+```text
+Did this design choice come from the brief, scenario skill, design system, content, or user request?
+If not, it is probably model autopilot.
+```
+
+A slop item is not always forbidden. It is forbidden when used as an unearned default.
+
+---
+
+## Definition: AI SLOP
+
+**AI Slop** is any design decision that exists because it is the model's default habit, not because the brief, content, or design system called for it. It is the result of AI models trained on millions of similar outputs converging on the same "safe" patterns. Slop looks fine individually but produces a recognizable, soulless sameness across all AI-generated work.
+
+**How to identify AI Slop:**
+- Would this choice exist if the content, brand, or brief had been different? If yes → slop.
+- Is this choice "fine" but not "specific"? If yes → slop.
+- Would you see the same choice on 100 other AI-generated sites? If yes → slop.
+- Did the AI add this without being asked, because it "looks professional"? If yes → slop.
+
+**Examples of AI Slop:**
+- Using indigo (#6366f1) as accent color without a brand reason
+- Adding ✨🚀🎯⚡🔥💡 as feature icons
+- Rounded white cards with subtle shadow everywhere
+- Hero section with blue-purple gradient background
+- "Loved by 10,000+ teams" with no source
+- Lorem ipsum or placeholder text that looks real
+- Inter / Roboto as the display font by default
+- Three equal-width feature cards with icon + title + description
+- Fade-in animation on every section scroll
+- Stock photos of desks, laptops, sticky notes
+
+---
+
+## Definition: AI TEMPLATE AESTHETIC
+
+**AI Template Aesthetic** is the specific visual signature that emerges when AI models generate web pages, landing pages, or apps without strong direction. It is a subset of AI Slop — not just individual bad choices, but a coherent default "look" that signals "this was generated, not designed."
+
+**The AI Template Aesthetic is characterized by:**
+
+1. **Color**: Indigo/purple accent on white/light gray, with a blue-to-purple gradient somewhere (hero, button, text). Dark mode: near-black background with purple glow.
+
+2. **Typography**: Inter or system-ui for everything. No display font. No typographic personality. Or: italic serif word inside a sans-serif heading as the only "flair."
+
+3. **Layout**: Centered max-width container. Hero → 3 feature cards → How it works → Testimonials → Pricing → FAQ → CTA. Every section is vertically stacked with equal spacing. No rhythm variation.
+
+4. **Components**: Rounded cards (border-radius: 12-16px) with 1px border and subtle shadow. Pill badges with colored dots. Gradient primary button + outline ghost button. Fully rounded CTA buttons with shadow.
+
+5. **Motion**: Fade-in on scroll everywhere. Parallax on hero. Bouncing hover on buttons. No intentional choreography.
+
+6. **Imagery**: Floating device mockup with reflection. Stock photo of "team collaboration." Unsplash desk with coffee. Fake product screenshot.
+
+7. **Copy**: "Empower your team." "Seamless workflow." "Unlock your potential." "Trusted by industry leaders." Fake metrics. Fake logos.
+
+8. **Texture**: Full-page dot grid pattern. Gradient mesh background. Noise overlay. Blob shapes.
+
+**How to avoid the AI Template Aesthetic:**
+- Make every design choice tied to a specific content reason, not a default.
+- Choose a color territory, not a color value. "Cinnabar and ink" not "#6366f1."
+- Break the layout rhythm. Use asymmetry, density variation, editorial flow.
+- Use typography as identity, not just readability.
+- One signature visual idea, not five generic ones.
+- Real content or honest placeholders. Never fake proof.
+- Motion with purpose, not motion for the sake of motion.
+
+---
+
+## P0 hard failures
+
+Fix these before delivery.
+
+1. **Default indigo / purple AI accent**
+   - Avoid `#6366f1`, `#4f46e5`, `#4338ca`, `#3730a3`, `#8b5cf6`, `#7c3aed`, `#a855f7` as generic accent colors.
+   - Use the active design system token or a content-driven palette.
+
+2. **Generic blue-purple hero gradient**
+   - Avoid purple→blue, blue→cyan, indigo→pink hero gradients unless the brand or brief explicitly earns it.
+
+3. **Emoji as UI icons**
+   - Do not use `✨`, `🚀`, `🎯`, `⚡`, `🔥`, `💡` as feature icons, section markers, button decoration, status labels, or deck bullets.
+   - Use inline SVG, typographic numbers, CSS shapes, or no icon.
+
+4. **Invented proof**
+   - Do not invent “10× faster”, “99.9% uptime”, “3× productivity”, fake customer logos, fake testimonials, fake awards, fake press quotes, fake benchmarks, or fake market data.
+   - Use `horizontal-craft/link-and-proof.md`.
+
+5. **Filler content**
+   - No `lorem ipsum`, “feature one / two / three”, “placeholder text”, fake console handlers, TODO comments, or empty demo logic.
+
+6. **Rounded-card dashboard default**
+   - Avoid the reflexive pattern: rounded white card + 1px border + subtle shadow + colored left border.
+   - Use hierarchy, spacing, typography, and state semantics instead.
+
+7. **Unlabeled placeholders**
+   - If content is demo or missing, label it visibly. Do not disguise it as real proof.
+
+---
+
+## Color and palette failures
+
+Avoid as defaults:
+
+- purple / blue two-stop gradients as hero, button fill, text gradient, progress bar, or accent
+- generic AI dark mode: near-black background + indigo / purple glow
+- mesh gradients without a strong reason
+- pastel pink / lavender / peach as automatic “soft polish”
+- black + gold / muddy bronze as automatic “premium”
+- dirty earth tones on dark backgrounds
+- Tailwind / Vercel tutorial defaults: indigo, slate, gray ramp, emerald accent, tutorial-blue
+- low-contrast muted text, especially opacity `0.4–0.6`
+
+Prefer:
+
+- a nameable color territory
+- product- or content-driven palettes
+- solid color fields when conviction matters
+- material metaphors: paper, ink, cinnabar, brick, forest, phosphor, steel, terminal amber
+- explicit CSS tokens instead of scattered magic hex values
+
+---
+
+## Typography failures
+
+Avoid as defaults:
+
+- Inter, Roboto, Open Sans, Arial, `system-ui`, PingFang SC, HarmonyOS Sans, Microsoft YaHei as the visible display identity
+- Space Grotesk / Fraunces / Playfair / Instrument Serif as automatic taste markers without reason
+- italic serif accent word inside a sans h1 as a reflex move
+- gradient text inside h1
+- tracked all-caps section labels everywhere
+- Chinese body text that is too light on dark backgrounds
+- Chinese display text without an intentional display font or accepted fallback
+
+Allowed:
+
+- common fonts as fallback stack positions
+- system fonts when the design system explicitly chooses a neutral product voice
+- expressive fonts when loaded and tied to the visual direction
+
+---
+
+## Layout failures
+
+Avoid:
+
+- generic Hero → Features → Pricing → FAQ → CTA sequence with no variation
+- three equal feature cards with icon / title / description as filler
+- bento grid unless the information is genuinely modular
+- centered `max-width: 800px; margin: auto; text-align: center` across all sections
+- card grids where every card has the same size and rhythm
+- fake macOS window chrome with traffic-light dots
+- top nav default: monogram left + four links right + hairline rule
+- floating phone / device mockups with reflection as default
+
+Prefer:
+
+- asymmetric grids
+- meaningful density variation
+- editorial rhythm
+- one strong signature surface
+- exact-ratio frames for key screens
+- visual choices based on actual content hierarchy
+
+---
+
+## Component failures
+
+Avoid:
+
+- decorative emoji as icons or UI ornament
+- pill chip with colored dot as the universal badge
+- gradient primary button + outline ghost button with equal weight
+- colored rounded status pills for every state
+- fully rounded plastic CTA buttons with shadow
+- fake avatars, fake quote cards, fake testimonial blocks
+- icon grids that add no information
+
+Use instead:
+
+- inline SVG icons
+- typographic numbers
+- CSS shapes
+- hairline labels
+- text links for secondary actions
+- real component states
+- no icon when text is clearer
+
+---
+
+## Imagery failures
+
+Avoid:
+
+- stock photos used as fake product evidence
+- Unsplash desks, sticky notes, laptops-with-coffee, moodboards, gears, Pantone flatlays
+- fake product screenshots with fake proof
+- screenshots without captions or real source context
+- three-quarter floating device mockups as default
+
+If real imagery is missing:
+
+- use type-only hero
+- use honest product UI with demo-labeled content
+- use SVG diagrams
+- use typographic plates
+- use honest placeholders
+
+---
+
+## Chinese copy smells that affect design quality
+
+This is not a copywriting rulebook. Only fix copy when it makes the artifact feel generic, breaks hierarchy, or weakens CTA clarity.
+
+Common visual-quality smells:
+
+- 赋能、打造、匠心、极致、丝滑、惊艳、震撼、颠覆、革新、引爆、解锁、加持、沉浸、深度、全方位、一站式
+- 闭环、抓手、心智、链路、生态、矩阵、势能、心智占位
+- 全新升级、隆重推出、强势来袭、火热进行中
+- 「X，让 Y 更 Z」
+- 「不止 X，更是 Y」
+- 「重新定义 X」
+- 「X，从未如此 Y」
+- 「为 X 而生」
+
+Prefer concrete verbs:
+
+- 查、算、生成、对比、导出、预约、上传、筛选、复盘、发送
+
+---
+
+## Motion failures
+
+Avoid:
+
+- fade-in on every section as the only motion idea
+- parallax by default
+- bouncing hover curves everywhere
+- decorative background motion unrelated to the task
+- animations that delay input or obscure results
+
+Use:
+
+- one purposeful signature motion
+- tactile button feedback
+- result reveal for tools
+- view transitions for multi-view artifacts
+- reduced-motion fallback
+
+---
+
+## Background and texture failures
+
+Avoid:
+
+- full-page repeating grid / dot / line patterns behind text
+- high-contrast patterns behind body or display text
+- multiple noise layers
+- blobs, orbs, gradient spheres, floating rings
+- background decoration used only to fill empty space
+
+Allowed:
+
+- one subtle material texture on an isolated surface
+- edge hairlines
+- paper grain at low opacity when the visual world calls for it
+- no texture when solid color is stronger
+
+---
+
+## Over-addition decision table
+
+| Tempted to add… | Default decision |
+|---|---|
+| gradient | probably not; use solid field or grounded palette |
+| emoji | no; use inline SVG, type, or nothing |
+| rounded card + left-border accent | no; use hierarchy or divider |
+| blob / hand-drawn hero illustration | no unless the visual direction needs it |
+| testimonial quote | only with real user-provided quote |
+| icon feature row | only if icons clarify information |
+| bento grid | only if information is genuinely modular |
+| hero + 3 cards + CTA | redesign from actual content |
+| scroll reveal on everything | no; use one choreographed motion if any |
+
+Rule of thumb: if you are unsure whether to add it, do not add it.
+
+---
+
+## Emoji scan
+
+Before delivery, scan visible text and labels for emoji characters.
+
+Forbidden emoji usage:
+
+- feature icons
+- slide icons
+- section headers
+- navigation icons
+- status labels
+- CTA decoration
+- fake excitement or “friendly” ornament
+
+Allowed emoji usage:
+
+- user-provided content contains emoji
+- product/content is emoji-based
+- chat/social content uses emoji as actual content
+- user explicitly requests emoji-led style
+
+Replacement priority:
+
+1. inline SVG
+2. CSS shape
+3. typographic number
+4. text label
+5. no icon
+
+Mandatory scan ranges:
+
+```text
+U+1F300–U+1F6FF
+U+1F900–U+1F9FF
+U+1FA70–U+1FAFF
+U+2600–U+26FF
+U+2700–U+27BF
+U+2300–U+23FF
+U+FE0F
+U+200D
+```
+
+
+--- PromptMika pack notice: load_frontend_design — all 4 files loaded. ---

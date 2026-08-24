@@ -3,6 +3,8 @@ import path from "node:path";
 
 const REFERENCES_DIR = path.join(process.cwd(), "references");
 const SKILL_FILE = path.join(process.cwd(), "SKILL.md");
+const DESIGN_FILE = path.join(process.cwd(), "DESIGN.md");
+const GUIDELINES_FILE = path.join(process.cwd(), "GUIDELINES.md");
 const CLAUDE_FILE = path.join(process.cwd(), "user-policy", "CLAUDE.md");
 const CLAUDE_DIGEST_FILE = path.join(process.cwd(), "user-policy", "CLAUDE.digest.md");
 
@@ -78,6 +80,22 @@ export function readSkillFile(): { content: string; mimeType: string } | undefin
   }
 }
 
+export function readDesignFile(): { content: string; mimeType: string } | undefined {
+  try {
+    return { content: fs.readFileSync(DESIGN_FILE, "utf-8"), mimeType: "text/markdown" };
+  } catch {
+    return undefined;
+  }
+}
+
+export function readGuidelinesFile(): { content: string; mimeType: string } | undefined {
+  try {
+    return { content: fs.readFileSync(GUIDELINES_FILE, "utf-8"), mimeType: "text/markdown" };
+  } catch {
+    return undefined;
+  }
+}
+
 export function readClaudeFile(): { content: string; mimeType: string } | undefined {
   try {
     return { content: fs.readFileSync(CLAUDE_FILE, "utf-8"), mimeType: "text/markdown" };
@@ -101,6 +119,16 @@ export function resolveDocument(
     if (uri !== "skill://SKILL.md") return undefined;
     const s = readSkillFile();
     return s ? { ...s, name: "SKILL.md" } : undefined;
+  }
+  if (uri.startsWith("design://")) {
+    if (uri !== "design://DESIGN.md") return undefined;
+    const d = readDesignFile();
+    return d ? { ...d, name: "DESIGN.md" } : undefined;
+  }
+  if (uri.startsWith("guidelines://")) {
+    if (uri !== "guidelines://GUIDELINES.md") return undefined;
+    const g = readGuidelinesFile();
+    return g ? { ...g, name: "GUIDELINES.md" } : undefined;
   }
   if (uri.startsWith("claude://")) {
     const target = uri.slice("claude://".length);

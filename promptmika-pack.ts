@@ -10,12 +10,12 @@ const DEFAULT_URL = "https://promptmika.vercel.app/api/mcp";
 
 const PACKS = {
   load_contract: {
-    description: "First-run contract read: PromptMika skill definition + condensed user policy digest. Load BEFORE anything else in a new session.",
-    files: ["skill://SKILL.md", "claude://CLAUDE.digest.md"],
+    description: "First-run contract read: project design language + condensed policy digest + full skill definition. Small docs first so truncation-happy clients still get them. Load BEFORE anything else in a new session.",
+    files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
   },
   load_frontend_design: {
-    description: "Core frontend/UI design references: design philosophy bible, frontend component patterns, responsive mobile-first layout, and anti-AI-slop rules.",
-    files: ["DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md", "horizontal-craft/anti-ai-slop.md"],
+    description: "Core frontend/UI design references: project design language first (design://DESIGN.md), then design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md).",
+    files: ["design://DESIGN.md", "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md", "horizontal-craft/anti-ai-slop.md", "guidelines://GUIDELINES.md"],
   },
   load_design_systems: {
     description: "Design system catalog: system selection guide, index summary, and full INDEX. Use when choosing or applying a design system.",

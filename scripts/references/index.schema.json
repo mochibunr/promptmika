@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PromptMika Design Systems Index",
+  "description": "Schema for design-systems/index.json — structured metadata for style skills and brand inspiration",
+  "type": "object",
+  "required": ["style_skills", "brand_inspiration"],
+  "properties": {
+    "style_skills": {
+      "type": "array",
+      "description": "Array of reusable design style skill entries",
+      "items": {
+        "$ref": "#/definitions/StyleSkill"
+      }
+    },
+    "brand_inspiration": {
+      "type": "array",
+      "description": "Array of public brand-inspired reference entries",
+      "items": {
+        "$ref": "#/definitions/BrandInspiration"
+      }
+    }
+  },
+  "definitions": {
+    "StyleSkill": {
+      "type": "object",
+      "required": ["name", "path", "files", "mood", "scheme", "era", "formality"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique identifier for the style skill (kebab-case)",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative path to the style skill directory",
+          "pattern": "^style-skills/[a-z0-9-]+/$"
+        },
+        "files": {
+          "type": "array",
+          "description": "Files contained in this style skill",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "examples": [["DESIGN.md", "SKILL.md"]]
+        },
+        "mood": {
+          "type": "array",
+          "description": "Visual mood descriptors (Chinese or English)",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "scheme": {
+          "type": "string",
+          "description": "Color scheme",
+          "enum": ["light", "dark", "both"]
+        },
+        "era": {
+          "type": "string",
+          "description": "Design era or period",
+          "examples": ["现代", "复古", "未来感"]
+        },
+        "formality": {
+          "type": "string",
+          "description": "Formality level",
+          "enum": ["low", "medium", "high"]
+        },
+        "best_for": {
+          "type": "string",
+          "description": "Recommended use cases (brief, can be empty string)"
+        },
+        "avoid_for": {
+          "type": "string",
+          "description": "Cases where this style should not be used (optional)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "BrandInspiration": {
+      "type": "object",
+      "required": ["name", "path", "mood", "scheme", "era", "formality"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Brand name (lowercase)",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative path to the brand inspiration directory",
+          "pattern": "^brand-inspiration/[a-z0-9-]+/$"
+        },
+        "mood": {
+          "type": "array",
+          "description": "Visual mood descriptors extracted from brand",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "scheme": {
+          "type": "string",
+          "enum": ["light", "dark", "both"]
+        },
+        "era": {
+          "type": "string"
+        },
+        "formality": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "best_for": {
+          "type": "string",
+          "description": "Recommended use cases"
+        },
+        "avoid_for": {
+          "type": "string",
+          "description": "Cases where this inspiration should not be used"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

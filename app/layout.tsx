@@ -1,15 +1,41 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Caveat, Karla, Protest_Strike } from "next/font/google";
 import "./globals.css";
 
+const display = Protest_Strike({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Karla({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const hand = Caveat({
+  subsets: ["latin"],
+  variable: "--font-hand",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "PromptMika — Elite Coding MCP Server",
+  title: "PromptMika — knowledge packs for coding agents",
   description:
-    "PromptMika is an MCP server that makes AI models elite engineers: silent prompt refinement, minimalism-first code, security scanning, design intelligence, and project scaffolding.",
+    "An MCP server that arms your AI with elite references: frontend design, security catalogs, testing, systems. 23 tools, 162 files, one endpoint.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  themeColor: "#f0e4c6",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${display.variable} ${body.variable} ${hand.variable}`}>
       <body>{children}</body>
     </html>
   );

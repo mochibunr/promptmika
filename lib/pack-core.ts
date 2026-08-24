@@ -2,8 +2,8 @@
 // Dependency-injected: callers provide a resolveDocument function.
 // Usable standalone (plugin mode) or wrapped by the MCP adapter.
 
-export const PACK_FILE_CAP = 800;
-export const PACK_TOTAL_BUDGET = 2400;
+export const PACK_FILE_CAP = 20000;
+export const PACK_TOTAL_BUDGET = 40000;
 
 export interface ResolvedDoc {
   content: string;
@@ -29,17 +29,19 @@ export interface PackResult {
 export const PACKS: Record<string, PackDef> = {
   load_contract: {
     description:
-      "First-run contract read: the PromptMika skill definition + the condensed user policy digest. Load this BEFORE anything else in a new session — it is binding.",
-    files: ["skill://SKILL.md", "claude://CLAUDE.digest.md"],
+      "First-run contract read: the project design language (DESIGN.md) + the condensed user policy digest + the full skill definition. Ordered small-docs-first so clients that truncate large tool results still receive DESIGN.md and the digest intact. Load this BEFORE anything else in a new session — it is binding.",
+    files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
   },
   load_frontend_design: {
     description:
-      "Core frontend/UI design references: design philosophy bible, frontend component patterns, responsive mobile-first layout, and anti-AI-slop rules. Use for any UI/frontend task.",
+      "Core frontend/UI design references: the project's own design language first (design://DESIGN.md — overrides generic defaults), then design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md). Use for any UI/frontend task.",
     files: [
+      "design://DESIGN.md",
       "DESIGN_BIBLE.md",
       "FRONTEND_PROMPTS.md",
       "RESPONSIVE_DESIGN.md",
       "horizontal-craft/anti-ai-slop.md",
+      "guidelines://GUIDELINES.md",
     ],
   },
   load_design_systems: {

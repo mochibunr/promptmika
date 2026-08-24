@@ -1,0 +1,16 @@
+
+> promptmika-mcp@3.0.0 dev
+> next dev -p 3111
+
+   ▲ Next.js 15.5.23
+   - Local:        http://localhost:3111
+   - Network:      http://192.168.1.2:3111
+
+ ✓ Starting...
+ ✓ Ready in 1710ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1563ms (577 modules)
+ GET / 200 in 2149ms
+ ○ Compiling /connect ...
+ ✓ Compiled /connect in 1075ms (608 modules)
+ GET /connect 200 in 1315ms

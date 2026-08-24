@@ -1,0 +1,87 @@
+{
+  "_meta": {
+    "description": "Lean summary of design-systems/index.json. Use for quick matching. Load full index.json only when a specific style-skill or brand-inspiration is selected.",
+    "version": "2.1.0",
+    "last_updated": "2026-06-09",
+    "total_style_skills": 40,
+    "total_brand_inspirations": 89
+  },
+  "style_skills": [
+    {"name": "agentic", "mood": "极简, 技术感, 克制", "scheme": "light", "formality": "medium", "best_for": "Conversational AI-first interface with minimal controls"},
+    {"name": "ant", "mood": "企业/可信, 精密/工程感, 极简", "scheme": "light", "formality": "high", "best_for": "Structured enterprise-focused design system"},
+    {"name": "application", "mood": "极简, 技术感, 戏剧化", "scheme": "light", "formality": "medium", "best_for": "Product/application UI patterns"},
+    {"name": "artistic", "mood": "艺术感, 表现力, 非常规", "scheme": "dark", "formality": "low", "best_for": "Artistic expression, creative portfolios"},
+    {"name": "atelier-zero", "mood": "极简, 高级, 手工感", "scheme": "light", "formality": "medium", "best_for": "Minimal studio or atelier-style visual system"},
+    {"name": "bento", "mood": "模块化, 清晰, 现代", "scheme": "light", "formality": "medium", "best_for": "Bento grid layouts, dashboard modules"},
+    {"name": "bold", "mood": "大胆, 强烈, 醒目", "scheme": "dark", "formality": "low", "best_for": "High-impact, attention-grabbing interfaces"},
+    {"name": "brutalist", "mood": "粗犷, 原始, 反传统", "scheme": "light", "formality": "low", "best_for": "Brutalist web design, raw aesthetic"},
+    {"name": "ceramic", "mood": "温暖, 自然, 手工感", "scheme": "light", "formality": "medium", "best_for": "Warm, organic, craft-inspired interfaces"},
+    {"name": "cinematic", "mood": "电影感, 沉浸, 叙事", "scheme": "dark", "formality": "medium", "best_for": "Cinematic storytelling, immersive experiences"},
+    {"name": "corporate", "mood": "专业, 可信, 正式", "scheme": "light", "formality": "high", "best_for": "Corporate websites, professional services"},
+    {"name": "cyberpunk", "mood": "赛博朋克, 未来感, 霓虹", "scheme": "dark", "formality": "low", "best_for": "Cyberpunk aesthetic, gaming, tech-forward"},
+    {"name": "dark-mode", "mood": "暗色, 优雅, 现代", "scheme": "dark", "formality": "medium", "best_for": "Dark mode interfaces, developer tools"},
+    {"name": "editorial", "mood": "编辑感, 杂志, 排版", "scheme": "light", "formality": "medium", "best_for": "Editorial layouts, magazine-style design"},
+    {"name": "flat", "mood": "扁平, 清晰, 直接", "scheme": "light", "formality": "medium", "best_for": "Flat design, clean interfaces"},
+    {"name": "glassmorphism", "mood": "玻璃感, 半透明, 现代", "scheme": "dark", "formality": "medium", "best_for": "Glassmorphism, frosted glass effects"},
+    {"name": "gradient", "mood": "渐变, 活力, 现代", "scheme": "light", "formality": "low", "best_for": "Gradient-heavy, vibrant interfaces"},
+    {"name": "handcrafted", "mood": "手工感, 温暖, 独特", "scheme": "light", "formality": "low", "best_for": "Handcrafted, artisanal design"},
+    {"name": "hybrid", "mood": "混合, 灵活, 适应性", "scheme": "light", "formality": "medium", "best_for": "Hybrid design combining multiple styles"},
+    {"name": "industrial", "mood": "工业感, 功能性, 粗犷", "scheme": "light", "formality": "medium", "best_for": "Industrial design, functional interfaces"},
+    {"name": "kawaii", "mood": "可爱, 圆润, 活泼", "scheme": "light", "formality": "low", "best_for": "Kawaii aesthetic, playful interfaces"},
+    {"name": "luxury", "mood": "奢华, 高级, 优雅", "scheme": "dark", "formality": "high", "best_for": "Luxury brands, high-end products"},
+    {"name": "material", "mood": "Material Design, 系统化, 规范", "scheme": "light", "formality": "medium", "best_for": "Material Design, Google ecosystem"},
+    {"name": "minimal", "mood": "极简, 克制, 纯净", "scheme": "light", "formality": "medium", "best_for": "Minimalist design, clean interfaces"},
+    {"name": "neomorphic", "mood": "新拟物, 柔和, 立体", "scheme": "light", "formality": "medium", "best_for": "Neumorphism, soft UI"},
+    {"name": "organic", "mood": "有机, 自然, 流动", "scheme": "light", "formality": "low", "best_for": "Organic shapes, nature-inspired design"},
+    {"name": "pixel", "mood": "像素风, 复古, 游戏", "scheme": "dark", "formality": "low", "best_for": "Pixel art, retro gaming aesthetic"},
+    {"name": "playful", "mood": "活泼, 有趣, 互动", "scheme": "light", "formality": "low", "best_for": "Playful, fun interfaces"},
+    {"name": "premium", "mood": "高端, 专业, 精致", "scheme": "dark", "formality": "high", "best_for": "Premium, high-end professional design"},
+    {"name": "retro", "mood": "复古, 怀旧, 经典", "scheme": "light", "formality": "medium", "best_for": "Retro aesthetic, nostalgic design"},
+    {"name": "scandinavian", "mood": "北欧, 简约, 自然", "scheme": "light", "formality": "medium", "best_for": "Scandinavian design, Nordic simplicity"},
+    {"name": "scientific", "mood": "科学, 精确, 数据驱动", "scheme": "light", "formality": "high", "best_for": "Scientific visualization, data-heavy interfaces"},
+    {"name": "soft", "mood": "柔和, 温暖, 友好", "scheme": "light", "formality": "low", "best_for": "Soft UI, friendly interfaces"},
+    {"name": "tech", "mood": "技术感, 精密, 现代", "scheme": "light", "formality": "medium", "best_for": "Tech company websites, SaaS products"},
+    {"name": "typographic", "mood": "字体驱动, 编辑感, 排版", "scheme": "light", "formality": "medium", "best_for": "Typography-focused design"},
+    {"name": "vintage", "mood": "复古, 古典, 怀旧", "scheme": "light", "formality": "medium", "best_for": "Vintage aesthetic, heritage brands"},
+    {"name": "warm", "mood": "温暖, 友好, 亲近", "scheme": "light", "formality": "low", "best_for": "Warm, inviting interfaces"},
+    {"name": "whimsical", "mood": "奇幻, 有趣, 非常规", "scheme": "light", "formality": "low", "best_for": "Whimsical, imaginative design"},
+    {"name": "zen", "mood": "禅意, 平静, 极简", "scheme": "light", "formality": "medium", "best_for": "Zen-inspired, calm interfaces"}
+  ],
+  "brand_inspirations": [
+    "adobe", "airbnb", "algolia", "apple", "auth0", "azure", "basecamp", "beam", "bigcommerce", "bitbucket",
+    "bolt", "booking", "bootstrap", "buttercms", "calendly", "canva", "cashapp", "circleci", "clarusway",
+    "cloudflare", "codepen", "codesandbox", "css-tricks", "datadog", "discord", "dribbble", "dropbox", "evernote",
+    "expert-rec", "figma", "firebase", "flywheel", "framer", "frontendmentor", "giphy", "github", "gitlab",
+    "godaddy", "grafana", "grasp", "hasura", "heroku", "hubspot", "hulu", "ifixit", "invisionapp", "jamstack",
+    "kaggle", "kentico", "khan-academy", "kinsta", "laravel", "leandro", "linear", "litmus", "livekit",
+    "localazy", "magento", "mailchimp", "marriott", "maze", "medium", "miro", "mixpanel", "mongodb", "mozilla",
+    "netlify", "newrelic", "notion", "nunito", "okta", "olark", "onesignal", "openai", "optimizely", "patreon",
+    "paypal", "php", "postcss", "postman", "prisma", "producthunt", "protonmail", "pycon", "rasa", "redhat",
+    "ring", "ringcentral", "rubymotion", "salesforce", "segment", "sennheiser", "sentry", "shopify", "slack",
+    "smashing", "snap", "soundcloud", "spotify", "staffbase", "stripe", "supabase", "superhuman", "tauri",
+    "twitch", "twitter", "uikit", "universal", "upwork", "vercel", "visa", "walmart", "webflow", "wikipedia",
+    "wireframing", "wordpress", "yelp", "youtube"
+  ],
+  "match_keywords": {
+    "by_mood": {
+      "极简": ["agentic", "atelier-zero", "minimal", "zen"],
+      "技术感": ["agentic", "application", "tech", "dark-mode"],
+      "温暖": ["ceramic", "warm", "handcrafted", "organic"],
+      "大胆": ["bold", "cyberpunk", "gradient"],
+      "专业": ["corporate", "premium", "luxury", "ant"],
+      "可爱": ["kawaii", "playful", "whimsical"],
+      "复古": ["retro", "vintage", "pixel"],
+      "奢华": ["luxury", "premium"],
+      "极简/高级": ["minimal", "atelier-zero", "zen", "scandinavian"]
+    },
+    "by_scheme": {
+      "light": ["agentic", "ant", "application", "bento", "ceramic", "corporate", "editorial", "flat", "gradient", "handcrafted", "hybrid", "industrial", "kawaii", "material", "minimal", "neomorphic", "organic", "playful", "scandinavian", "scientific", "soft", "tech", "typographic", "vintage", "warm", "whimsical", "zen"],
+      "dark": ["artistic", "bold", "brutalist", "cinematic", "cyberpunk", "dark-mode", "glassmorphism", "luxury", "pixel", "premium", "retro"]
+    },
+    "by_formality": {
+      "high": ["ant", "corporate", "luxury", "premium", "scientific"],
+      "medium": ["agentic", "application", "atelier-zero", "bento", "ceramic", "cinematic", "dark-mode", "editorial", "flat", "glassmorphism", "gradient", "hybrid", "industrial", "material", "minimal", "neomorphic", "organic", "retro", "scandinavian", "tech", "typographic", "vintage", "zen"],
+      "low": ["artistic", "bold", "brutalist", "cyberpunk", "handcrafted", "kawaii", "organic", "pixel", "playful", "soft", "warm", "whimsical"]
+    }
+  }
+}
