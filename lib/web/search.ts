@@ -123,20 +123,28 @@ export async function searchWeb(
   const engine = opts.engine ?? "auto";
 
   if (engine === "duckduckgo" || engine === "auto") {
-    const ddg = await searchDuckDuckGo(query, count);
-    if (ddg) return { results: ddg, source: "DuckDuckGo" };
+    // DDG anomaly-blocks datacenter IPs (captcha) and is sometimes unreachable
+    // entirely — never let it kill the cascade.
+    try {
+      const ddg = await searchDuckDuckGo(query, count);
+      if (ddg) return { results: ddg, source: "DuckDuckGo" };
+    } catch {}
     if (engine === "duckduckgo") throw new Error("DuckDuckGo returned no results");
   }
 
   if (engine === "serper" || engine === "auto") {
-    const serper = await searchSerper(query, count, opts.serperApiKey);
-    if (serper) return { results: serper, source: "Serper (Google)" };
+    try {
+      const serper = await searchSerper(query, count, opts.serperApiKey);
+      if (serper) return { results: serper, source: "Serper (Google)" };
+    } catch {}
     if (engine === "serper") throw new Error("Serper returned no results (check SERPER_API_KEY)");
   }
 
   if (engine === "bing" || engine === "auto") {
-    const bing = await searchBing(query, count);
-    if (bing) return { results: bing, source: "Bing" };
+    try {
+      const bing = await searchBing(query, count);
+      if (bing) return { results: bing, source: "Bing" };
+    } catch {}
   }
 
   throw new Error("All search engines failed (DuckDuckGo → Serper → Bing)");

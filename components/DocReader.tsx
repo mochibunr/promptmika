@@ -5,6 +5,7 @@ import { renderMarkdown, parseYamlFrontmatter, YamlView } from "@/lib/render-md"
 
 const DOCS = [
   { href: "/design", label: "DESIGN.md" },
+  { href: "/guide", label: "GUIDELINES.md" },
   { href: "/skill", label: "SKILL.md" },
   { href: "/claude", label: "CLAUDE.md" },
   { href: "/claude/digest", label: "CLAUDE.digest.md" },

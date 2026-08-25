@@ -116,6 +116,7 @@ export default function Home() {
             <a href="#packs">Packs</a>
             <a href="#tools">Tools</a>
             <a href="/design">Design</a>
+            <a href="/guide">Guide</a>
             <Link href="/connect" className="nav-cta">
               Connect
             </Link>
