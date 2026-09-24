@@ -1,88 +1,179 @@
-import { NextRequest } from "next/server";
+import { TOOLS } from "../../../worker/tools";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-// Max allowed function duration (Vercel fluid compute ceiling); the route is
-// a pass-through proxy so long MCP calls/SSE streams aren't cut off at 60s.
 export const maxDuration = 800;
 
-const WORKER_URL = "https://promptmika.wvrncika.workers.dev/mcp";
+type JsonRpcId = number | string | null;
 
-export async function POST(req: NextRequest) {
-  return proxy(req);
+interface JsonRpcRequest {
+  jsonrpc: "2.0";
+  id?: number | string;
+  method: string;
+  params?: Record<string, unknown>;
 }
 
-export async function GET(req: NextRequest) {
-  return proxy(req);
-}
+const CORS_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Accept, Last-Event-ID, MCP-Session-Id",
+};
 
-export async function DELETE(req: NextRequest) {
-  return proxy(req);
-}
-
-export async function OPTIONS() {
-  return new Response(null, {
+function jsonResponse(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Accept, Last-Event-ID, X-Forwarded-Origin",
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      ...CORS_HEADERS,
+      ...extraHeaders,
     },
   });
 }
 
-async function proxy(req: NextRequest): Promise<Response> {
-  const headers = new Headers();
-  req.headers.forEach((v, k) => {
-    if (k !== "host") headers.set(k, v);
-  });
+function jsonRpcOk(id: JsonRpcId, result: unknown) {
+  return { jsonrpc: "2.0" as const, id, result };
+}
 
-  // Tell the worker the full client-facing endpoint URL so the SSE endpoint event matches
-  const origin = req.nextUrl.origin;
-  headers.set("X-Forwarded-Origin", `${origin}/api/mcp`);
+function jsonRpcError(id: JsonRpcId, code: number, message: string) {
+  return { jsonrpc: "2.0" as const, id, error: { code, message } };
+}
 
-  const body = req.method !== "GET" && req.method !== "HEAD"
-    ? await req.arrayBuffer()
-    : undefined;
-
-  const res = await fetch(WORKER_URL, {
-    method: req.method,
-    headers,
-    body,
-  });
-
-  const contentType = res.headers.get("content-type") || "application/json";
-
-  const baseHeaders = {
-    "Content-Type": contentType,
-    "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": "*",
-  };
-
-  // 204/304 must not carry a body — new Response(stream, { status: 204 }) throws
-  if (res.status === 204 || res.status === 304 || res.body === null) {
-    return new Response(null, { status: res.status, headers: baseHeaders });
+async function handleRpc(rpc: JsonRpcRequest): Promise<unknown> {
+  if (rpc.method === "initialize") {
+    return {
+      protocolVersion: "2024-11-05",
+      capabilities: { tools: {} },
+      serverInfo: { name: "promptmika", version: "3.5.0" },
+    };
   }
 
-  // SSE streams — pass through as a real stream (don't buffer)
-  if (contentType.includes("text/event-stream")) {
-    return new Response(res.body, {
-      status: res.status,
+  if (rpc.method === "notifications/initialized") return null;
+  if (rpc.method === "ping") return {};
+
+  if (rpc.method === "tools/list") {
+    return {
+      tools: Object.entries(TOOLS).map(([name, def]) => ({
+        name,
+        description: def.description,
+        inputSchema: def.inputSchema,
+      })),
+    };
+  }
+
+  if (rpc.method === "tools/call") {
+    const params = rpc.params as
+      | { name?: string; arguments?: Record<string, unknown> }
+      | undefined;
+
+    if (!params?.name) {
+      throw { code: -32602, message: "Missing tool name" };
+    }
+
+    const tool = TOOLS[params.name];
+    if (!tool) {
+      throw { code: -32602, message: `Unknown tool: ${params.name}` };
+    }
+
+    const result = await tool.handler(params.arguments ?? {}, {
+      SERPER_API_KEY: process.env.SERPER_API_KEY,
+    });
+
+    return {
+      content: [{ type: "text", text: result }],
+    };
+  }
+
+  throw { code: -32601, message: `Method not found: ${rpc.method}` };
+}
+
+export async function POST(req: Request) {
+  let rpc: JsonRpcRequest;
+
+  try {
+    rpc = (await req.json()) as JsonRpcRequest;
+  } catch {
+    return jsonResponse(jsonRpcError(null, -32700, "Parse error"), 400);
+  }
+
+  if (!rpc || rpc.jsonrpc !== "2.0" || typeof rpc.method !== "string") {
+    return jsonResponse(jsonRpcError(rpc?.id ?? null, -32600, "Invalid Request"), 400);
+  }
+
+  if (rpc.method === "notifications/initialized") {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+
+  let payload: ReturnType<typeof jsonRpcOk> | ReturnType<typeof jsonRpcError>;
+
+  try {
+    const result = await handleRpc(rpc);
+    payload = jsonRpcOk(rpc.id ?? null, result);
+  } catch (error: unknown) {
+    const err = error as { code?: number; message?: string };
+    payload = jsonRpcError(
+      rpc.id ?? null,
+      err?.code ?? -32603,
+      err?.message ?? String(error),
+    );
+  }
+
+  const accept = req.headers.get("accept") ?? "";
+  const wantsSse =
+    accept.includes("text/event-stream") && !accept.includes("application/json");
+
+  if (wantsSse) {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(
+          encoder.encode(`event: message\ndata: ${JSON.stringify(payload)}\n\n`),
+        );
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      status: 200,
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
-        "Access-Control-Allow-Origin": "*",
+        ...CORS_HEADERS,
       },
     });
   }
 
-  // Regular JSON — buffer and return
-  const bodyText = await res.text();
-  return new Response(bodyText, {
-    status: res.status,
-    headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "no-store",
-      "Access-Control-Allow-Origin": "*",
+  return jsonResponse(payload);
+}
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const endpoint = `${url.origin}/api/mcp`;
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(
+        encoder.encode(`event: endpoint\ndata: ${endpoint}\n\n`),
+      );
+      controller.close();
     },
   });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      ...CORS_HEADERS,
+    },
+  });
+}
+
+export async function DELETE() {
+  return new Response(null, { status: 200, headers: CORS_HEADERS });
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
