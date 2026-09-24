@@ -1,24 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Karla, Protest_Strike } from "next/font/google";
+import { Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const display = Protest_Strike({
-  weight: "400",
+const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 });
 
-const body = Karla({
+const mono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const hand = Caveat({
-  subsets: ["latin"],
-  variable: "--font-hand",
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -29,14 +23,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f0e4c6",
+  themeColor: "#f5f6f2",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${hand.variable}`}>
+    <html lang="en" className={`${display.variable} ${mono.variable}`}>
       <body>{children}<Analytics /></body>
     </html>
   );
