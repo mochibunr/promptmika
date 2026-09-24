@@ -1,328 +1,290 @@
 import Link from "next/link";
-import Reveal from "@/components/Reveal";
+import { Analytics } from "@vercel/analytics/react";
 import { LiveTerminal } from "@/components/LiveTerminal";
-import { CmdPalette } from "@/components/CmdPalette";
 import { CopyUrl, MCPUrl } from "@/components/MCPUrl";
 
 const PACKS = [
-  ["load_contract", "Start here", "Design language, policy digest, and skill contract."],
-  ["load_frontend_design", "Build the interface", "Frontend craft, responsive rules, anti-slop guidance, and DESIGN.md."],
-  ["load_design_systems", "Pick an art direction", "58-style catalog, selection rules, and implementation references."],
-  ["load_horizontal_craft", "Polish the details", "Typography, color, motion, accessibility, icons, forms, and UX laws."],
-  ["load_backend_api", "Shape the backend", "Backend patterns, API contracts, and integration guidance."],
-  ["load_security", "Break it before users do", "Nine vulnerability catalogs across language families."],
-  ["load_testing", "Prove it works", "Unit, integration, e2e, mocking, and coverage strategy."],
-  ["load_state_management", "Control state", "Redux, Zustand, Jotai, signals, persistence, and tradeoffs."],
-  ["load_systems_devops", "Ship the system", "Architecture, builds, DevOps, performance, and interop."],
-  ["load_context_engine", "Stay coherent", "Long-session context, iteration loops, and quality gates."],
-  ["load_token_efficiency", "Spend context wisely", "Compression, selective loading, and self-review."],
-  ["load_creative_writing", "Write with intent", "Narrative, prose, tone, and style."],
-  ["load_specialized_pages", "Use page recipes", "Landing pages, portfolios, prototypes, decks, tools, and more."],
+  ["load_contract", "Start every session with the operating contract."],
+  ["load_frontend_design", "Frontend systems, responsive behavior, interaction, and design quality."],
+  ["load_design_systems", "58 visual systems with selection rules and implementation guidance."],
+  ["load_horizontal_craft", "Typography, motion, color, icons, accessibility, forms, and UX laws."],
+  ["load_backend_api", "Backend patterns, API design, and integration contracts."],
+  ["load_security", "Nine vulnerability catalogs across language families."],
+  ["load_testing", "Unit, integration, e2e, mocking, and coverage strategy."],
+  ["load_state_management", "Redux, Zustand, Jotai, signals, persistence, and tradeoffs."],
+  ["load_systems_devops", "Architecture, builds, DevOps, performance, and interop."],
+  ["load_context_engine", "Long-session context, iteration loops, and quality gates."],
+  ["load_token_efficiency", "Selective loading, compression, and self-review."],
+  ["load_creative_writing", "Narrative, tone, prose, and style references."],
+  ["load_specialized_pages", "Landing pages, portfolios, prototypes, decks, tools, and more."],
 ] as const;
 
-const TOOL_GROUPS = [
-  {
-    eyebrow: "orient",
-    title: "Context & references",
-    tools: [
-      ["promptmika_info", "See server capabilities, version, packs, tools, and reference count."],
-      ["get_context", "Describe the task; PromptMika recommends the smallest useful context set."],
-      ["search_references", "Search the embedded knowledge base by topic."],
-      ["inspect_reference", "Preview headings, stats, and metadata before loading a large file."],
-      ["load_reference", "Load exactly one reference with paging."],
-      ["list_references", "List the whole embedded reference shelf."],
-      ["load_claude_policy", "Load the compact policy or the full version only when needed."],
-    ],
-  },
-  {
-    eyebrow: "research",
-    title: "Web & extraction",
-    tools: [
-      ["web_search", "Search the web with free-first fallbacks."],
-      ["web_fetch", "Fetch raw, text, Markdown, links, or JSON."],
-      ["web_curl", "Inspect headers, redirects, cookies, timing, and response bodies."],
-      ["web_scrape", "Use PromptMika's multi-strategy scraper."],
-      ["browser_scrape", "Try Jina, cache, then direct extraction for difficult pages."],
-      ["web_crawl", "Crawl politely with depth, domain, robots, and rate controls."],
-      ["web_batch_fetch", "Fetch up to ten URLs in one guarded call."],
-      ["extract_html", "Turn supplied HTML into text, Markdown, links, or a structural summary."],
-      ["compare_extractions", "Compare raw, text, and Markdown output before choosing one."],
-    ],
-  },
-  {
-    eyebrow: "verify",
-    title: "Debug & build",
-    tools: [
-      ["browser_verify", "Check deployed-page status, metadata, H1s, viewport, alt coverage, and links."],
-      ["debug_website", "Diagnose markup, HTTP behavior, common error signatures, and page structure."],
-      ["debug_screenshot", "Check screenshot readiness and capture dimensions without pretending pixels were rendered."],
-      ["security_scan", "Scan supplied source for suspicious patterns and actionable fixes."],
-      ["generate_scaffold", "Generate a secure project scaffold with build instructions."],
-      ["list_web_templates", "List web-oriented recipes in the knowledge base."],
-      ["search_web_templates", "Find page recipes by purpose or style."],
-      ["load_web_template", "Load one selected template recipe."],
-    ],
-  },
+const UTILITIES = [
+  ["get_context", "Route a task to the smallest useful context set."],
+  ["search_references", "Search the embedded knowledge base by topic."],
+  ["inspect_reference", "Inspect headings, metadata, and size before loading."],
+  ["web_search", "Search the web through PromptMika's free-first cascade."],
+  ["web_fetch", "Fetch URLs as text, Markdown, JSON, links, or raw response."],
+  ["web_crawl", "Crawl sites with depth, robots, and domain controls."],
+  ["browser_verify", "Verify a deployment's status, metadata, structure, and accessibility-adjacent signals."],
+  ["debug_website", "Diagnose response behavior, markup, links, and common failure signatures."],
+  ["security_scan", "Scan supplied source for security issues and fixes."],
+  ["generate_scaffold", "Generate secure project scaffolds with build instructions."],
 ] as const;
 
-function Burst() {
-  const points: string[] = [];
-  for (let i = 0; i < 28; i++) {
-    const radius = i % 2 === 0 ? 63 : 45;
-    const angle = (Math.PI * i) / 14 - Math.PI / 2;
-    points.push(`${65 + radius * Math.cos(angle)},${65 + radius * Math.sin(angle)}`);
-  }
-
+function WorkflowScene() {
   return (
-    <svg className="hero-burst" viewBox="0 0 130 130" aria-label="37 tools">
-      <polygon points={points.join(" ")} />
-      <text x="65" y="57" textAnchor="middle">37</text>
-      <text x="65" y="80" textAnchor="middle">TOOLS</text>
-    </svg>
+    <div className="workflow-scene" aria-label="PromptMika workflow">
+      <div className="scene-topbar">
+        <span className="scene-brand">promptmika</span>
+        <span className="scene-state"><i /> connected</span>
+      </div>
+
+      <div className="scene-grid">
+        <div className="scene-input">
+          <span className="scene-label">TASK</span>
+          <p>Build a fast, accessible SaaS landing page with a distinctive visual system.</p>
+          <div className="scene-command">get_context</div>
+        </div>
+
+        <div className="scene-route">
+          <span className="scene-label">ROUTE</span>
+          <div className="route-chip active">load_frontend_design</div>
+          <div className="route-chip">load_design_systems</div>
+          <div className="route-chip">load_testing</div>
+        </div>
+
+        <div className="scene-output">
+          <span className="scene-label">VERIFY</span>
+          <div className="metric-row"><span>references loaded</span><strong>8</strong></div>
+          <div className="metric-row"><span>security findings</span><strong>0 high</strong></div>
+          <div className="metric-row"><span>design styles available</span><strong>58</strong></div>
+          <div className="metric-row"><span>tools available</span><strong>37</strong></div>
+        </div>
+      </div>
+
+      <div className="scene-connector c1" />
+      <div className="scene-connector c2" />
+
+      <div className="scene-note note-a">
+        <span>01</span>
+        route first
+      </div>
+      <div className="scene-note note-b">
+        <span>02</span>
+        load selectively
+      </div>
+      <div className="scene-note note-c">
+        <span>03</span>
+        verify the result
+      </div>
+    </div>
   );
 }
 
 export default function Home() {
   return (
     <>
-      <nav className="nav" aria-label="Primary">
-        <div className="nav-pill">
-          <Link className="brand" href="/">
-            <span className="brand-mark" aria-hidden="true" />
-            PromptMika
-          </Link>
-          <div className="nav-links">
-            <a href="#why">Why</a>
-            <a href="#packs">Packs</a>
-            <a href="#tools">Tools</a>
-            <Link href="/design">58 styles</Link>
-            <Link href="/connect" className="nav-cta">Connect</Link>
-          </div>
+      <nav className="top-nav">
+        <Link href="/" className="logo">
+          <span className="logo-mark">P</span>
+          <span>PromptMika</span>
+        </Link>
+        <div className="nav-center">
+          <a href="#workflow">Workflow</a>
+          <a href="#packs">Packs</a>
+          <a href="#tools">Tools</a>
+          <Link href="/design">Design systems</Link>
         </div>
+        <Link href="/connect" className="nav-button">Connect MCP</Link>
       </nav>
 
       <main>
-        <header className="hero hero-v2">
-          <div className="hero-field" aria-hidden="true" />
-          <div className="container hero-grid hero-grid-v2">
-            <div className="hero-copy hero-copy-v2">
-              <Reveal>
-                <p className="eyebrow"><span className="led" /> context for coding agents, cut by hand</p>
-                <h1>
-                  Give your agent
-                  <span className="hero-cut"> better taste,</span>
-                  <span className="hero-outline"> better context.</span>
-                </h1>
-                <p className="hero-deck">
-                  PromptMika is one MCP endpoint with curated design, engineering, security,
-                  debugging, and web-research references. Load what the task needs. Leave the rest out.
-                </p>
+        <section className="hero-shell">
+          <div className="hero-copy">
+            <div className="eyebrow">MCP CONTEXT SYSTEM / V3.6</div>
+            <h1>Give coding agents the right context before they build.</h1>
+            <p className="hero-lede">
+              PromptMika turns a large design and engineering library into task-specific context.
+              Search, route, load, research, debug, and verify through one MCP endpoint.
+            </p>
 
-                <div className="cta-row">
-                  <Link href="/connect" className="btn btn-primary">Connect PromptMika</Link>
-                  <Link href="/design" className="btn btn-ghost">Browse 58 design styles</Link>
-                </div>
-
-                <div className="hero-endpoint">
-                  <span className="endpoint-kicker">MCP endpoint</span>
-                  <div className="endpoint-box">
-                    <span className="endpoint-url"><MCPUrl /></span>
-                    <CopyUrl />
-                  </div>
-                </div>
-              </Reveal>
-              <div className="burst-anchor"><Burst /></div>
+            <div className="hero-actions">
+              <Link href="/connect" className="primary-action">Connect PromptMika</Link>
+              <Link href="/design" className="secondary-action">Explore 58 design systems</Link>
             </div>
 
-            <Reveal className="hero-stage hero-stage-v2" delay={120}>
-              <span className="tape tl" aria-hidden="true" />
-              <LiveTerminal />
-              <span className="tape br" aria-hidden="true" />
-              <p className="term-caption">live shelf · the server lists itself</p>
-            </Reveal>
+            <div className="endpoint-inline">
+              <span>endpoint</span>
+              <code><MCPUrl /></code>
+              <CopyUrl />
+            </div>
+
+            <div className="hero-metrics">
+              <div><strong>37</strong><span>tools</span></div>
+              <div><strong>13</strong><span>knowledge packs</span></div>
+              <div><strong>58</strong><span>design systems</span></div>
+              <div><strong>162+</strong><span>references</span></div>
+            </div>
           </div>
-        </header>
 
-        <section className="ticker ticker-v2" aria-label="PromptMika stats">
-          <div className="ticker-track">
-            <div className="ticker-half">
-              <span>37 tools <i>✷</i></span>
-              <span>13 packs <i>✷</i></span>
-              <span>58 design styles <i>✷</i></span>
-              <span>162+ references <i>✷</i></span>
-              <span>one endpoint <i>✷</i></span>
-              <span>SSRF guarded <i>✷</i></span>
-            </div>
-            <div className="ticker-half" aria-hidden="true">
-              <span>37 tools <i>✷</i></span>
-              <span>13 packs <i>✷</i></span>
-              <span>58 design styles <i>✷</i></span>
-              <span>162+ references <i>✷</i></span>
-              <span>one endpoint <i>✷</i></span>
-              <span>SSRF guarded <i>✷</i></span>
-            </div>
+          <div className="hero-product">
+            <WorkflowScene />
           </div>
         </section>
 
-        <section className="section philosophy-band" id="why">
-          <div className="container philosophy-grid">
-            <Reveal className="philosophy-lead">
-              <span className="section-label">the premise</span>
-              <h2 className="section-title">Stop making the model guess.</h2>
-              <p className="section-sub">
-                PromptMika turns a giant reference library into selective context. It searches first,
-                recommends what matters, then loads only the relevant material.
-              </p>
-            </Reveal>
+        <section className="proof-strip" id="workflow">
+          <div className="proof-copy">
+            <span className="section-kicker">WORKFLOW</span>
+            <h2>Context is treated like part of the build system.</h2>
+            <p>
+              PromptMika does not dump an entire library into the model. It finds the useful slice,
+              keeps the task grounded in the right references, then exposes verification tools for the result.
+            </p>
+          </div>
 
-            <Reveal className="philosophy-proof" delay={100}>
-              <CmdPalette />
-            </Reveal>
-
-            <Reveal className="margin-scrap" delay={180}>
-              <strong>01</strong>
-              <span>ask</span>
-              <p>Describe the actual task, not a vague category.</p>
-            </Reveal>
-            <Reveal className="margin-scrap offset" delay={240}>
-              <strong>02</strong>
-              <span>route</span>
-              <p><code>get_context</code> points at the smallest useful set of packs and references.</p>
-            </Reveal>
-            <Reveal className="margin-scrap dark" delay={300}>
-              <strong>03</strong>
-              <span>verify</span>
-              <p>Use the debug, web, test, and security tools against the result.</p>
-            </Reveal>
+          <div className="workflow-steps">
+            <article>
+              <span>01</span>
+              <h3>Route</h3>
+              <p><code>get_context</code> maps the task to relevant packs and references.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Load</h3>
+              <p>Only the selected material enters the context window. Large references stay pageable.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Research</h3>
+              <p>Search, fetch, crawl, scrape, and inspect outside material without leaving the MCP workflow.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>Verify</h3>
+              <p>Use deployment checks, security scans, debugging, and extraction comparison before shipping.</p>
+            </article>
           </div>
         </section>
 
-        <section className="section design-band">
-          <div className="container design-band-grid">
-            <Reveal className="design-poster">
-              <p className="poster-kicker">DESIGN.md / v8</p>
-              <div className="poster-number">58</div>
-              <p className="poster-word">visual languages</p>
-              <span className="poster-note">one dominant style per page ↗</span>
-            </Reveal>
+        <section className="system-section" id="packs">
+          <div className="section-heading">
+            <div>
+              <span className="section-kicker">KNOWLEDGE LAYER</span>
+              <h2>Thirteen packs. Load by domain.</h2>
+            </div>
+            <p>
+              Packs are curated entry points, not generic categories. Each one groups references that belong together.
+            </p>
+          </div>
 
-            <Reveal className="design-copy" delay={120}>
-              <span className="section-label">not a moodboard dump</span>
-              <h2 className="section-title">A style selector with rules.</h2>
-              <p className="section-sub">
-                Paper-Cut Editorial, Pixel Pastoral, Neo-Terminal Community, Spatial SaaS Workbench,
-                Tactile Menu Restaurant, Immersive App Showcase, and fifty-two more. Each style defines
-                composition, type, imagery, motion, responsive behavior, accessibility risks, and failure modes.
-              </p>
-              <div className="signature-row" aria-label="Paper-Cut Editorial signature">
-                <span>oversized type</span>
-                <span>warm paper</span>
-                <span>earthy green</span>
-                <span>burnt orange</span>
-                <span>controlled imperfection</span>
+          <div className="pack-table">
+            {PACKS.map(([name, desc], index) => (
+              <div className="pack-row" key={name}>
+                <span className="row-index">{String(index + 1).padStart(2, "0")}</span>
+                <code>{name}</code>
+                <p>{desc}</p>
+                <span className="row-arrow">↗</span>
               </div>
-              <Link href="/design" className="ink-link">Open the design catalog ↗</Link>
-            </Reveal>
+            ))}
           </div>
         </section>
 
-        <section className="section" id="packs">
-          <div className="container">
-            <Reveal>
-              <span className="section-label">thirteen drawers</span>
-              <h2 className="section-title">Load a domain, not the entire library.</h2>
-              <p className="section-sub">
-                Packs are the fast path. They bundle related references under a controlled budget,
-                while large files stay pageable instead of flooding context.
-              </p>
-            </Reveal>
+        <section className="product-evidence">
+          <div className="evidence-copy">
+            <span className="section-kicker">DESIGN SYSTEM</span>
+            <h2>58 visual systems with actual implementation rules.</h2>
+            <p>
+              Not a gallery of screenshots. Each style includes selection criteria, composition rules, typography,
+              palette, media treatment, responsive behavior, accessibility risks, signatures, and failure modes.
+            </p>
+            <Link href="/design" className="text-link">Browse the design catalog →</Link>
+          </div>
 
-            <div className="pack-ledger">
-              {PACKS.map(([name, kicker, desc], index) => (
-                <Reveal key={name} delay={(index % 4) * 45}>
-                  <article className="pack-ledger-row">
-                    <span className="ledger-no">{String(index + 1).padStart(2, "0")}</span>
-                    <div>
-                      <span className="ledger-kicker">{kicker}</span>
-                      <h3>{name}</h3>
-                    </div>
-                    <p>{desc}</p>
-                    <span className="ledger-arrow">↗</span>
-                  </article>
-                </Reveal>
-              ))}
+          <div className="style-workbench">
+            <div className="style-workbench-top">
+              <span>STYLE SELECTOR</span>
+              <span>58 AVAILABLE</span>
             </div>
-          </div>
-        </section>
-
-        <section className="section tools-band" id="tools">
-          <div className="container">
-            <Reveal>
-              <span className="section-label">the instruments</span>
-              <h2 className="section-title">Twenty-four utilities. Thirteen packs.</h2>
-              <p className="section-sub">
-                The utility layer handles context routing, web work, extraction, verification, debugging,
-                templates, security, and scaffolding. The pack layer handles deep domain knowledge.
-              </p>
-            </Reveal>
-
-            <div className="tool-columns">
-              {TOOL_GROUPS.map((group, groupIndex) => (
-                <Reveal key={group.title} delay={groupIndex * 90} className="tool-sheet">
-                  <div className="tool-sheet-head">
-                    <span>{group.eyebrow}</span>
-                    <strong>{String(groupIndex + 1).padStart(2, "0")}</strong>
-                  </div>
-                  <h3>{group.title}</h3>
-                  <div className="tool-sheet-list">
-                    {group.tools.map(([name, desc]) => (
-                      <div className="tool-line" key={name}>
-                        <code>{name}</code>
-                        <p>{desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section connect-section" id="connect">
-          <div className="container">
-            <Reveal>
-              <div className="connect-poster">
-                <div>
-                  <span className="section-label light-label">one endpoint</span>
-                  <h2>Paste it once.<br />Use the whole shelf.</h2>
-                  <p>
-                    Stateless JSON-RPC over HTTP/SSE. Works with clients that support remote MCP servers.
-                  </p>
-                </div>
-                <div className="connect-actions">
-                  <div className="endpoint-box endpoint-dark">
-                    <span className="endpoint-url"><MCPUrl /></span>
-                    <CopyUrl />
-                  </div>
-                  <Link href="/connect" className="btn btn-primary">Setup guide</Link>
-                </div>
+            <div className="style-current">
+              <span className="style-index">45</span>
+              <div>
+                <strong>Spatial SaaS Workbench</strong>
+                <p>workflow-first / product evidence / calm technical composition</p>
               </div>
-            </Reveal>
+            </div>
+            <div className="style-bars">
+              <div><span>product fit</span><i style={{ width: "92%" }} /></div>
+              <div><span>interaction fit</span><i style={{ width: "90%" }} /></div>
+              <div><span>accessibility fit</span><i style={{ width: "90%" }} /></div>
+              <div><span>content density</span><i style={{ width: "82%" }} /></div>
+            </div>
+            <div className="style-alt">
+              <span>alternates</span>
+              <code>dreamy-indie-software</code>
+              <code>pixel-humanist-agency</code>
+              <code>neo-future-aigc</code>
+            </div>
+          </div>
+        </section>
+
+        <section className="tools-section" id="tools">
+          <div className="section-heading inverse">
+            <div>
+              <span className="section-kicker">UTILITY LAYER</span>
+              <h2>Research, inspect, debug, and build.</h2>
+            </div>
+            <p>
+              Twenty-four utility tools sit beside the thirteen packs. The most useful ones are shown here.
+            </p>
+          </div>
+
+          <div className="utility-grid">
+            {UTILITIES.map(([name, desc], index) => (
+              <article key={name}>
+                <span className="utility-no">{String(index + 1).padStart(2, "0")}</span>
+                <code>{name}</code>
+                <p>{desc}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="terminal-section">
+          <div className="terminal-copy">
+            <span className="section-kicker">LIVE SERVER</span>
+            <h2>The shelf can list itself.</h2>
+            <p>
+              The homepage calls the same MCP endpoint clients use, so the reference list is coming from the actual server.
+            </p>
+          </div>
+          <LiveTerminal />
+        </section>
+
+        <section className="connect-section">
+          <div>
+            <span className="section-kicker">ONE ENDPOINT</span>
+            <h2>Connect once. Use the whole system.</h2>
+          </div>
+          <div className="connect-panel">
+            <code><MCPUrl /></code>
+            <CopyUrl />
+            <Link href="/connect" className="primary-action">Open setup guide</Link>
           </div>
         </section>
       </main>
 
-      <footer className="footer footer-v2">
-        <div className="container footer-v2-inner">
-          <div className="footer-wordmark">Prompt<span>Mika</span></div>
-          <p>v3.6.0 · 37 tools · 58 design styles · Vercel Analytics enabled</p>
-          <div className="footer-links">
-            <Link href="/design">design</Link>
-            <Link href="/guide">guide</Link>
-            <Link href="/connect">connect</Link>
-          </div>
+      <footer className="site-footer">
+        <div className="logo"><span className="logo-mark">P</span><span>PromptMika</span></div>
+        <p>v3.6.0 · 37 tools · 13 packs · 58 design systems</p>
+        <div>
+          <Link href="/design">Design</Link>
+          <Link href="/guide">Guide</Link>
+          <Link href="/connect">Connect</Link>
         </div>
       </footer>
+
+      <Analytics />
     </>
   );
 }
