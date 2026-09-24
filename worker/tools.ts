@@ -363,72 +363,125 @@ export const TOOLS: Record<string, ToolDef> = {
   },
 
   web_batch_fetch: {
-    description: "Fetch multiple public URLs in one call with PromptMika's SSRF guard. Returns status, timing, final URL, and extracted content for each target.",
+    description: "Fetch multiple public URLs concurrently with retries, extraction, redirect/truncation metadata, and SSRF protection. Good for comparing docs or collecting a small research set in one call.",
     inputSchema: {
       type: "object",
       properties: {
-        urls: prop("array", "URLs to fetch (max 10)", { items: { type: "string" } }),
-        extract: prop("string", "Extraction mode", { enum: ["raw", "text", "markdown"], default: "text" }),
-        max_bytes_each: prop("number", "Maximum bytes per URL (default 200000, max 500000)", { default: 200000 }),
+        urls: prop("array", "URLs to fetch (max 12)", { items: { type: "string" } }),
+        extract: prop("string", "Extraction mode", { enum: ["auto", "raw", "text", "markdown", "links", "json"], default: "auto" }),
+        max_bytes_each: prop("number", "Maximum captured bytes per URL (default 250000, max 750000)", { default: 250000 }),
+        timeout_ms: prop("number", "Per-URL total timeout in ms (default 18000, max 30000)", { default: 18000 }),
+        retries: prop("number", "Retries for temporary/network failures (default 1, max 2)", { default: 1 }),
+        concurrency: prop("number", "Parallel requests (default 4, max 6)", { default: 4 }),
+        include_headers: prop("boolean", "Include response headers in each result", { default: false }),
       },
       required: ["urls"],
     },
     handler: async (args) => {
-      const urls = (Array.isArray(args.urls) ? args.urls : []).slice(0, 10).map(String);
-      const extract = String(args.extract ?? "text");
-      const maxBytes = Math.max(1000, Math.min(Number(args.max_bytes_each ?? 200000), 500000));
-      const results = await Promise.all(urls.map(async (url) => {
-        try {
-          const res = await fetchGuarded(url, { maxBytes, timeoutMs: 20_000 });
-          let content = res.text;
-          if (extract === "text") content = htmlToText(content);
-          if (extract === "markdown") content = htmlToMarkdown(content);
-          return { url, ok: true, status: res.status, final_url: res.finalUrl, timing_ms: res.timingMs, bytes: res.bytes, content: content.slice(0, 30000) };
-        } catch (e) {
-          return { url, ok: false, error: (e as Error).message };
-        }
-      }));
+      const urls = (Array.isArray(args.urls) ? args.urls : []).slice(0, 12).map(String);
+      const extract = String(args.extract ?? "auto");
+      const maxBytes = Math.max(1000, Math.min(Number(args.max_bytes_each ?? 250000), 750000));
+      const timeoutMs = Math.max(1000, Math.min(Number(args.timeout_ms ?? 18000), 30000));
+      const retries = Math.max(0, Math.min(Number(args.retries ?? 1), 2));
+      const concurrency = Math.max(1, Math.min(Number(args.concurrency ?? 4), 6));
+      const includeHeaders = Boolean(args.include_headers ?? false);
+      const results: unknown[] = [];
+
+      for (let i = 0; i < urls.length; i += concurrency) {
+        const chunk = urls.slice(i, i + concurrency);
+        const chunkResults = await Promise.all(chunk.map(async (url) => {
+          try {
+            const res = await fetchWithRetry(url, { maxBytes, timeoutMs }, retries);
+            let mode = extract;
+            if (mode === "auto") {
+              if (res.contentType.includes("json")) mode = "json";
+              else if (res.contentType.includes("html") || /<html\b/i.test(res.text)) mode = "markdown";
+              else mode = "text";
+            }
+
+            let content = res.text;
+            if (looksBinaryContentType(res.contentType)) content = "(binary response body omitted)";
+            else if (mode === "text") content = htmlToText(content);
+            else if (mode === "markdown") content = htmlToMarkdown(content);
+            else if (mode === "links") {
+              try { content = extractLinks(content, new URL(res.finalUrl)).join("\n"); } catch { content = ""; }
+            } else if (mode === "json") {
+              try { content = JSON.stringify(JSON.parse(content), null, 2); } catch {}
+            }
+
+            const quality = mode === "markdown" ? extractionQuality(content, res.text) : undefined;
+            return {
+              url,
+              ok: res.ok,
+              status: res.status,
+              final_url: res.finalUrl,
+              timing_ms: res.timingMs,
+              bytes: res.bytes,
+              content_length: res.contentLength ?? null,
+              content_type: res.contentType,
+              charset: res.charset,
+              redirects: res.redirectChain,
+              truncated: res.truncated,
+              extract_mode: mode,
+              quality,
+              headers: includeHeaders ? res.headers : undefined,
+              content: content.slice(0, 40000),
+            };
+          } catch (error) {
+            return { url, ok: false, error: (error as Error).message };
+          }
+        }));
+        results.push(...chunkResults);
+      }
       return JSON.stringify(results, null, 2);
     },
   },
 
   extract_html: {
-    description: "Extract useful content from supplied HTML without making a network request. Supports text, markdown, links, title, or a combined structural summary.",
+    description: "Extract useful structure from supplied HTML without a network request: clean text/Markdown, plain or structured links, metadata, title, or a compact structural summary with extraction quality.",
     inputSchema: {
       type: "object",
       properties: {
         html: prop("string", "HTML source"),
-        mode: prop("string", "Extraction mode", { enum: ["text", "markdown", "links", "title", "summary"], default: "markdown" }),
-        base_url: prop("string", "Base URL used to resolve relative links"),
+        mode: prop("string", "Extraction mode", { enum: ["text", "markdown", "links", "structured_links", "metadata", "title", "summary"], default: "markdown" }),
+        base_url: prop("string", "Base URL used to resolve relative links/canonical URLs"),
+        max_chars: prop("number", "Maximum output characters for text/markdown (default 60000, max 120000)", { default: 60000 }),
       },
       required: ["html"],
     },
     handler: async (args) => {
       const html = String(args.html);
       const mode = String(args.mode ?? "markdown");
-      if (mode === "text") return htmlToText(html);
-      if (mode === "markdown") return htmlToMarkdown(html);
-      if (mode === "title") return (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim();
-      if (mode === "links") {
-        const base = new URL(String(args.base_url ?? "https://example.invalid/"));
-        return extractLinks(html, base).join("\n");
-      }
+      const maxChars = Math.max(500, Math.min(Number(args.max_chars ?? 60000), 120000));
+      const base = new URL(String(args.base_url ?? "https://example.invalid/"));
+
+      if (mode === "text") return htmlToText(html).slice(0, maxChars);
+      if (mode === "markdown") return htmlToMarkdown(html).slice(0, maxChars);
+      if (mode === "title") return extractPageMetadata(html, base).title;
+      if (mode === "metadata") return JSON.stringify(extractPageMetadata(html, base), null, 2);
+      if (mode === "links") return extractLinks(html, base).join("\n");
+      if (mode === "structured_links") return JSON.stringify(extractLinkRecords(html, base), null, 2);
+
       const text = htmlToText(html);
+      const markdown = htmlToMarkdown(html);
       return JSON.stringify({
-        title: (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim(),
+        metadata: extractPageMetadata(html, base),
         characters: html.length,
         text_characters: text.length,
+        markdown_characters: markdown.length,
         headings: (html.match(/<h[1-6]\b/gi) ?? []).length,
         links: (html.match(/<a\b/gi) ?? []).length,
         images: (html.match(/<img\b/gi) ?? []).length,
         forms: (html.match(/<form\b/gi) ?? []).length,
-        text_preview: text.slice(0, 3000)
+        scripts: (html.match(/<script\b/gi) ?? []).length,
+        extraction_quality: extractionQuality(markdown, html),
+        text_preview: text.slice(0, 3000),
       }, null, 2);
     },
   },
 
   compare_extractions: {
-    description: "Compare PromptMika's raw, text, and markdown extraction of a URL or supplied HTML. Useful for deciding which representation preserves the important content best.",
+    description: "Compare raw HTML, cleaned text, and Markdown extraction for a URL or supplied HTML. Reports quality signals and recommends the representation that preserves useful content with less context noise.",
     inputSchema: {
       type: "object",
       properties: {
@@ -439,38 +492,80 @@ export const TOOLS: Record<string, ToolDef> = {
     handler: async (args) => {
       let html = typeof args.html === "string" ? args.html : "";
       let source = "provided HTML";
+      let fetchMeta: unknown = undefined;
       if (!html) {
         if (!args.url) return "Provide either url or html.";
-        const res = await fetchGuarded(String(args.url), { maxBytes: 600_000, timeoutMs: 20_000 });
+        const res = await fetchWithRetry(String(args.url), { maxBytes: 650000, timeoutMs: 20000 }, 1);
         html = res.text;
         source = res.finalUrl;
+        fetchMeta = {
+          status: res.status,
+          content_type: res.contentType,
+          bytes: res.bytes,
+          truncated: res.truncated,
+          redirects: res.redirectChain,
+          timing_ms: res.timingMs,
+        };
       }
+
       const text = htmlToText(html);
       const markdown = htmlToMarkdown(html);
+      const quality = extractionQuality(markdown, html);
+      const textWords = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const markdownWords = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
+      const recommendation = quality.score >= 45 && markdownWords >= Math.max(30, textWords * 0.55)
+        ? "markdown"
+        : "text";
+
       return JSON.stringify({
         source,
+        fetch: fetchMeta,
+        metadata: extractPageMetadata(html, source === "provided HTML" ? undefined : new URL(source)),
         raw: { characters: html.length, preview: html.slice(0, 1800) },
-        text: { characters: text.length, preview: text.slice(0, 3000) },
-        markdown: { characters: markdown.length, preview: markdown.slice(0, 3000) },
-        recommendation: markdown.length >= text.length * 0.55 ? "markdown" : "text"
+        text: { characters: text.length, words: textWords, preview: text.slice(0, 3000) },
+        markdown: { characters: markdown.length, words: markdownWords, quality, preview: markdown.slice(0, 3000) },
+        recommendation,
       }, null, 2);
     },
   },
 
   web_scrape: {
-    description: "Scrape a public URL using PromptMika's multi-strategy extraction chain. Alias of browser_scrape for clients that expect the web_scrape name.",
+    description: "Smart page scraper: direct fetch first for speed/privacy, then rendered Jina Reader fallback when extraction is thin or JS-heavy. Reports extraction quality and every attempted strategy.",
     inputSchema: {
       type: "object",
       properties: {
-        url: prop("string", "URL to scrape"),
-        strategies: prop("array", "Strategy order", { items: { type: "string", enum: ["jina", "google-cache", "direct"] }, default: ["jina", "google-cache", "direct"] }),
+        url: prop("string", "Public URL to scrape"),
+        strategies: prop("array", "Strategy order. google-cache is accepted only as a deprecated compatibility value.", { items: { type: "string", enum: ["direct", "jina", "google-cache"] }, default: ["direct", "jina"] }),
+        max_chars: prop("number", "Maximum extracted characters (default 100000, max 160000)", { default: 100000 }),
+        no_cache: prop("boolean", "Ask Jina Reader not to cache/track the request (default true)", { default: true }),
+        jina_engine: prop("string", "Jina rendering engine", { enum: ["default", "direct", "cf-browser-rendering"], default: "default" }),
+        target_selector: prop("string", "Optional CSS selector to keep in Jina Reader"),
+        remove_selector: prop("string", "Optional CSS selector(s) to remove in Jina Reader"),
       },
       required: ["url"],
     },
     handler: async (args) => {
-      const strategies = (args.strategies as ("jina" | "google-cache" | "direct")[]) ?? undefined;
-      const result = await scrapeUrl(String(args.url), strategies ? { strategies } : {});
-      return `${result.title ? `# ${result.title}\n\n` : ""}${result.text}\n\n---\nSource: ${result.source} | HTTP ${result.status} | ${result.timingMs}ms`;
+      const strategies = Array.isArray(args.strategies) ? args.strategies.map(String) as ("direct" | "jina" | "google-cache")[] : undefined;
+      const result = await scrapeUrl(String(args.url), {
+        strategies,
+        maxChars: Number(args.max_chars ?? 100000),
+        noCache: Boolean(args.no_cache ?? true),
+        jinaEngine: String(args.jina_engine ?? "default") as "default" | "direct" | "cf-browser-rendering",
+        targetSelector: args.target_selector ? String(args.target_selector) : undefined,
+        removeSelector: args.remove_selector ? String(args.remove_selector) : undefined,
+      });
+      return [
+        result.title ? "# " + result.title + "\n" : "",
+        result.text,
+        "\n---",
+        "Source: " + result.source,
+        "Final URL: " + result.finalUrl,
+        "HTTP: " + result.status,
+        "Time: " + result.timingMs + "ms",
+        "Quality: " + result.quality.score + "/100 (" + result.quality.words + " words)",
+        "Truncated: " + result.truncated,
+        "Attempts: " + JSON.stringify(result.attempts),
+      ].filter(Boolean).join("\n");
     },
   },
 
