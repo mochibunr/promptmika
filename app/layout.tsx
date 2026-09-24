@@ -25,7 +25,7 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "PromptMika — knowledge packs for coding agents",
   description:
-    "A playful, reference-driven MCP server for coding agents: 37 tools, 13 knowledge packs, 58 design styles, and 25 read-only web template studies.",
+    "A playful, reference-driven MCP server for coding agents: 39 tools, 13 knowledge packs, 58 design styles, and 25 read-only web template studies.",
 };
 
 export const viewport: Viewport = {
