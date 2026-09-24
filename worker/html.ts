@@ -100,3 +100,108 @@ export function isCloudflareChallenge(text: string): boolean {
     (text.includes("security verification") || text.includes("checking your browser") ||
      text.includes("challenge-platform") || text.includes("cf_chl_opt"));
 }
+
+
+export interface LinkRecord {
+  url: string;
+  text: string;
+  rel: string[];
+  nofollow: boolean;
+}
+
+export interface PageMetadata {
+  title: string;
+  description: string;
+  canonical: string;
+  lang: string;
+  robots: string;
+  ogTitle: string;
+  ogDescription: string;
+}
+
+function readAttr(tag: string, name: string): string {
+  const safe = name.replace(/[.*+?^$(){}|[\]\\]/g, "\\$&");
+  const re = new RegExp("\\b" + safe + "\\s*=\\s*[\"']([^\"']*)[\"']", "i");
+  return tag.match(re)?.[1] ?? "";
+}
+
+function readMeta(html: string, key: string): string {
+  const safe = key.replace(/[.*+?^$(){}|[\]\\]/g, "\\$&");
+  const a = html.match(new RegExp("<meta[^>]+(?:name|property)=[\"']" + safe + "[\"'][^>]+content=[\"']([^\"']*)[\"'][^>]*>", "i"));
+  const b = html.match(new RegExp("<meta[^>]+content=[\"']([^\"']*)[\"'][^>]+(?:name|property)=[\"']" + safe + "[\"'][^>]*>", "i"));
+  return decodeEntities((a?.[1] ?? b?.[1] ?? "").trim());
+}
+
+export function extractPageMetadata(html: string, base?: URL): PageMetadata {
+  const htmlTag = html.match(/<html\b[^>]*>/i)?.[0] ?? "";
+  const rawCanonical =
+    html.match(/<link\b[^>]+rel=[\"'][^\"']*canonical[^\"']*[\"'][^>]+href=[\"']([^\"']+)[\"']/i)?.[1] ??
+    html.match(/<link\b[^>]+href=[\"']([^\"']+)[\"'][^>]+rel=[\"'][^\"']*canonical[^\"']*[\"']/i)?.[1] ??
+    "";
+  let canonical = decodeEntities(rawCanonical).trim();
+  if (canonical && base) {
+    try { canonical = new URL(canonical, base).toString(); } catch {}
+  }
+  return {
+    title: extractTitle(html),
+    description: readMeta(html, "description"),
+    canonical,
+    lang: readAttr(htmlTag, "lang"),
+    robots: readMeta(html, "robots"),
+    ogTitle: readMeta(html, "og:title"),
+    ogDescription: readMeta(html, "og:description"),
+  };
+}
+
+export function extractLinkRecords(html: string, base: URL): LinkRecord[] {
+  const found = new Map<string, LinkRecord>();
+  const re = /<a\b([^>]*)href=[\"']([^\"']+)[\"']([^>]*)>([\s\S]*?)<\/a>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(html)) !== null) {
+    const href = decodeEntities(match[2]).trim();
+    if (!href || href.startsWith("#") || /^(mailto|tel|javascript|data):/i.test(href)) continue;
+    try {
+      const url = new URL(href, base);
+      if (url.protocol !== "http:" && url.protocol !== "https:") continue;
+      url.hash = "";
+      const tag = "<a " + match[1] + " href=\"" + match[2] + "\" " + match[3] + ">";
+      const rel = readAttr(tag, "rel").toLowerCase().split(/\s+/).filter(Boolean);
+      const record = {
+        url: url.toString(),
+        text: decodeEntities(strip(match[4])).replace(/\s+/g, " ").trim(),
+        rel,
+        nofollow: rel.includes("nofollow"),
+      };
+      if (!found.has(record.url)) found.set(record.url, record);
+    } catch {}
+  }
+  return [...found.values()];
+}
+
+export function extractionQuality(markdown: string, html = ""): {
+  score: number;
+  words: number;
+  headings: number;
+  links: number;
+  thin: boolean;
+} {
+  const words = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
+  const headings = (markdown.match(/^#{1,6}\s+/gm) ?? []).length;
+  const links = (markdown.match(/\[[^\]]+\]\([^)]+\)/g) ?? []).length;
+  const visibleChars = strip(cleanHtml(html)).replace(/\s+/g, " ").trim().length;
+  let score = words >= 80 ? 35 : Math.min(35, Math.round(words / 3));
+  score += Math.min(20, headings * 5);
+  score += Math.min(15, links * 2);
+  if (markdown.length >= 1000) score += 20;
+  if (visibleChars > 0 && markdown.length >= visibleChars * 0.2) score += 10;
+  score = Math.max(0, Math.min(100, score));
+  return { score, words, headings, links, thin: words < 60 || markdown.length < 400 };
+}
+
+export function isLikelyJsShell(html: string, markdown?: string): boolean {
+  const extracted = markdown ?? htmlToMarkdown(html);
+  const quality = extractionQuality(extracted, html);
+  const scripts = (html.match(/<script\b/gi) ?? []).length;
+  const shellMarker = /__next|__nuxt|data-reactroot|id=[\"']root[\"']|id=[\"']app[\"']/i.test(html);
+  return quality.thin && (scripts >= 6 || shellMarker);
+}
