@@ -12,7 +12,7 @@ import { registerWebTools } from "./web-crawler";
 export function createServer() {
   const server = new McpServer({
     name: "promptmika",
-    version: "3.5.0",
+    version: "3.6.0",
   });
 
 // ---------------------------------------------------------------------------
@@ -207,7 +207,7 @@ server.tool(
 );
 
 // ---------------------------------------------------------------------------
-// Pack tools — one-call domain bundles (v3.5.0: extracted to pack-tools.ts)
+// Pack tools — one-call domain bundles (v3.6.0: extracted to pack-tools.ts)
 // ---------------------------------------------------------------------------
 
 registerPackTools(server);
