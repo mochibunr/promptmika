@@ -60,7 +60,7 @@ export default function Home() {
               <small>promptmika</small>
             </div>
             <div className="pm-orbit pm-orbit-blue">
-              <strong>37</strong><span>tools</span>
+              <strong>39</strong><span>tools</span>
             </div>
             <div className="pm-orbit pm-orbit-coral">
               <strong>25</strong><span>templates</span>
