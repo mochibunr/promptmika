@@ -130,7 +130,7 @@ export async function scrapeUrl(
 ): Promise<ScrapeResult> {
   assertSafeUrl(rawUrl);
   const maxChars = clampChars(opts.maxChars);
-  const strategies = opts.strategies?.length ? opts.strategies : ["direct", "jina"];
+  const strategies: ScrapeStrategy[] = opts.strategies?.length ? opts.strategies : ["direct", "jina"];
   const attempts: ScrapeAttempt[] = [];
   let fallback: ScrapeResult | null = null;
 
