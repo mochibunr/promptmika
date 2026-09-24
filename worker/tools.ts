@@ -3,7 +3,7 @@
 import { resolveDocument, listReferences, searchReferences } from "./refs";
 import { searchWeb } from "./search";
 import { crawlSite } from "./crawl";
-import { scrapeUrl } from "./scrape";
+import { scrapeUrl, type ScrapeStrategy } from "./scrape";
 import { fetchGuarded, fetchWithRetry, looksBinaryContentType } from "./fetch";
 import { htmlToText, htmlToMarkdown, extractLinks, extractLinkRecords, extractPageMetadata, extractionQuality } from "./html";
 import { PACKS, PACK_FILE_CAP, loadPack } from "./pack";
@@ -545,7 +545,7 @@ export const TOOLS: Record<string, ToolDef> = {
       required: ["url"],
     },
     handler: async (args) => {
-      const strategies = Array.isArray(args.strategies) ? args.strategies.map(String) as ("direct" | "jina" | "google-cache")[] : undefined;
+      const strategies: ScrapeStrategy[] | undefined = Array.isArray(args.strategies) ? args.strategies.map(String) as ScrapeStrategy[] : undefined;
       const result = await scrapeUrl(String(args.url), {
         strategies,
         maxChars: Number(args.max_chars ?? 100000),
@@ -1025,8 +1025,8 @@ export const TOOLS: Record<string, ToolDef> = {
       required: ["url"],
     },
     handler: async (args) => {
-      const strategies = Array.isArray(args.strategies)
-        ? args.strategies.map(String) as ("jina" | "direct" | "google-cache")[]
+      const strategies: ScrapeStrategy[] = Array.isArray(args.strategies)
+        ? args.strategies.map(String) as ScrapeStrategy[]
         : ["jina", "direct"];
       const result = await scrapeUrl(String(args.url), {
         strategies,
