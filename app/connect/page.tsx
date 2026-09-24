@@ -14,7 +14,7 @@ export default function ConnectPage() {
             <span className="pm-kicker">REMOTE MCP / SETUP</span>
             <h1>Plug PromptMika into your client.</h1>
             <p>
-              One stateless endpoint exposes 37 tools, 13 knowledge packs,
+              One stateless endpoint exposes 39 tools, 13 knowledge packs,
               58 design styles, and the 25-reference WebTemplate library.
             </p>
           </div>
@@ -40,7 +40,7 @@ export default function ConnectPage() {
             <article>
               <span>02</span>
               <strong>Verify</strong>
-              <p>Call <code>tools/list</code> and expect 37 tools from v3.6.0.</p>
+              <p>Call <code>tools/list</code> and expect 39 tools from v3.7.0.</p>
             </article>
             <article>
               <span>03</span>
