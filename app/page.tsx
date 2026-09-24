@@ -48,7 +48,7 @@ function SquiggleCheck() {
 }
 
 function Ticker() {
-  const items = ["162 files", "13 packs", "23 tools", "zero dependencies", "one endpoint", "SSRF-guarded"];
+  const items = ["162 files", "13 packs", "37 tools", "zero dependencies", "one endpoint", "SSRF-guarded"];
   const strip = (hidden: boolean) => (
     <div className="ticker-half" aria-hidden={hidden || undefined}>
       {items.map((t) => (
@@ -87,18 +87,35 @@ const PACKS: { name: string; desc: string; files: number; size: string; tone?: s
 ];
 
 const MODULES: { name: string; desc: string }[] = [
+  { name: "promptmika_info", desc: "Server/version/capability inventory: packs, tools, references, runtime notes." },
+  { name: "get_context", desc: "Task-aware context router: recommends the right packs and references before the agent builds." },
+  { name: "load_claude_policy", desc: "Loads the condensed or full CLAUDE policy with paging." },
+  { name: "inspect_reference", desc: "Reference metadata, headings, statistics, and preview without dumping the entire file." },
+  { name: "list_web_templates", desc: "Lists page recipes and web-oriented references available in PromptMika." },
+  { name: "search_web_templates", desc: "Finds page recipes by purpose, visual style, or product type." },
+  { name: "load_web_template", desc: "Loads one selected page/template recipe with paging." },
+  { name: "browser_verify", desc: "Checks a deployed page: HTTP status, metadata, H1s, viewport, image-alt coverage, forms, scripts, links." },
+  { name: "debug_website", desc: "HTTP + HTML diagnostics with common error signatures, document stats, links, and text preview." },
+  { name: "debug_screenshot", desc: "Screenshot-readiness diagnostics and exact capture target/viewport; reports when rendered pixels are unavailable." },
   { name: "web_fetch", desc: "Any URL as raw, text, markdown, links, or JSON — byte-capped, timeout-clamped." },
-  { name: "web_search", desc: "DuckDuckGo → Serper → Bing cascade. Free, no key required." },
+  { name: "web_search", desc: "DuckDuckGo → Serper → Bing cascade. Free path first; no key required for the primary path." },
   { name: "web_crawl", desc: "Polite breadth-first crawler — robots-aware, same-domain, rate-limited." },
-  { name: "browser_scrape", desc: "Jina Reader → Google Cache → direct chain for protected pages." },
-  { name: "web_curl", desc: "curl -v debugging: headers, cookies, timing, redirect chains." },
-  { name: "security_scan", desc: "Regex SAST across ~60 languages, severity-sorted findings with fixes." },
-  { name: "generate_scaffold", desc: "Fourteen hardened project templates, CI + security scans wired in." },
+  { name: "web_scrape", desc: "Multi-strategy public-page scraper; conventional alias for browser_scrape." },
+  { name: "browser_scrape", desc: "Jina Reader → Google Cache → direct extraction chain for difficult pages." },
+  { name: "web_curl", desc: "curl-style HTTP debugging: headers, cookies, timing, redirects, body." },
+  { name: "web_batch_fetch", desc: "Fetches up to ten URLs together through the same SSRF guard." },
+  { name: "extract_html", desc: "Turns supplied HTML into text, markdown, links, title, or a structural summary." },
+  { name: "compare_extractions", desc: "Compares raw/text/markdown extraction and suggests the more useful representation." },
+  { name: "search_references", desc: "Searches the embedded PromptMika knowledge base by topic." },
+  { name: "load_reference", desc: "Loads a selected reference by URI with paging for large documents." },
+  { name: "list_references", desc: "Lists the full embedded reference catalog." },
+  { name: "security_scan", desc: "Regex SAST across many language families, severity-sorted findings with fixes." },
+  { name: "generate_scaffold", desc: "Generates hardened project scaffolds with build commands and security-minded defaults." },
 ];
 
 const STATS = [
   { num: "162", label: "reference files, embedded" },
-  { num: "23", label: "tools, one endpoint" },
+  { num: "37", label: "tools, one endpoint" },
   { num: "5k", label: "lines per pack call, max" },
 ];
 
@@ -165,7 +182,7 @@ export default function Home() {
               </div>
             </Reveal>
             <div className="starburst-wrap">
-              <Starburst line1="23" line2="tools!" />
+              <Starburst line1="37" line2="tools!" />
             </div>
           </div>
 
@@ -257,10 +274,9 @@ export default function Home() {
           <Reveal>
             <div style={{ maxWidth: 700 }}>
               <span className="section-label">index of instruments</span>
-              <h2 className="section-title">Seven tools, sharp ones.</h2>
+              <h2 className="section-title">Twenty-four utility tools. Thirteen packs.</h2>
               <p className="section-sub">
-                Every module is dependency-free and guarded — the entire server
-                compiles down to a single Worker bundle.
+                The MCP exposes 37 tools total: 24 utility/context/debug tools plus 13 knowledge packs. Web requests are guarded and the server runs directly on Vercel.
               </p>
             </div>
           </Reveal>
@@ -365,7 +381,7 @@ export default function Home() {
             </div>
           </Reveal>
           <div className="footer-inner">
-            <span>MCP server · v3.5.0 · 23 tools · 162 references</span>
+            <span>MCP server · v3.6.0 · 37 tools · 162 references</span>
             <div className="footer-links">
               <Link href="/design">design</Link>
               <Link href="/skill">skill</Link>
