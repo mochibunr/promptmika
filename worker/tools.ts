@@ -89,6 +89,8 @@ export const TOOLS: Record<string, ToolDef> = {
         version: "3.6.0",
         transport: "JSON-RPC 2.0 over HTTP/SSE",
         reference_count: listReferences().length,
+        web_template_count: listWebTemplates("all").length,
+        web_template_source: "WyvernCW/WebTemplate",
         pack_count: Object.keys(PACKS).length,
         tool_count: Object.keys(TOOLS).length,
         packs: Object.keys(PACKS),
@@ -96,7 +98,8 @@ export const TOOLS: Record<string, ToolDef> = {
         notes: [
           "Runs directly on the Vercel MCP endpoint.",
           "Web requests are SSRF-guarded.",
-          "Reference and pack tools use embedded build-time knowledge."
+          "Reference and pack tools use embedded build-time knowledge.",
+          "Web templates are read-only study references loaded on demand from WyvernCW/WebTemplate; direct cloning is forbidden."
         ]
       }, null, 2);
     },
