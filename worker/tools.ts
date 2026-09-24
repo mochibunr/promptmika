@@ -22,7 +22,466 @@ export interface ToolDef {
   handler: (args: Record<string, unknown>, env?: { SERPER_API_KEY?: string }) => Promise<string>;
 }
 
+
+const WEB_TEMPLATE_HINTS = [
+  "landing-page.md", "portfolio.md", "prototype.md", "content-page.md",
+  "web-tool.md", "deck.md", "social-card.md", "info-interactive.md",
+  "canvas-and-device.md", "export.md", "design-system.md",
+  "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md"
+];
+
+function templateCandidates(): string[] {
+  const refs = listReferences();
+  const hinted = WEB_TEMPLATE_HINTS.filter((name) => refs.includes(name));
+  const discovered = refs.filter((name) =>
+    /(?:template|landing|portfolio|prototype|page|dashboard|commerce|website|webapp|web-app|app-showcase)/i.test(name)
+  );
+  return [...new Set([...hinted, ...discovered])].sort();
+}
+
+function docStats(content: string) {
+  const lines = content.split("\n");
+  const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+  const headings = lines.filter((line) => /^#{1,6}\s/.test(line)).length;
+  const codeFences = lines.filter((line) => /^\s*\`\`\`/.test(line)).length;
+  return { lines: lines.length, words, headings, code_blocks: Math.floor(codeFences / 2), characters: content.length };
+}
+
+function extractMeta(html: string, name: string): string {
+  const escaped = name.replace(/[.*+?^$()|[\]\\]/g, "\\export const TOOLS: Record<string, ToolDef> = {");
+  const a = html.match(new RegExp(`<meta[^>]+(?:name|property)=["']${escaped}["'][^>]+content=["']([^"']*)["'][^>]*>`, "i"));
+  const b = html.match(new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+(?:name|property)=["']${escaped}["'][^>]*>`, "i"));
+  return (a?.[1] ?? b?.[1] ?? "").trim();
+}
+
+async function verifyUrl(url: string) {
+  const res = await fetchGuarded(url, { timeoutMs: 20_000, maxBytes: 750_000 });
+  const html = res.text;
+  const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim();
+  const viewport = extractMeta(html, "viewport");
+  const description = extractMeta(html, "description");
+  const canonical = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]
+    ?? html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i)?.[1]
+    ?? "";
+  const h1Count = (html.match(/<h1\b/gi) ?? []).length;
+  const imgCount = (html.match(/<img\b/gi) ?? []).length;
+  const imgAltCount = (html.match(/<img\b[^>]*\balt=["'][^"']*["']/gi) ?? []).length;
+  const formCount = (html.match(/<form\b/gi) ?? []).length;
+  const scriptCount = (html.match(/<script\b/gi) ?? []).length;
+  const links = (() => { try { return extractLinks(html, new URL(res.finalUrl)); } catch { return []; } })();
+  return {
+    status: res.status,
+    statusText: res.statusText,
+    finalUrl: res.finalUrl,
+    timingMs: res.timingMs,
+    bytes: res.bytes,
+    contentType: res.headers["content-type"] ?? "",
+    title,
+    description,
+    viewport,
+    canonical,
+    h1Count,
+    imgCount,
+    imgAltCount,
+    formCount,
+    scriptCount,
+    linkCount: links.length,
+    links,
+    html,
+  };
+}
+
 export const TOOLS: Record<string, ToolDef> = {
+
+  // ── PromptMika context / inspection tools ─────────────
+
+  promptmika_info: {
+    description: "Describe the running PromptMika server: version, capabilities, packs, tool names, reference count, and runtime notes.",
+    inputSchema: { type: "object", properties: {} },
+    handler: async () => {
+      return JSON.stringify({
+        name: "promptmika",
+        version: "3.6.0",
+        transport: "JSON-RPC 2.0 over HTTP/SSE",
+        reference_count: listReferences().length,
+        pack_count: Object.keys(PACKS).length,
+        tool_count: Object.keys(TOOLS).length,
+        packs: Object.keys(PACKS),
+        tools: Object.keys(TOOLS),
+        notes: [
+          "Runs directly on the Vercel MCP endpoint.",
+          "Web requests are SSRF-guarded.",
+          "Reference and pack tools use embedded build-time knowledge."
+        ]
+      }, null, 2);
+    },
+  },
+
+  get_context: {
+    description: "Build a task-specific PromptMika context brief. Given what you are trying to do, recommends the most relevant packs and references and returns concise previews so an agent knows what to load next without guessing.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        task: prop("string", "What you are building, debugging, researching, or changing."),
+        max_references: prop("number", "Maximum matched references to return (default 8, max 15)", { default: 8 }),
+      },
+      required: ["task"],
+    },
+    handler: async (args) => {
+      const task = String(args.task ?? "").trim();
+      const max = Math.max(1, Math.min(Number(args.max_references ?? 8), 15));
+      const matches = searchReferences(task).slice(0, max);
+      const lower = task.toLowerCase();
+      const recommendedPacks: string[] = [];
+      const choose = (name: string, re: RegExp) => { if (re.test(lower)) recommendedPacks.push(name); };
+      choose("load_frontend_design", /front|ui|ux|css|react|website|layout|design|component/);
+      choose("load_design_systems", /design system|style|theme|visual|brand/);
+      choose("load_backend_api", /backend|api|server|endpoint|database|auth/);
+      choose("load_security", /security|vuln|xss|sql|csrf|ssrf|secret|auth/);
+      choose("load_testing", /test|vitest|jest|playwright|e2e|unit|integration/);
+      choose("load_state_management", /state|redux|zustand|jotai|signal/);
+      choose("load_systems_devops", /devops|deploy|docker|ci|performance|architecture|system/);
+      choose("load_context_engine", /context|agent|workflow|iterate|quality/);
+      choose("load_token_efficiency", /token|prompt|compact|context window/);
+      choose("load_specialized_pages", /landing|portfolio|dashboard|prototype|deck|social|page/);
+      if (recommendedPacks.length === 0) recommendedPacks.push("load_contract");
+
+      const previews = matches.map((m) => {
+        const doc = resolveDocument(m.name);
+        return {
+          path: m.name,
+          score: m.score,
+          preview: doc?.content.slice(0, 420).replace(/\s+/g, " ").trim() ?? ""
+        };
+      });
+
+      return JSON.stringify({
+        task,
+        recommended_packs: [...new Set(recommendedPacks)],
+        references: previews,
+        next_step: "Load only the packs/references relevant to the task, then execute against those references."
+      }, null, 2);
+    },
+  },
+
+  load_claude_policy: {
+    description: "Load the user's PromptMika CLAUDE policy. Defaults to the condensed digest; request full=true only when the task needs the complete policy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        full: prop("boolean", "Load full CLAUDE.md instead of CLAUDE.digest.md", { default: false }),
+        offset: prop("number", "0-based line offset", { default: 0 }),
+        limit: prop("number", "Maximum lines to return (default 5000, max 20000)", { default: 5000 }),
+      },
+    },
+    handler: async (args) => {
+      const path = args.full ? "claude://CLAUDE.md" : "claude://CLAUDE.digest.md";
+      const doc = resolveDocument(path);
+      if (!doc) return "CLAUDE policy is not embedded in this build.";
+      const lines = doc.content.split("\n");
+      const start = Math.max(0, Number(args.offset ?? 0));
+      const limit = Math.max(1, Math.min(Number(args.limit ?? 5000), 20000));
+      const end = Math.min(start + limit, lines.length);
+      return lines.slice(start, end).join("\n") +
+        (end < lines.length ? `\n\n--- Continue with offset=${end}; ${lines.length - end} lines remain. ---` : "");
+    },
+  },
+
+  inspect_reference: {
+    description: "Inspect a PromptMika reference without dumping the whole file. Returns metadata, size/statistics, headings, and a configurable preview.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        path: prop("string", "Reference URI or filename"),
+        preview_chars: prop("number", "Preview characters (default 1600, max 8000)", { default: 1600 }),
+      },
+      required: ["path"],
+    },
+    handler: async (args) => {
+      const doc = resolveDocument(String(args.path));
+      if (!doc) return `Reference not found: ${args.path}`;
+      const previewChars = Math.max(200, Math.min(Number(args.preview_chars ?? 1600), 8000));
+      const headings = doc.content.split("\n").filter((line) => /^#{1,6}\s/.test(line)).slice(0, 80);
+      return JSON.stringify({
+        name: doc.name,
+        mime_type: doc.mimeType,
+        stats: docStats(doc.content),
+        headings,
+        preview: doc.content.slice(0, previewChars)
+      }, null, 2);
+    },
+  },
+
+  list_web_templates: {
+    description: "List PromptMika references that can act as website/page templates or implementation recipes.",
+    inputSchema: { type: "object", properties: {} },
+    handler: async () => {
+      const items = templateCandidates();
+      return `PromptMika web templates / page recipes (${items.length}):\n${items.map((x) => `- ${x}`).join("\n")}`;
+    },
+  },
+
+  search_web_templates: {
+    description: "Search PromptMika's web/page template references by purpose, style, or page type.",
+    inputSchema: {
+      type: "object",
+      properties: { query: prop("string", "Template intent, e.g. 'portfolio editorial', 'dashboard', 'restaurant landing'") },
+      required: ["query"],
+    },
+    handler: async (args) => {
+      const q = String(args.query).toLowerCase().trim();
+      const words = q.split(/\s+/).filter(Boolean);
+      const scored = templateCandidates().map((name) => {
+        const doc = resolveDocument(name);
+        const hay = `${name}\n${doc?.content.slice(0, 5000) ?? ""}`.toLowerCase();
+        const score = words.reduce((n, w) => n + (hay.includes(w) ? 1 : 0), 0) + (hay.includes(q) ? 3 : 0);
+        return { name, score };
+      }).filter((x) => x.score > 0).sort((a,b) => b.score - a.score || a.name.localeCompare(b.name)).slice(0, 15);
+      return scored.length ? scored.map((x) => `- ${x.name} (score ${x.score})`).join("\n") : "No web templates matched.";
+    },
+  },
+
+  load_web_template: {
+    description: "Load one PromptMika web template/page recipe by filename.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: prop("string", "Template/reference filename"),
+        offset: prop("number", "0-based line offset", { default: 0 }),
+        limit: prop("number", "Max lines (default 5000, max 20000)", { default: 5000 }),
+      },
+      required: ["name"],
+    },
+    handler: async (args) => {
+      const name = String(args.name);
+      if (!templateCandidates().includes(name)) return `Unknown web template: ${name}`;
+      const doc = resolveDocument(name);
+      if (!doc) return `Template not found in this build: ${name}`;
+      const lines = doc.content.split("\n");
+      const start = Math.max(0, Number(args.offset ?? 0));
+      const limit = Math.max(1, Math.min(Number(args.limit ?? 5000), 20000));
+      const end = Math.min(start + limit, lines.length);
+      return lines.slice(start, end).join("\n") +
+        (end < lines.length ? `\n\n--- Continue with offset=${end}. ---` : "");
+    },
+  },
+
+  browser_verify: {
+    description: "Verify a deployed web page over HTTP and inspect basic browser-facing signals: status, redirects, title, meta description, viewport, canonical URL, H1 count, image alt coverage, forms, scripts, and links.",
+    inputSchema: {
+      type: "object",
+      properties: { url: prop("string", "Public http/https URL to verify") },
+      required: ["url"],
+    },
+    handler: async (args) => {
+      const v = await verifyUrl(String(args.url));
+      return JSON.stringify({
+        ok: v.status >= 200 && v.status < 400,
+        status: v.status,
+        status_text: v.statusText,
+        final_url: v.finalUrl,
+        timing_ms: v.timingMs,
+        bytes: v.bytes,
+        content_type: v.contentType,
+        title: v.title,
+        description: v.description,
+        viewport: v.viewport,
+        canonical: v.canonical,
+        h1_count: v.h1Count,
+        images: v.imgCount,
+        images_with_alt: v.imgAltCount,
+        forms: v.formCount,
+        scripts: v.scriptCount,
+        links: v.linkCount,
+        checks: {
+          has_title: Boolean(v.title),
+          has_description: Boolean(v.description),
+          has_viewport: Boolean(v.viewport),
+          single_h1: v.h1Count === 1,
+          image_alt_coverage: v.imgCount === 0 ? 1 : Number((v.imgAltCount / v.imgCount).toFixed(2))
+        }
+      }, null, 2);
+    },
+  },
+
+  debug_website: {
+    description: "Diagnose a website from its real HTTP response and HTML. Reports redirects, metadata, accessibility-adjacent markup signals, suspicious error text, and a sample of discovered links.",
+    inputSchema: {
+      type: "object",
+      properties: { url: prop("string", "Public http/https URL to diagnose") },
+      required: ["url"],
+    },
+    handler: async (args) => {
+      const v = await verifyUrl(String(args.url));
+      const text = htmlToText(v.html).slice(0, 12000);
+      const issuePatterns = [
+        /application error/i, /internal server error/i, /404 not found/i,
+        /hydration failed/i, /uncaught (?:type)?error/i, /failed to load/i
+      ];
+      const detected = issuePatterns.filter((re) => re.test(v.html) || re.test(text)).map((re) => re.source);
+      return JSON.stringify({
+        url: String(args.url),
+        final_url: v.finalUrl,
+        http: { status: v.status, timing_ms: v.timingMs, bytes: v.bytes, content_type: v.contentType },
+        document: {
+          title: v.title, description: v.description, viewport: v.viewport, canonical: v.canonical,
+          h1_count: v.h1Count, images: v.imgCount, images_with_alt: v.imgAltCount,
+          forms: v.formCount, scripts: v.scriptCount, links: v.linkCount
+        },
+        detected_error_signatures: detected,
+        link_sample: v.links.slice(0, 30),
+        text_preview: text.slice(0, 2500)
+      }, null, 2);
+    },
+  },
+
+  debug_screenshot: {
+    description: "Prepare screenshot-focused diagnostics for a public page: verifies that the page is reachable, reports viewport/meta/render-risk signals, and returns the exact capture target. This runtime does not bundle a headless Chromium binary, so it does not fabricate a pixel screenshot.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        url: prop("string", "Public http/https page URL"),
+        width: prop("number", "Requested viewport width", { default: 1440 }),
+        height: prop("number", "Requested viewport height", { default: 900 }),
+        full_page: prop("boolean", "Whether the intended capture is full-page", { default: true }),
+      },
+      required: ["url"],
+    },
+    handler: async (args) => {
+      const v = await verifyUrl(String(args.url));
+      return JSON.stringify({
+        capture_target: v.finalUrl,
+        requested_viewport: {
+          width: Math.max(320, Math.min(Number(args.width ?? 1440), 3840)),
+          height: Math.max(320, Math.min(Number(args.height ?? 900), 2160)),
+          full_page: args.full_page ?? true
+        },
+        reachable: v.status >= 200 && v.status < 400,
+        status: v.status,
+        title: v.title,
+        viewport_meta: v.viewport,
+        render_risks: {
+          heavy_script_count: v.scriptCount > 30,
+          missing_viewport_meta: !v.viewport,
+          document_too_large: v.bytes > 700_000
+        },
+        limitation: "No Chromium binary is bundled in this deployment, so this tool reports screenshot readiness rather than returning fake pixels."
+      }, null, 2);
+    },
+  },
+
+  web_batch_fetch: {
+    description: "Fetch multiple public URLs in one call with PromptMika's SSRF guard. Returns status, timing, final URL, and extracted content for each target.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        urls: prop("array", "URLs to fetch (max 10)", { items: { type: "string" } }),
+        extract: prop("string", "Extraction mode", { enum: ["raw", "text", "markdown"], default: "text" }),
+        max_bytes_each: prop("number", "Maximum bytes per URL (default 200000, max 500000)", { default: 200000 }),
+      },
+      required: ["urls"],
+    },
+    handler: async (args) => {
+      const urls = (Array.isArray(args.urls) ? args.urls : []).slice(0, 10).map(String);
+      const extract = String(args.extract ?? "text");
+      const maxBytes = Math.max(1000, Math.min(Number(args.max_bytes_each ?? 200000), 500000));
+      const results = await Promise.all(urls.map(async (url) => {
+        try {
+          const res = await fetchGuarded(url, { maxBytes, timeoutMs: 20_000 });
+          let content = res.text;
+          if (extract === "text") content = htmlToText(content);
+          if (extract === "markdown") content = htmlToMarkdown(content);
+          return { url, ok: true, status: res.status, final_url: res.finalUrl, timing_ms: res.timingMs, bytes: res.bytes, content: content.slice(0, 30000) };
+        } catch (e) {
+          return { url, ok: false, error: (e as Error).message };
+        }
+      }));
+      return JSON.stringify(results, null, 2);
+    },
+  },
+
+  extract_html: {
+    description: "Extract useful content from supplied HTML without making a network request. Supports text, markdown, links, title, or a combined structural summary.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        html: prop("string", "HTML source"),
+        mode: prop("string", "Extraction mode", { enum: ["text", "markdown", "links", "title", "summary"], default: "markdown" }),
+        base_url: prop("string", "Base URL used to resolve relative links"),
+      },
+      required: ["html"],
+    },
+    handler: async (args) => {
+      const html = String(args.html);
+      const mode = String(args.mode ?? "markdown");
+      if (mode === "text") return htmlToText(html);
+      if (mode === "markdown") return htmlToMarkdown(html);
+      if (mode === "title") return (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim();
+      if (mode === "links") {
+        const base = new URL(String(args.base_url ?? "https://example.invalid/"));
+        return extractLinks(html, base).join("\n");
+      }
+      const text = htmlToText(html);
+      return JSON.stringify({
+        title: (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "").replace(/<[^>]+>/g, "").trim(),
+        characters: html.length,
+        text_characters: text.length,
+        headings: (html.match(/<h[1-6]\b/gi) ?? []).length,
+        links: (html.match(/<a\b/gi) ?? []).length,
+        images: (html.match(/<img\b/gi) ?? []).length,
+        forms: (html.match(/<form\b/gi) ?? []).length,
+        text_preview: text.slice(0, 3000)
+      }, null, 2);
+    },
+  },
+
+  compare_extractions: {
+    description: "Compare PromptMika's raw, text, and markdown extraction of a URL or supplied HTML. Useful for deciding which representation preserves the important content best.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        url: prop("string", "URL to fetch when html is not supplied"),
+        html: prop("string", "Optional HTML source; skips network fetch when provided"),
+      },
+    },
+    handler: async (args) => {
+      let html = typeof args.html === "string" ? args.html : "";
+      let source = "provided HTML";
+      if (!html) {
+        if (!args.url) return "Provide either url or html.";
+        const res = await fetchGuarded(String(args.url), { maxBytes: 600_000, timeoutMs: 20_000 });
+        html = res.text;
+        source = res.finalUrl;
+      }
+      const text = htmlToText(html);
+      const markdown = htmlToMarkdown(html);
+      return JSON.stringify({
+        source,
+        raw: { characters: html.length, preview: html.slice(0, 1800) },
+        text: { characters: text.length, preview: text.slice(0, 3000) },
+        markdown: { characters: markdown.length, preview: markdown.slice(0, 3000) },
+        recommendation: markdown.length >= text.length * 0.55 ? "markdown" : "text"
+      }, null, 2);
+    },
+  },
+
+  web_scrape: {
+    description: "Scrape a public URL using PromptMika's multi-strategy extraction chain. Alias of browser_scrape for clients that expect the web_scrape name.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        url: prop("string", "URL to scrape"),
+        strategies: prop("array", "Strategy order", { items: { type: "string", enum: ["jina", "google-cache", "direct"] }, default: ["jina", "google-cache", "direct"] }),
+      },
+      required: ["url"],
+    },
+    handler: async (args) => {
+      const strategies = (args.strategies as ("jina" | "google-cache" | "direct")[]) ?? undefined;
+      const result = await scrapeUrl(String(args.url), strategies ? { strategies } : {});
+      return `${result.title ? `# ${result.title}\n\n` : ""}${result.text}\n\n---\nSource: ${result.source} | HTTP ${result.status} | ${result.timingMs}ms`;
+    },
+  },
+
   // ── Reference tools ──────────────────────────────────
 
   search_references: {
