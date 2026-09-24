@@ -1,81 +1,169 @@
 import Link from "next/link";
-import { LiveTerminal } from "@/components/LiveTerminal";
 import { CopyUrl, MCPUrl } from "@/components/MCPUrl";
 
 const PACKS = [
-  ["load_contract", "Start every session with the operating contract."],
-  ["load_frontend_design", "Frontend systems, responsive behavior, interaction, and design quality."],
-  ["load_design_systems", "58 visual systems with selection rules and implementation guidance."],
-  ["load_horizontal_craft", "Typography, motion, color, icons, accessibility, forms, and UX laws."],
-  ["load_backend_api", "Backend patterns, API design, and integration contracts."],
-  ["load_security", "Nine vulnerability catalogs across language families."],
-  ["load_testing", "Unit, integration, e2e, mocking, and coverage strategy."],
-  ["load_state_management", "Redux, Zustand, Jotai, signals, persistence, and tradeoffs."],
-  ["load_systems_devops", "Architecture, builds, DevOps, performance, and interop."],
-  ["load_context_engine", "Long-session context, iteration loops, and quality gates."],
-  ["load_token_efficiency", "Selective loading, compression, and self-review."],
-  ["load_creative_writing", "Narrative, tone, prose, and style references."],
-  ["load_specialized_pages", "Landing pages, portfolios, prototypes, decks, tools, and more."],
+  "load_contract",
+  "load_frontend_design",
+  "load_design_systems",
+  "load_horizontal_craft",
+  "load_backend_api",
+  "load_security",
+  "load_testing",
+  "load_state_management",
+  "load_systems_devops",
+  "load_creative_writing",
+  "load_token_efficiency",
+  "load_context_engine",
+  "load_specialized_pages",
 ] as const;
 
-const UTILITIES = [
-  ["get_context", "Route a task to the smallest useful context set."],
-  ["search_references", "Search the embedded knowledge base by topic."],
-  ["inspect_reference", "Inspect headings, metadata, and size before loading."],
-  ["web_search", "Search the web through PromptMika's free-first cascade."],
-  ["web_fetch", "Fetch URLs as text, Markdown, JSON, links, or raw response."],
-  ["web_crawl", "Crawl sites with depth, robots, and domain controls."],
-  ["browser_verify", "Verify a deployment's status, metadata, structure, and accessibility-adjacent signals."],
-  ["debug_website", "Diagnose response behavior, markup, links, and common failure signatures."],
-  ["security_scan", "Scan supplied source for security issues and fixes."],
-  ["generate_scaffold", "Generate secure project scaffolds with build instructions."],
+const TOOL_GROUPS = [
+  {
+    label: "CONTEXT",
+    tools: ["promptmika_info", "get_context", "search_references", "inspect_reference", "load_reference", "list_references", "load_claude_policy"],
+  },
+  {
+    label: "WEB",
+    tools: ["web_search", "web_fetch", "web_curl", "web_scrape", "browser_scrape", "web_crawl", "web_batch_fetch", "extract_html", "compare_extractions"],
+  },
+  {
+    label: "VERIFY",
+    tools: ["browser_verify", "debug_website", "debug_screenshot", "security_scan", "generate_scaffold", "list_web_templates", "search_web_templates", "load_web_template"],
+  },
 ] as const;
 
-function WorkflowScene() {
+function StateRibbon() {
   return (
-    <div className="workflow-scene" aria-label="PromptMika workflow">
-      <div className="scene-topbar">
-        <span className="scene-brand">promptmika</span>
-        <span className="scene-state"><i /> connected</span>
+    <div className="ia-ribbon" aria-label="PromptMika state ribbon">
+      <article className="ia-state ia-state-task">
+        <div className="ia-state-head">
+          <span>01 / TASK</span>
+          <i className="ia-dot ia-dot-live" />
+        </div>
+        <div className="ia-prompt">
+          <span className="ia-prompt-mark">›</span>
+          <p>Build a distinctive, accessible landing page for my developer tool.</p>
+        </div>
+        <div className="ia-state-foot">input received</div>
+      </article>
+
+      <div className="ia-flow-arrow">→</div>
+
+      <article className="ia-state ia-state-context">
+        <div className="ia-state-head">
+          <span>02 / CONTEXT</span>
+          <code>get_context</code>
+        </div>
+        <div className="ia-context-list">
+          <div><b>01</b><span>load_frontend_design</span><em>0.94</em></div>
+          <div><b>02</b><span>load_design_systems</span><em>0.91</em></div>
+          <div><b>03</b><span>load_testing</span><em>0.78</em></div>
+        </div>
+        <div className="ia-state-foot">3 packs recommended</div>
+      </article>
+
+      <div className="ia-flow-arrow">→</div>
+
+      <article className="ia-state ia-state-research">
+        <div className="ia-state-head">
+          <span>03 / RESEARCH</span>
+          <code>web_fetch</code>
+        </div>
+        <div className="ia-browser">
+          <div className="ia-browser-bar">
+            <i />
+            <span>reference source</span>
+          </div>
+          <div className="ia-browser-body">
+            <strong>200</strong>
+            <p>content extracted as markdown</p>
+            <small>42.8 KB · 318 ms</small>
+          </div>
+        </div>
+        <div className="ia-state-foot">source grounded</div>
+      </article>
+
+      <div className="ia-flow-arrow">→</div>
+
+      <article className="ia-state ia-state-verify">
+        <div className="ia-state-head">
+          <span>04 / VERIFY</span>
+          <code>browser_verify</code>
+        </div>
+        <div className="ia-checks">
+          <div><span>HTTP</span><b>200</b></div>
+          <div><span>viewport</span><b>✓</b></div>
+          <div><span>single H1</span><b>✓</b></div>
+          <div><span>alt coverage</span><b>1.00</b></div>
+        </div>
+        <div className="ia-state-foot ia-state-foot-ok">ready to ship</div>
+      </article>
+    </div>
+  );
+}
+
+function InterfaceStage() {
+  return (
+    <div className="ia-stage">
+      <div className="ia-stage-chrome">
+        <span className="ia-stage-brand"><i /> PromptMika</span>
+        <span className="ia-stage-status">REMOTE MCP · CONNECTED</span>
       </div>
 
-      <div className="scene-grid">
-        <div className="scene-input">
-          <span className="scene-label">TASK</span>
-          <p>Build a fast, accessible SaaS landing page with a distinctive visual system.</p>
-          <div className="scene-command">get_context</div>
+      <div className="ia-stage-body">
+        <aside className="ia-stage-rail">
+          <span className="is-active">01</span>
+          <span>02</span>
+          <span>03</span>
+          <span>04</span>
+        </aside>
+
+        <div className="ia-stage-main">
+          <div className="ia-stage-query">
+            <span>REQUEST</span>
+            <h3>Design a music app landing page that does not look generic.</h3>
+            <code>get_context(task)</code>
+          </div>
+
+          <div className="ia-stage-result">
+            <div className="ia-result-head">
+              <span>RECOMMENDED CONTEXT</span>
+              <b>3 MATCHES</b>
+            </div>
+            <div className="ia-result-row active">
+              <div>
+                <small>STYLE / 58</small>
+                <strong>immersive-app-showcase</strong>
+              </div>
+              <span>0.96</span>
+            </div>
+            <div className="ia-result-row">
+              <div>
+                <small>PACK</small>
+                <strong>load_frontend_design</strong>
+              </div>
+              <span>0.92</span>
+            </div>
+            <div className="ia-result-row">
+              <div>
+                <small>PACK</small>
+                <strong>load_design_systems</strong>
+              </div>
+              <span>0.88</span>
+            </div>
+          </div>
         </div>
 
-        <div className="scene-route">
-          <span className="scene-label">ROUTE</span>
-          <div className="route-chip active">load_frontend_design</div>
-          <div className="route-chip">load_design_systems</div>
-          <div className="route-chip">load_testing</div>
+        <div className="ia-stage-inspector">
+          <span className="ia-inspector-title">SESSION</span>
+          <dl>
+            <div><dt>tools</dt><dd>37</dd></div>
+            <div><dt>packs</dt><dd>13</dd></div>
+            <div><dt>styles</dt><dd>58</dd></div>
+            <div><dt>refs</dt><dd>162+</dd></div>
+          </dl>
+          <div className="ia-inspector-live"><i /> live endpoint</div>
         </div>
-
-        <div className="scene-output">
-          <span className="scene-label">VERIFY</span>
-          <div className="metric-row"><span>references loaded</span><strong>8</strong></div>
-          <div className="metric-row"><span>security findings</span><strong>0 high</strong></div>
-          <div className="metric-row"><span>design styles available</span><strong>58</strong></div>
-          <div className="metric-row"><span>tools available</span><strong>37</strong></div>
-        </div>
-      </div>
-
-      <div className="scene-connector c1" />
-      <div className="scene-connector c2" />
-
-      <div className="scene-note note-a">
-        <span>01</span>
-        route first
-      </div>
-      <div className="scene-note note-b">
-        <span>02</span>
-        load selectively
-      </div>
-      <div className="scene-note note-c">
-        <span>03</span>
-        verify the result
       </div>
     </div>
   );
@@ -83,205 +171,191 @@ function WorkflowScene() {
 
 export default function Home() {
   return (
-    <>
-      <nav className="top-nav">
-        <Link href="/" className="logo">
-          <span className="logo-mark">P</span>
+    <div className="ia-site">
+      <nav className="ia-nav">
+        <Link href="/" className="ia-logo">
+          <span className="ia-logo-mark">M</span>
           <span>PromptMika</span>
         </Link>
-        <div className="nav-center">
-          <a href="#workflow">Workflow</a>
-          <a href="#packs">Packs</a>
+        <div className="ia-nav-links">
+          <a href="#flow">Flow</a>
+          <a href="#system">System</a>
           <a href="#tools">Tools</a>
-          <Link href="/design">Design systems</Link>
+          <Link href="/design">58 styles</Link>
         </div>
-        <Link href="/connect" className="nav-button">Connect MCP</Link>
+        <Link href="/connect" className="ia-nav-cta">Connect MCP</Link>
       </nav>
 
       <main>
-        <section className="hero-shell">
-          <div className="hero-copy">
-            <div className="eyebrow">MCP CONTEXT SYSTEM / V3.6</div>
-            <h1>Give coding agents the right context before they build.</h1>
-            <p className="hero-lede">
-              PromptMika turns a large design and engineering library into task-specific context.
-              Search, route, load, research, debug, and verify through one MCP endpoint.
+        <section className="ia-hero">
+          <div className="ia-hero-copy">
+            <span className="ia-kicker">PROMPTMIKA / MCP CONTEXT ENGINE</span>
+            <h1>
+              Your agent should
+              <span>see what matters.</span>
+            </h1>
+            <p>
+              Curated design, engineering, security, research, and debugging context,
+              delivered through one MCP endpoint exactly when the task needs it.
             </p>
 
-            <div className="hero-actions">
-              <Link href="/connect" className="primary-action">Connect PromptMika</Link>
-              <Link href="/design" className="secondary-action">Explore 58 design systems</Link>
+            <div className="ia-hero-actions">
+              <Link href="/connect" className="ia-button ia-button-primary">Connect PromptMika</Link>
+              <Link href="#flow" className="ia-button ia-button-secondary">See the flow</Link>
             </div>
 
-            <div className="endpoint-inline">
-              <span>endpoint</span>
+            <div className="ia-endpoint">
+              <span>ENDPOINT</span>
               <code><MCPUrl /></code>
               <CopyUrl />
             </div>
-
-            <div className="hero-metrics">
-              <div><strong>37</strong><span>tools</span></div>
-              <div><strong>13</strong><span>knowledge packs</span></div>
-              <div><strong>58</strong><span>design systems</span></div>
-              <div><strong>162+</strong><span>references</span></div>
-            </div>
           </div>
 
-          <div className="hero-product">
-            <WorkflowScene />
+          <div className="ia-hero-stage">
+            <div className="ia-orbit-label ia-orbit-a">37 tools</div>
+            <div className="ia-orbit-label ia-orbit-b">58 styles</div>
+            <InterfaceStage />
           </div>
         </section>
 
-        <section className="proof-strip" id="workflow">
-          <div className="proof-copy">
-            <span className="section-kicker">WORKFLOW</span>
-            <h2>Context is treated like part of the build system.</h2>
+        <section className="ia-state-section" id="flow">
+          <div className="ia-section-intro">
+            <span className="ia-kicker">STATE RIBBON / REAL MCP FLOW</span>
+            <h2>One task. Four useful states.</h2>
             <p>
-              PromptMika does not dump an entire library into the model. It finds the useful slice,
-              keeps the task grounded in the right references, then exposes verification tools for the result.
+              The newest style in your DESIGN.md is built around showing real interface state changes.
+              PromptMika already has a natural sequence for that, so the website now demonstrates the product instead of describing it from a distance.
             </p>
           </div>
+          <StateRibbon />
+        </section>
 
-          <div className="workflow-steps">
+        <section className="ia-proof-section">
+          <div className="ia-proof-big">
+            <span className="ia-kicker">WHY IT EXISTS</span>
+            <h2>Less context noise.<br />More grounded work.</h2>
+          </div>
+          <div className="ia-proof-grid">
             <article>
               <span>01</span>
-              <h3>Route</h3>
-              <p><code>get_context</code> maps the task to relevant packs and references.</p>
+              <h3>Route first</h3>
+              <p><code>get_context</code> recommends the relevant packs and references before the model starts loading everything in sight.</p>
             </article>
             <article>
               <span>02</span>
-              <h3>Load</h3>
-              <p>Only the selected material enters the context window. Large references stay pageable.</p>
+              <h3>Use real sources</h3>
+              <p>References, URLs, crawls, extractions, and template guidance stay inspectable instead of becoming invisible assumptions.</p>
             </article>
             <article>
               <span>03</span>
-              <h3>Research</h3>
-              <p>Search, fetch, crawl, scrape, and inspect outside material without leaving the MCP workflow.</p>
-            </article>
-            <article>
-              <span>04</span>
-              <h3>Verify</h3>
-              <p>Use deployment checks, security scans, debugging, and extraction comparison before shipping.</p>
+              <h3>Verify the result</h3>
+              <p>Deployment checks, extraction comparison, security scanning, and website diagnostics live beside the knowledge layer.</p>
             </article>
           </div>
         </section>
 
-        <section className="system-section" id="packs">
-          <div className="section-heading">
-            <div>
-              <span className="section-kicker">KNOWLEDGE LAYER</span>
-              <h2>Thirteen packs. Load by domain.</h2>
-            </div>
+        <section className="ia-system-section" id="system">
+          <div className="ia-system-heading">
+            <span className="ia-kicker">KNOWLEDGE SYSTEM</span>
+            <h2>Thirteen packs.<br />Load only what belongs.</h2>
             <p>
-              Packs are curated entry points, not generic categories. Each one groups references that belong together.
+              Packs are domain-sized context entry points. They are intentionally separate so one task does not drag an entire reference library into the model.
             </p>
           </div>
 
-          <div className="pack-table">
-            {PACKS.map(([name, desc], index) => (
-              <div className="pack-row" key={name}>
-                <span className="row-index">{String(index + 1).padStart(2, "0")}</span>
+          <div className="ia-pack-filmstrip">
+            {PACKS.map((name, index) => (
+              <div className="ia-pack-frame" key={name}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
                 <code>{name}</code>
-                <p>{desc}</p>
-                <span className="row-arrow">↗</span>
+                <i>↗</i>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="product-evidence">
-          <div className="evidence-copy">
-            <span className="section-kicker">DESIGN SYSTEM</span>
-            <h2>58 visual systems with actual implementation rules.</h2>
+        <section className="ia-design-section">
+          <div className="ia-design-copy">
+            <span className="ia-kicker">DESIGN.md / STYLE 58</span>
+            <h2>The design catalog is part of the product.</h2>
             <p>
-              Not a gallery of screenshots. Each style includes selection criteria, composition rules, typography,
-              palette, media treatment, responsive behavior, accessibility risks, signatures, and failure modes.
+              PromptMika carries 58 visual systems, each with selection logic, composition rules,
+              typography, media behavior, motion, accessibility risks, and failure modes.
             </p>
-            <Link href="/design" className="text-link">Browse the design catalog →</Link>
+            <Link href="/design" className="ia-text-link">Browse all 58 styles ↗</Link>
           </div>
 
-          <div className="style-workbench">
-            <div className="style-workbench-top">
-              <span>STYLE SELECTOR</span>
-              <span>58 AVAILABLE</span>
+          <div className="ia-design-player">
+            <div className="ia-player-top">
+              <span>STYLE / 58</span>
+              <span>IMMERSIVE APP SHOWCASE</span>
             </div>
-            <div className="style-current">
-              <span className="style-index">45</span>
-              <div>
-                <strong>Spatial SaaS Workbench</strong>
-                <p>workflow-first / product evidence / calm technical composition</p>
+            <div className="ia-player-screen">
+              <div className="ia-player-ribbon">
+                <span className="active">promise</span>
+                <span>core flow</span>
+                <span>feature scenes</span>
+                <span>proof</span>
+                <span>ecosystem</span>
+                <span>try</span>
               </div>
-            </div>
-            <div className="style-bars">
-              <div><span>product fit</span><i style={{ width: "92%" }} /></div>
-              <div><span>interaction fit</span><i style={{ width: "90%" }} /></div>
-              <div><span>accessibility fit</span><i style={{ width: "90%" }} /></div>
-              <div><span>content density</span><i style={{ width: "82%" }} /></div>
-            </div>
-            <div className="style-alt">
-              <span>alternates</span>
-              <code>dreamy-indie-software</code>
-              <code>pixel-humanist-agency</code>
-              <code>neo-future-aigc</code>
+              <div className="ia-player-center">
+                <span>STATE RIBBON</span>
+                <strong>Interface states become the story.</strong>
+                <p>Real product behavior, synchronized explanation, no decorative fake screens.</p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="tools-section" id="tools">
-          <div className="section-heading inverse">
-            <div>
-              <span className="section-kicker">UTILITY LAYER</span>
-              <h2>Research, inspect, debug, and build.</h2>
-            </div>
-            <p>
-              Twenty-four utility tools sit beside the thirteen packs. The most useful ones are shown here.
-            </p>
+        <section className="ia-tools-section" id="tools">
+          <div className="ia-tools-head">
+            <span className="ia-kicker">37 TOOLS / ONE ENDPOINT</span>
+            <h2>Context. Web. Verify.</h2>
           </div>
 
-          <div className="utility-grid">
-            {UTILITIES.map(([name, desc], index) => (
-              <article key={name}>
-                <span className="utility-no">{String(index + 1).padStart(2, "0")}</span>
-                <code>{name}</code>
-                <p>{desc}</p>
+          <div className="ia-tool-groups">
+            {TOOL_GROUPS.map((group) => (
+              <article key={group.label}>
+                <header>
+                  <span>{group.label}</span>
+                  <b>{String(group.tools.length).padStart(2, "0")}</b>
+                </header>
+                <div>
+                  {group.tools.map((tool) => <code key={tool}>{tool}</code>)}
+                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="terminal-section">
-          <div className="terminal-copy">
-            <span className="section-kicker">LIVE SERVER</span>
-            <h2>The shelf can list itself.</h2>
-            <p>
-              The homepage calls the same MCP endpoint clients use, so the reference list is coming from the actual server.
-            </p>
-          </div>
-          <LiveTerminal />
-        </section>
-
-        <section className="connect-section">
+        <section className="ia-final">
           <div>
-            <span className="section-kicker">ONE ENDPOINT</span>
-            <h2>Connect once. Use the whole system.</h2>
+            <span className="ia-kicker">READY / REMOTE MCP</span>
+            <h2>Connect once.<br />Use the whole system.</h2>
           </div>
-          <div className="connect-panel">
+          <div className="ia-final-action">
             <code><MCPUrl /></code>
-            <CopyUrl />
-            <Link href="/connect" className="primary-action">Open setup guide</Link>
+            <div>
+              <CopyUrl />
+              <Link href="/connect" className="ia-button ia-button-primary">Open setup guide</Link>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="site-footer">
-        <div className="logo"><span className="logo-mark">P</span><span>PromptMika</span></div>
-        <p>v3.6.0 · 37 tools · 13 packs · 58 design systems</p>
+      <footer className="ia-footer">
+        <div className="ia-logo">
+          <span className="ia-logo-mark">M</span>
+          <span>PromptMika</span>
+        </div>
+        <span>v3.6.0 · 37 tools · 13 packs · 58 styles</span>
         <div>
           <Link href="/design">Design</Link>
           <Link href="/guide">Guide</Link>
           <Link href="/connect">Connect</Link>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
