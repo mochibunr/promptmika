@@ -645,103 +645,263 @@ export const TOOLS: Record<string, ToolDef> = {
 
   // ── Web tools ────────────────────────────────────────
 
+
+  web_probe: {
+    description: "Lightweight site/HTTP preflight. Uses HEAD with bounded GET fallback and reports redirects, content/cache metadata, security headers, HTML metadata, robots status, sitemap declarations, and timing without scraping the whole page.",
+    inputSchema: {
+      type: "object",
+      properties: { url: prop("string", "Public http/https URL to probe") },
+      required: ["url"],
+    },
+    handler: async (args) => JSON.stringify(await probeUrl(String(args.url)), null, 2),
+  },
+
+  web_sitemap: {
+    description: "Discover site URLs from robots.txt and XML sitemaps without crawling every page body. Recursively follows sitemap indexes with bounded URL and sitemap counts.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        url: prop("string", "Seed site URL"),
+        max_urls: prop("number", "Maximum discovered page URLs (default 500, max 2000)", { default: 500 }),
+        max_sitemaps: prop("number", "Maximum sitemap files to inspect (default 12, max 30)", { default: 12 }),
+        same_domain: prop("boolean", "Restrict sitemaps and URLs to seed domain/subdomains (default true)", { default: true }),
+      },
+      required: ["url"],
+    },
+    handler: async (args) => JSON.stringify(await discoverSitemap(String(args.url), {
+      maxUrls: Number(args.max_urls ?? 500),
+      maxSitemaps: Number(args.max_sitemaps ?? 12),
+      sameDomain: Boolean(args.same_domain ?? true),
+    }), null, 2),
+  },
+
   web_curl: {
     description:
-      "cURL-like HTTP request. Returns full response: status, headers, body, timing, redirects, cookies. Supports any method, custom headers, body. Useful for debugging APIs, checking response headers, inspecting redirect chains.",
+      "Advanced cURL-like HTTP debugger. Supports methods, query params, headers, cookies, JSON/body payloads, bounded redirects, safe retries, body caps, and either verbose curl-style or structured JSON output.",
     inputSchema: {
       type: "object",
       properties: {
         url: prop("string", "URL to request (http/https only)"),
         method: prop("string", "HTTP method", { enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"], default: "GET" }),
+        query: prop("object", "Optional query parameters appended to the URL"),
         headers: prop("object", "Custom request headers (key-value pairs)"),
-        body: prop("string", "Request body for POST/PUT/PATCH"),
-        follow_redirects: prop("boolean", "Follow redirects (default true). Set false to see 3xx response.", { default: true }),
-        timeout_ms: prop("number", "Timeout in ms (default 15000, max 30000)"),
         cookies: prop("object", "Cookies to send (key-value pairs)"),
+        body: prop("string", "Raw request body for POST/PUT/PATCH/DELETE"),
+        json: prop("object", "JSON request body. Ignored when body is provided; Content-Type is set automatically."),
+        follow_redirects: prop("boolean", "Follow redirects (default true)", { default: true }),
+        max_redirects: prop("number", "Maximum redirects (default 8, max 12)", { default: 8 }),
+        timeout_ms: prop("number", "Total timeout across the redirect chain in ms (default 15000, max 30000)", { default: 15000 }),
+        max_bytes: prop("number", "Maximum response bytes captured (default 262144, max 1048576)", { default: 262144 }),
+        retries: prop("number", "Retries for safe methods and temporary failures (default 0, max 2)", { default: 0 }),
+        include_body: prop("boolean", "Include response body in output (default true)", { default: true }),
+        output: prop("string", "Output format", { enum: ["verbose", "json"], default: "verbose" }),
       },
       required: ["url"],
     },
     handler: async (args) => {
-      const res = await fetchGuarded(args.url as string, {
-        method: args.method as string,
-        headers: args.headers as Record<string, string>,
-        body: args.body as string,
-        timeoutMs: args.timeout_ms as number,
-        followRedirects: args.follow_redirects as boolean,
-        cookies: args.cookies as Record<string, string>,
-      });
-
-      const setCookies = res.headers["set-cookie"] ?? "";
-      const ct = res.headers["content-type"] ?? "unknown";
-
-      // Format request summary like curl -v
-      const lines: string[] = [];
-      lines.push(`> ${(args.method as string ?? "GET").toUpperCase()} ${args.url}`);
-      lines.push(`> Host: ${new URL(args.url as string).host}`);
-      if (args.headers) {
-        for (const [k, v] of Object.entries(args.headers as Record<string, string>)) {
-          lines.push(`> ${k}: ${v}`);
+      const url = new URL(String(args.url));
+      if (args.query && typeof args.query === "object") {
+        for (const [key, value] of Object.entries(args.query as Record<string, unknown>)) {
+          if (Array.isArray(value)) {
+            for (const item of value) url.searchParams.append(key, String(item));
+          } else if (value !== undefined && value !== null) {
+            url.searchParams.set(key, String(value));
+          }
         }
       }
-      if (args.cookies) lines.push(`> Cookie: ${Object.entries(args.cookies as Record<string, string>).map(([k, v]) => `${k}=${v}`).join("; ")}`);
-      lines.push("");
 
-      // Response headers
-      lines.push(`< HTTP/${res.status >= 200 && res.status < 300 ? "1.1" : "1.1"} ${res.status} ${res.statusText}`);
-      for (const [k, v] of Object.entries(res.headers)) {
-        if (k === "set-cookie") continue;
-        lines.push(`< ${k}: ${v}`);
+      const headers: Record<string, string> = { ...((args.headers as Record<string, string>) ?? {}) };
+      let body = args.body !== undefined ? String(args.body) : undefined;
+      if (body === undefined && args.json && typeof args.json === "object") {
+        body = JSON.stringify(args.json);
+        if (!Object.keys(headers).some((key) => key.toLowerCase() === "content-type")) {
+          headers["Content-Type"] = "application/json";
+        }
       }
-      if (setCookies) lines.push(`< set-cookie: ${setCookies}`);
+
+      const requestOptions = {
+        method: String(args.method ?? "GET"),
+        headers,
+        body,
+        timeoutMs: Number(args.timeout_ms ?? 15000),
+        maxBytes: Number(args.max_bytes ?? 262144),
+        followRedirects: Boolean(args.follow_redirects ?? true),
+        maxRedirects: Number(args.max_redirects ?? 8),
+        cookies: (args.cookies as Record<string, string>) ?? undefined,
+      };
+      const retries = Math.max(0, Math.min(Number(args.retries ?? 0), 2));
+      const res = retries > 0
+        ? await fetchWithRetry(url.toString(), requestOptions, retries)
+        : await fetchGuarded(url.toString(), requestOptions);
+
+      const includeBody = Boolean(args.include_body ?? true);
+      const binary = looksBinaryContentType(res.contentType);
+      const responseBody = !includeBody
+        ? undefined
+        : binary
+          ? "(binary response body omitted)"
+          : res.text;
+
+      if (String(args.output ?? "verbose") === "json") {
+        return JSON.stringify({
+          request: {
+            url: url.toString(),
+            method: String(args.method ?? "GET").toUpperCase(),
+            headers,
+            cookies: args.cookies ?? undefined,
+            body_bytes: body ? body.length : 0,
+          },
+          response: {
+            ok: res.ok,
+            status: res.status,
+            status_text: res.statusText,
+            final_url: res.finalUrl,
+            final_method: res.method,
+            headers: res.headers,
+            content_type: res.contentType,
+            charset: res.charset,
+            content_length: res.contentLength ?? null,
+            captured_bytes: res.bytes,
+            truncated: res.truncated,
+            redirects: res.redirectChain,
+            timing_ms: res.timingMs,
+            body: responseBody,
+          },
+        }, null, 2);
+      }
+
+      const lines: string[] = [];
+      lines.push("> " + String(args.method ?? "GET").toUpperCase() + " " + url.toString());
+      for (const [key, value] of Object.entries(headers)) lines.push("> " + key + ": " + value);
+      if (args.cookies) {
+        lines.push("> Cookie: " + Object.entries(args.cookies as Record<string, string>).map(([k, v]) => k + "=" + v).join("; "));
+      }
+      if (body !== undefined) lines.push("> Body: " + body.length + " characters");
       lines.push("");
 
-      // Stats
-      lines.push(`// ${res.bytes} bytes received in ${res.timingMs}ms`);
-      if (res.redirects > 0) lines.push(`// ${res.redirects} redirect(s) followed`);
+      for (const hop of res.redirectChain) {
+        lines.push("< " + hop.status + " " + hop.method + " " + hop.url);
+        lines.push("< Location: " + hop.location);
+        lines.push("");
+      }
+
+      lines.push("< HTTP " + res.status + " " + res.statusText);
+      lines.push("< Final-URL: " + res.finalUrl);
+      lines.push("< Final-Method: " + res.method);
+      for (const [key, value] of Object.entries(res.headers)) lines.push("< " + key + ": " + value);
       lines.push("");
-
-      // Body
-      lines.push(res.text.slice(0, 50_000));
-      if (res.bytes > 50_000) lines.push(`\n// ... truncated (${res.bytes} total bytes)`);
-
+      lines.push("// captured=" + res.bytes + " bytes" +
+        (res.contentLength !== undefined ? " declared=" + res.contentLength : "") +
+        " time=" + res.timingMs + "ms redirects=" + res.redirects +
+        " truncated=" + res.truncated);
+      lines.push("// content-type=" + (res.contentType || "unknown") + " charset=" + res.charset);
+      if (includeBody) {
+        lines.push("");
+        lines.push(responseBody ?? "");
+      }
       return lines.join("\n");
     },
   },
 
   web_fetch: {
     description:
-      "Fetch any URL over HTTP(S): method, custom headers, request body, redirects. Extract modes: raw, text, markdown, links, json. SSRF-guarded, 1 MB cap.",
+      "General-purpose HTTP fetcher with redirects, retries, cookies, custom headers/body, auto extraction, structured links/metadata, truncation reporting, and structured JSON output when needed.",
     inputSchema: {
       type: "object",
       properties: {
         url: prop("string", "URL to fetch (http/https only)"),
-        method: prop("string", "HTTP method", { enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"], default: "GET" }),
+        method: prop("string", "HTTP method", { enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"], default: "GET" }),
         headers: prop("object", "Custom request headers"),
-        body: prop("string", "Request body for POST/PUT/PATCH"),
-        extract: prop("string", "Extraction mode", { enum: ["raw", "text", "markdown", "links", "json"], default: "text" }),
-        max_bytes: prop("number", "Response size cap in bytes (default 262144, max 1048576)"),
-        timeout_ms: prop("number", "Per-request timeout in ms (default 15000, max 30000)"),
+        cookies: prop("object", "Cookies to send"),
+        body: prop("string", "Request body for methods that accept one"),
+        follow_redirects: prop("boolean", "Follow redirects (default true)", { default: true }),
+        max_redirects: prop("number", "Maximum redirects (default 8, max 12)", { default: 8 }),
+        retries: prop("number", "Retries for safe methods and temporary failures (default 1, max 2)", { default: 1 }),
+        extract: prop("string", "Extraction mode", { enum: ["auto", "raw", "text", "markdown", "links", "structured_links", "metadata", "json"], default: "auto" }),
+        response_format: prop("string", "Return just readable content or a structured envelope", { enum: ["content", "json"], default: "content" }),
+        max_bytes: prop("number", "Response byte cap (default 350000, max 1048576)", { default: 350000 }),
+        timeout_ms: prop("number", "Total timeout across redirects in ms (default 18000, max 30000)", { default: 18000 }),
       },
       required: ["url"],
     },
     handler: async (args) => {
-      const res = await fetchGuarded(args.url as string, {
-        method: args.method as string,
-        headers: args.headers as Record<string, string>,
-        body: args.body as string,
-        timeoutMs: args.timeout_ms as number,
-        maxBytes: args.max_bytes as number,
-      });
-      let content = res.text;
-      const extract = (args.extract as string) ?? "text";
-      if (extract === "text") content = htmlToText(content);
-      else if (extract === "markdown") content = htmlToMarkdown(content);
-      else if (extract === "links") {
-        try { content = extractLinks(content, new URL(res.finalUrl)).join("\n"); } catch { content = ""; }
-      } else if (extract === "json") {
-        try { content = JSON.stringify(JSON.parse(content), null, 2); } catch {}
+      const retries = Math.max(0, Math.min(Number(args.retries ?? 1), 2));
+      const res = await fetchWithRetry(String(args.url), {
+        method: String(args.method ?? "GET"),
+        headers: (args.headers as Record<string, string>) ?? undefined,
+        cookies: (args.cookies as Record<string, string>) ?? undefined,
+        body: args.body !== undefined ? String(args.body) : undefined,
+        followRedirects: Boolean(args.follow_redirects ?? true),
+        maxRedirects: Number(args.max_redirects ?? 8),
+        maxBytes: Number(args.max_bytes ?? 350000),
+        timeoutMs: Number(args.timeout_ms ?? 18000),
+      }, retries);
+
+      let mode = String(args.extract ?? "auto");
+      if (mode === "auto") {
+        if (res.contentType.includes("json")) mode = "json";
+        else if (res.contentType.includes("html") || /<html\b/i.test(res.text)) mode = "markdown";
+        else mode = "text";
       }
-      return `HTTP ${res.status} ${res.statusText}\nFinal URL: ${res.finalUrl}\nBytes: ${res.bytes}\nTime: ${res.timingMs}ms\nContent-Type: ${res.headers["content-type"] ?? "?"}\n\n${content}`;
+
+      let content: string;
+      let quality: ReturnType<typeof extractionQuality> | undefined;
+      if (looksBinaryContentType(res.contentType)) {
+        content = "(binary response body omitted)";
+      } else if (mode === "text") {
+        content = htmlToText(res.text);
+      } else if (mode === "markdown") {
+        content = htmlToMarkdown(res.text);
+        quality = extractionQuality(content, res.text);
+      } else if (mode === "links") {
+        try { content = extractLinks(res.text, new URL(res.finalUrl)).join("\n"); } catch { content = ""; }
+      } else if (mode === "structured_links") {
+        try { content = JSON.stringify(extractLinkRecords(res.text, new URL(res.finalUrl)), null, 2); } catch { content = "[]"; }
+      } else if (mode === "metadata") {
+        content = JSON.stringify(extractPageMetadata(res.text, new URL(res.finalUrl)), null, 2);
+      } else if (mode === "json") {
+        try { content = JSON.stringify(JSON.parse(res.text), null, 2); }
+        catch { content = res.text; }
+      } else {
+        content = res.text;
+      }
+
+      if (String(args.response_format ?? "content") === "json") {
+        return JSON.stringify({
+          ok: res.ok,
+          status: res.status,
+          status_text: res.statusText,
+          requested_url: res.requestedUrl,
+          final_url: res.finalUrl,
+          final_method: res.method,
+          timing_ms: res.timingMs,
+          bytes: res.bytes,
+          content_length: res.contentLength ?? null,
+          content_type: res.contentType,
+          charset: res.charset,
+          truncated: res.truncated,
+          redirects: res.redirectChain,
+          headers: res.headers,
+          extract_mode: mode,
+          quality,
+          content,
+        }, null, 2);
+      }
+
+      return [
+        "HTTP " + res.status + " " + res.statusText,
+        "Final URL: " + res.finalUrl,
+        "Method: " + res.method,
+        "Bytes: " + res.bytes + (res.contentLength !== undefined ? " / " + res.contentLength : ""),
+        "Time: " + res.timingMs + "ms",
+        "Content-Type: " + (res.contentType || "?"),
+        "Charset: " + res.charset,
+        "Redirects: " + res.redirects,
+        "Truncated: " + res.truncated,
+        quality ? "Extraction quality: " + quality.score + "/100" : "",
+        "",
+        content,
+      ].filter((line) => line !== "").join("\n");
     },
   },
 
@@ -767,59 +927,127 @@ export const TOOLS: Record<string, ToolDef> = {
 
   web_crawl: {
     description:
-      "Crawl a site: breadth-first, depth-limited, same-domain by default, robots.txt respected, configurable delay. Returns title + content per page with timing.",
+      "Production-minded bounded crawler: breadth-first, robots-aware, canonical-deduplicated, tracking-cleaned, content-type filtered, same-domain by default, with include/exclude patterns, nofollow controls, concurrency, and structured crawl diagnostics.",
     inputSchema: {
       type: "object",
       properties: {
         url: prop("string", "Seed URL"),
-        max_pages: prop("number", "Max pages (default 8, max 25)", { default: 8 }),
-        max_depth: prop("number", "Max link depth (default 2, 0 = seed only)", { default: 2 }),
-        same_domain: prop("boolean", "Only follow same-domain links (default true)", { default: true }),
-        extract: prop("string", "Extraction format", { enum: ["text", "markdown"], default: "markdown" }),
-        delay_ms: prop("number", "Delay between requests in ms (default 300, max 5000)", { default: 300 }),
+        max_pages: prop("number", "Maximum fetched pages (default 10, max 40)", { default: 10 }),
+        max_depth: prop("number", "Maximum link depth (default 2, max 6; 0 = seed only)", { default: 2 }),
+        same_domain: prop("boolean", "Restrict navigation to the seed hostname (default true)", { default: true }),
+        include_subdomains: prop("boolean", "Allow subdomains when same_domain=true (default false)", { default: false }),
+        extract: prop("string", "Per-page extraction format", { enum: ["text", "markdown", "none"], default: "markdown" }),
+        delay_ms: prop("number", "Minimum delay between crawl batches in ms (default 250, max 5000)", { default: 250 }),
         respect_robots: prop("boolean", "Respect robots.txt (default true)", { default: true }),
+        concurrency: prop("number", "Parallel page requests (default 2, max 4)", { default: 2 }),
+        include_patterns: prop("array", "Only crawl URLs matching at least one glob-like pattern, e.g. */docs/*", { items: { type: "string" } }),
+        exclude_patterns: prop("array", "Skip URLs matching any glob-like pattern, e.g. */login*", { items: { type: "string" } }),
+        follow_nofollow: prop("boolean", "Follow rel=nofollow links (default false)", { default: false }),
+        strip_tracking: prop("boolean", "Remove utm_*, gclid, fbclid and similar tracking params before dedupe (default true)", { default: true }),
+        per_page_chars: prop("number", "Maximum extracted characters per page (default 30000, max 80000)", { default: 30000 }),
+        timeout_ms: prop("number", "Per-page fetch timeout in ms (default 15000, max 30000)", { default: 15000 }),
+        response_format: prop("string", "Markdown report or structured JSON", { enum: ["markdown", "json"], default: "markdown" }),
       },
       required: ["url"],
     },
     handler: async (args) => {
-      const { pages, skipped, errors } = await crawlSite(
-        args.url as string,
-        {
-          maxPages: (args.max_pages as number) ?? 8,
-          maxDepth: (args.max_depth as number) ?? 2,
-          sameDomain: (args.same_domain as boolean) ?? true,
-          extract: (args.extract as "text" | "markdown") ?? "markdown",
-          delayMs: (args.delay_ms as number) ?? 300,
-          respectRobots: (args.respect_robots as boolean) ?? true,
-        }
-      );
-      if (pages.length === 0) return `web_crawl: no pages fetched.\n${[...skipped, ...errors].map((s) => `- ${s}`).join("\n")}`;
-      const sections = pages.map((p, i) =>
-        `## [${i + 1}/${pages.length}] ${p.url}\nDepth: ${p.depth} | HTTP ${p.status} | ${p.links} links | ${p.timingMs}ms\n${p.title ? `# ${p.title}\n\n` : ""}${p.content || "(empty)"}`
-      );
-      const totalTime = pages.reduce((s, p) => s + p.timingMs, 0);
-      return `# Crawl of ${args.url}\nPages: ${pages.length} | Skipped: ${skipped.length} | Errors: ${errors.length} | Total: ${totalTime}ms\n${skipped.length ? `\nSkipped:\n${skipped.map((s) => `- ${s}`).join("\n")}` : ""}${errors.length ? `\nErrors:\n${errors.map((s) => `- ${s}`).join("\n")}` : ""}\n\n${sections.join("\n\n")}`;
+      const result = await crawlSite(String(args.url), {
+        maxPages: Number(args.max_pages ?? 10),
+        maxDepth: Number(args.max_depth ?? 2),
+        sameDomain: Boolean(args.same_domain ?? true),
+        includeSubdomains: Boolean(args.include_subdomains ?? false),
+        extract: String(args.extract ?? "markdown") as "text" | "markdown" | "none",
+        delayMs: Number(args.delay_ms ?? 250),
+        respectRobots: Boolean(args.respect_robots ?? true),
+        concurrency: Number(args.concurrency ?? 2),
+        includePatterns: Array.isArray(args.include_patterns) ? args.include_patterns.map(String) : undefined,
+        excludePatterns: Array.isArray(args.exclude_patterns) ? args.exclude_patterns.map(String) : undefined,
+        followNofollow: Boolean(args.follow_nofollow ?? false),
+        stripTracking: Boolean(args.strip_tracking ?? true),
+        perPageChars: Number(args.per_page_chars ?? 30000),
+        timeoutMs: Number(args.timeout_ms ?? 15000),
+      });
+
+      if (String(args.response_format ?? "markdown") === "json") {
+        return JSON.stringify(result, null, 2);
+      }
+
+      if (result.pages.length === 0) {
+        return [
+          "# Crawl of " + args.url,
+          "No pages were successfully fetched.",
+          result.skipped.length ? "\nSkipped:\n" + result.skipped.map((s) => "- " + s).join("\n") : "",
+          result.errors.length ? "\nErrors:\n" + result.errors.map((s) => "- " + s).join("\n") : "",
+        ].filter(Boolean).join("\n");
+      }
+
+      const sections = result.pages.map((p, index) => [
+        "## [" + (index + 1) + "/" + result.pages.length + "] " + (p.title || p.finalUrl),
+        "URL: " + p.url,
+        p.finalUrl !== p.url ? "Final URL: " + p.finalUrl : "",
+        p.canonical && p.canonical !== p.finalUrl ? "Canonical: " + p.canonical : "",
+        "Depth: " + p.depth + " | HTTP " + p.status + " | " + p.contentType +
+          " | " + p.bytes + " bytes | " + p.words + " words | " + p.links + " links | " + p.timingMs + "ms",
+        "Truncated: " + p.truncated,
+        "",
+        p.content || "(content extraction disabled/empty)",
+      ].filter(Boolean).join("\n"));
+
+      return [
+        "# Crawl of " + args.url,
+        "Pages: " + result.pages.length +
+          " | Discovered: " + result.discovered +
+          " | Skipped: " + result.skipped.length +
+          " | Errors: " + result.errors.length,
+        "Robots: " + JSON.stringify(result.robots),
+        result.skipped.length ? "\nSkipped:\n" + result.skipped.map((s) => "- " + s).join("\n") : "",
+        result.errors.length ? "\nErrors:\n" + result.errors.map((s) => "- " + s).join("\n") : "",
+        "",
+        sections.join("\n\n"),
+      ].filter(Boolean).join("\n");
     },
   },
 
   browser_scrape: {
     description:
-      "Scrape JS-rendered or Cloudflare-protected pages. Multi-strategy: Jina Reader (free) → Google Cache (free) → Direct fetch. Returns title + markdown + timing.",
+      "Renderer-first scraping for difficult or JS-heavy pages. Tries Jina Reader before direct extraction and returns source, quality, truncation, timing, and strategy-attempt diagnostics.",
     inputSchema: {
       type: "object",
       properties: {
-        url: prop("string", "URL to scrape"),
-        strategies: prop("array", "Strategy order (default: jina, google-cache, direct)", {
-          items: { type: "string", enum: ["jina", "google-cache", "direct"] },
-          default: ["jina", "google-cache", "direct"],
-        }),
+        url: prop("string", "Public URL to scrape"),
+        strategies: prop("array", "Strategy order", { items: { type: "string", enum: ["jina", "direct", "google-cache"] }, default: ["jina", "direct"] }),
+        max_chars: prop("number", "Maximum extracted characters (default 100000, max 160000)", { default: 100000 }),
+        no_cache: prop("boolean", "Ask Jina Reader not to cache/track the request (default true)", { default: true }),
+        jina_engine: prop("string", "Jina rendering engine", { enum: ["default", "direct", "cf-browser-rendering"], default: "cf-browser-rendering" }),
+        target_selector: prop("string", "Optional CSS selector to keep"),
+        remove_selector: prop("string", "Optional CSS selector(s) to remove"),
       },
       required: ["url"],
     },
     handler: async (args) => {
-      const strategies = (args.strategies as ("jina" | "google-cache" | "direct")[]) ?? undefined;
-      const result = await scrapeUrl(args.url as string, strategies ? { strategies } : {});
-      return `${result.title ? `# ${result.title}\n\n` : ""}${result.text}\n\n---\nSource: ${result.source} | HTTP ${result.status} | ${result.timingMs}ms`;
+      const strategies = Array.isArray(args.strategies)
+        ? args.strategies.map(String) as ("jina" | "direct" | "google-cache")[]
+        : ["jina", "direct"];
+      const result = await scrapeUrl(String(args.url), {
+        strategies,
+        maxChars: Number(args.max_chars ?? 100000),
+        noCache: Boolean(args.no_cache ?? true),
+        jinaEngine: String(args.jina_engine ?? "cf-browser-rendering") as "default" | "direct" | "cf-browser-rendering",
+        targetSelector: args.target_selector ? String(args.target_selector) : undefined,
+        removeSelector: args.remove_selector ? String(args.remove_selector) : undefined,
+      });
+      return [
+        result.title ? "# " + result.title + "\n" : "",
+        result.text,
+        "\n---",
+        "Source: " + result.source,
+        "Final URL: " + result.finalUrl,
+        "HTTP: " + result.status,
+        "Time: " + result.timingMs + "ms",
+        "Quality: " + result.quality.score + "/100 (" + result.quality.words + " words)",
+        "Truncated: " + result.truncated,
+        "Attempts: " + JSON.stringify(result.attempts),
+      ].filter(Boolean).join("\n");
     },
   },
 
