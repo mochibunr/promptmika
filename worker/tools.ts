@@ -9,6 +9,7 @@ import { htmlToText, htmlToMarkdown, extractLinks } from "./html";
 import { PACKS, PACK_FILE_CAP, loadPack } from "./pack";
 import { scanCode, summarize, type Severity } from "./security-scan";
 import { generateScaffold, SUPPORTED_LANGUAGES, PROJECT_TYPES } from "./scaffold";
+import { listWebTemplates, searchWebTemplateLibrary, loadWebTemplateStudy } from "./web-templates";
 
 const BATCH_DEFAULT = 20000;
 
@@ -22,22 +23,6 @@ export interface ToolDef {
   handler: (args: Record<string, unknown>, env?: { SERPER_API_KEY?: string }) => Promise<string>;
 }
 
-
-const WEB_TEMPLATE_HINTS = [
-  "landing-page.md", "portfolio.md", "prototype.md", "content-page.md",
-  "web-tool.md", "deck.md", "social-card.md", "info-interactive.md",
-  "canvas-and-device.md", "export.md", "design-system.md",
-  "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md"
-];
-
-function templateCandidates(): string[] {
-  const refs = listReferences();
-  const hinted = WEB_TEMPLATE_HINTS.filter((name) => refs.includes(name));
-  const discovered = refs.filter((name) =>
-    /(?:template|landing|portfolio|prototype|page|dashboard|commerce|website|webapp|web-app|app-showcase)/i.test(name)
-  );
-  return [...new Set([...hinted, ...discovered])].sort();
-}
 
 function docStats(content: string) {
   const lines = content.split("\n");
@@ -146,6 +131,9 @@ export const TOOLS: Record<string, ToolDef> = {
       choose("load_specialized_pages", /landing|portfolio|dashboard|prototype|deck|social|page/);
       if (recommendedPacks.length === 0) recommendedPacks.push("load_contract");
 
+      const templateMatches = /front|ui|ux|website|landing|portfolio|design|style|brand|app|dashboard|commerce/i.test(task)
+        ? searchWebTemplateLibrary(task).slice(0, 5).map(({ id, name, folder, kind, description, liveDemo, score }) => ({ id, name, folder, kind, description, liveDemo, score }))
+        : [];
       const previews = matches.map((m) => {
         const doc = resolveDocument(m.name);
         return {
@@ -159,6 +147,7 @@ export const TOOLS: Record<string, ToolDef> = {
         task,
         recommended_packs: [...new Set(recommendedPacks)],
         references: previews,
+        web_template_matches: templateMatches,
         next_step: "Load only the packs/references relevant to the task, then execute against those references."
       }, null, 2);
     },
@@ -213,57 +202,55 @@ export const TOOLS: Record<string, ToolDef> = {
   },
 
   list_web_templates: {
-    description: "List PromptMika references that can act as website/page templates or implementation recipes.",
-    inputSchema: { type: "object", properties: {} },
-    handler: async () => {
-      const items = templateCandidates();
-      return `PromptMika web templates / page recipes (${items.length}):\n${items.map((x) => `- ${x}`).join("\n")}`;
+    description: "List the 25 read-only WebTemplate references available to PromptMika, grouped as origin, frontend, full-stack, and visual style studies.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        kind: prop("string", "Optional category filter", { enum: ["all", "origin", "frontend", "fullstack", "style"], default: "all" }),
+      },
+    },
+    handler: async (args) => {
+      const items = listWebTemplates(String(args.kind ?? "all"));
+      return JSON.stringify({
+        source: "WyvernCW/WebTemplate",
+        policy: "Read-only study references. Learn the design DNA; never clone code/assets.",
+        count: items.length,
+        templates: items,
+      }, null, 2);
     },
   },
 
   search_web_templates: {
-    description: "Search PromptMika's web/page template references by purpose, style, or page type.",
+    description: "Search PromptMika's 25-item WebTemplate reference library by name, category, visual direction, or product purpose.",
     inputSchema: {
       type: "object",
-      properties: { query: prop("string", "Template intent, e.g. 'portfolio editorial', 'dashboard', 'restaurant landing'") },
+      properties: {
+        query: prop("string", "Template intent, style, or product type, e.g. 'playful professional', 'editorial', '3D gallery', 'fullstack notes'"),
+        limit: prop("number", "Maximum results (default 8, max 25)", { default: 8 }),
+      },
       required: ["query"],
     },
     handler: async (args) => {
-      const q = String(args.query).toLowerCase().trim();
-      const words = q.split(/\s+/).filter(Boolean);
-      const scored = templateCandidates().map((name) => {
-        const doc = resolveDocument(name);
-        const hay = `${name}\n${doc?.content.slice(0, 5000) ?? ""}`.toLowerCase();
-        const score = words.reduce((n, w) => n + (hay.includes(w) ? 1 : 0), 0) + (hay.includes(q) ? 3 : 0);
-        return { name, score };
-      }).filter((x) => x.score > 0).sort((a,b) => b.score - a.score || a.name.localeCompare(b.name)).slice(0, 15);
-      return scored.length ? scored.map((x) => `- ${x.name} (score ${x.score})`).join("\n") : "No web templates matched.";
+      const limit = Math.max(1, Math.min(Number(args.limit ?? 8), 25));
+      const results = searchWebTemplateLibrary(String(args.query)).slice(0, limit);
+      return JSON.stringify({
+        query: String(args.query),
+        source: "WyvernCW/WebTemplate",
+        results,
+      }, null, 2);
     },
   },
 
   load_web_template: {
-    description: "Load one PromptMika web template/page recipe by filename.",
+    description: "Load one WebTemplate study reference from WyvernCW/WebTemplate. Returns read-only study notes plus a strict anti-copy/adaptation contract; it never clones the template into the active project.",
     inputSchema: {
       type: "object",
       properties: {
-        name: prop("string", "Template/reference filename"),
-        offset: prop("number", "0-based line offset", { default: 0 }),
-        limit: prop("number", "Max lines (default 5000, max 20000)", { default: 5000 }),
+        name: prop("string", "Template ID, name, or folder, e.g. '17', 'Kaleo', or 'kaleo-style'"),
       },
       required: ["name"],
     },
-    handler: async (args) => {
-      const name = String(args.name);
-      if (!templateCandidates().includes(name)) return `Unknown web template: ${name}`;
-      const doc = resolveDocument(name);
-      if (!doc) return `Template not found in this build: ${name}`;
-      const lines = doc.content.split("\n");
-      const start = Math.max(0, Number(args.offset ?? 0));
-      const limit = Math.max(1, Math.min(Number(args.limit ?? 5000), 20000));
-      const end = Math.min(start + limit, lines.length);
-      return lines.slice(start, end).join("\n") +
-        (end < lines.length ? `\n\n--- Continue with offset=${end}. ---` : "");
-    },
+    handler: async (args) => loadWebTemplateStudy(String(args.name)),
   },
 
   browser_verify: {
