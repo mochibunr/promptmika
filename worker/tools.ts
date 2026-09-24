@@ -4,12 +4,14 @@ import { resolveDocument, listReferences, searchReferences } from "./refs";
 import { searchWeb } from "./search";
 import { crawlSite } from "./crawl";
 import { scrapeUrl } from "./scrape";
-import { fetchGuarded } from "./fetch";
-import { htmlToText, htmlToMarkdown, extractLinks } from "./html";
+import { fetchGuarded, fetchWithRetry, looksBinaryContentType } from "./fetch";
+import { htmlToText, htmlToMarkdown, extractLinks, extractLinkRecords, extractPageMetadata, extractionQuality } from "./html";
 import { PACKS, PACK_FILE_CAP, loadPack } from "./pack";
 import { scanCode, summarize, type Severity } from "./security-scan";
 import { generateScaffold, SUPPORTED_LANGUAGES, PROJECT_TYPES } from "./scaffold";
 import { listWebTemplates, searchWebTemplateLibrary, loadWebTemplateStudy } from "./web-templates";
+import { discoverSitemap } from "./sitemap";
+import { probeUrl } from "./probe";
 
 const BATCH_DEFAULT = 20000;
 
@@ -86,7 +88,7 @@ export const TOOLS: Record<string, ToolDef> = {
     handler: async () => {
       return JSON.stringify({
         name: "promptmika",
-        version: "3.6.0",
+        version: "3.7.0",
         transport: "JSON-RPC 2.0 over HTTP/SSE",
         reference_count: listReferences().length,
         web_template_count: listWebTemplates("all").length,
