@@ -44,7 +44,7 @@ async function handleRpc(rpc: JsonRpcRequest): Promise<unknown> {
     return {
       protocolVersion: "2024-11-05",
       capabilities: { tools: {} },
-      serverInfo: { name: "promptmika", version: "3.6.0" },
+      serverInfo: { name: "promptmika", version: "3.7.0" },
     };
   }
 
