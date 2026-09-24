@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Analytics } from "@vercel/analytics/react";
 import { LiveTerminal } from "@/components/LiveTerminal";
 import { CopyUrl, MCPUrl } from "@/components/MCPUrl";
 
@@ -283,8 +282,6 @@ export default function Home() {
           <Link href="/connect">Connect</Link>
         </div>
       </footer>
-
-      <Analytics />
     </>
   );
 }
