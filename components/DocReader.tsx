@@ -29,48 +29,43 @@ export function DocReader({
 
   return (
     <>
-      <nav className="nav" aria-label="Primary">
-        <div className="nav-pill">
-          <Link className="brand" href="/">
-            <span className="brand-mark" aria-hidden="true" />
-            PromptMika
-          </Link>
-          <div className="nav-links">
-            <a href="/#packs">Packs</a>
-            <a href="/#tools">Tools</a>
-            <Link href="/" className="nav-cta">
-              Home
-            </Link>
-          </div>
+      <nav className="top-nav">
+        <Link href="/" className="logo">
+          <span className="logo-mark">P</span>
+          <span>PromptMika</span>
+        </Link>
+        <div className="nav-center">
+          <Link href="/#workflow">Workflow</Link>
+          <Link href="/#packs">Packs</Link>
+          <Link href="/#tools">Tools</Link>
+          <Link href="/design">Design systems</Link>
         </div>
+        <Link href="/connect" className="nav-button">Connect MCP</Link>
       </nav>
 
-      <header className="hero doc-hero">
-        <div className="hero-field" aria-hidden="true" />
-        <div className="container">
-          <p className="eyebrow">
-            <span className="led" aria-hidden="true" />
-            {uri} · also served over MCP
-          </p>
-          <h1 style={{ marginTop: 14 }}>{title}</h1>
-          <p className="note" style={{ transform: "rotate(-1deg)", marginTop: 10 }}>
-            {note}
-          </p>
-          <p className="doc-siblings">
-            read also:{" "}
-            {siblings.map((s, i) => (
-              <span key={s.href}>
-                {i > 0 && " · "}
-                <Link href={s.href}>{s.label}</Link>
-              </span>
+      <main className="doc-shell">
+        <header className="doc-hero-v2">
+          <div>
+            <span className="section-kicker">{uri} / MCP RESOURCE</span>
+            <h1>{title}</h1>
+            <p>{note}</p>
+          </div>
+          <div className="doc-meta-panel">
+            <span>READ ALSO</span>
+            {siblings.map((s) => (
+              <Link key={s.href} href={s.href}>{s.label}<b>↗</b></Link>
             ))}
-          </p>
-        </div>
-      </header>
+          </div>
+        </header>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <article className="doc">
+        <section className="doc-page">
+          <aside className="doc-aside">
+            <span className="section-kicker">RESOURCE</span>
+            <code>{uri}</code>
+            <p>Served both as a website document and through PromptMika's MCP reference tools.</p>
+          </aside>
+
+          <article className="doc doc-spatial">
             {(() => {
               const fm = parseYamlFrontmatter(md);
               return fm ? (
@@ -82,17 +77,13 @@ export function DocReader({
             })()}
             {renderMarkdown(md)}
           </article>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      <footer className="footer">
-        <div className="container footer-inner">
-          <span>MCP server · v3.5.0 · load via {uri}</span>
-          <div className="footer-links">
-            <Link href="/">Home</Link>
-            <Link href="/connect">Setup</Link>
-          </div>
-        </div>
+      <footer className="site-footer">
+        <div className="logo"><span className="logo-mark">P</span><span>PromptMika</span></div>
+        <p>v3.6.0 · resource: {uri}</p>
+        <div><Link href="/">Home</Link><Link href="/connect">Connect</Link></div>
       </footer>
     </>
   );
