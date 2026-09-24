@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Karla, Protest_Strike } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const display = Protest_Strike({
@@ -24,7 +25,7 @@ const hand = Caveat({
 export const metadata: Metadata = {
   title: "PromptMika — knowledge packs for coding agents",
   description:
-    "An MCP server that arms your AI with elite references: frontend design, security catalogs, testing, systems. 23 tools, 162 files, one endpoint.",
+    "An MCP server that gives coding agents curated design, engineering, security, testing, web-research, and debugging context. 37 tools, 58 design styles, one endpoint.",
 };
 
 export const viewport: Viewport = {
@@ -36,7 +37,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${hand.variable}`}>
-      <body>{children}</body>
+      <body>{children}<Analytics /></body>
     </html>
   );
 }
