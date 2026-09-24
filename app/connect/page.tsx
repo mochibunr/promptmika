@@ -1,71 +1,61 @@
 import Link from "next/link";
+import { SiteNav, SiteFooter } from "@/components/SiteChrome";
 import { MCPUrl, CopyUrl } from "@/components/MCPUrl";
 import ConnectTabs from "@/components/ConnectTabs";
 
 export default function ConnectPage() {
   return (
-    <>
-      <nav className="top-nav">
-        <Link href="/" className="logo">
-          <span className="logo-mark">P</span>
-          <span>PromptMika</span>
-        </Link>
-        <div className="nav-center">
-          <Link href="/#workflow">Workflow</Link>
-          <Link href="/#packs">Packs</Link>
-          <Link href="/#tools">Tools</Link>
-          <Link href="/design">Design systems</Link>
-        </div>
-        <Link href="/" className="nav-button">Home</Link>
-      </nav>
+    <div className="pm-site">
+      <SiteNav />
 
-      <main className="connect-page">
-        <header className="connect-hero">
+      <main className="pm-content-shell">
+        <header className="pm-content-hero">
           <div>
-            <span className="section-kicker">REMOTE MCP SETUP</span>
-            <h1>Connect your client to PromptMika.</h1>
+            <span className="pm-kicker">REMOTE MCP / SETUP</span>
+            <h1>Plug PromptMika into your client.</h1>
             <p>
-              One stateless JSON-RPC endpoint exposes all 37 tools, 13 knowledge packs,
-              and the embedded reference library.
+              One stateless endpoint exposes 37 tools, 13 knowledge packs,
+              58 design styles, and the 25-reference WebTemplate library.
             </p>
           </div>
-          <div className="connect-endpoint-card">
+
+          <aside className="pm-content-side pm-connect-endpoint">
             <span>ENDPOINT</span>
             <code><MCPUrl /></code>
             <CopyUrl />
-          </div>
+          </aside>
         </header>
 
-        <section className="connect-workbench">
-          <div className="connect-main">
+        <section className="pm-connect-layout">
+          <div className="pm-connect-tabs">
             <ConnectTabs />
           </div>
 
-          <aside className="connect-facts-v2">
-            <div>
-              <span>TRANSPORT</span>
-              <strong>HTTP + SSE</strong>
-              <p>Streamable JSON-RPC over the Vercel endpoint.</p>
-            </div>
-            <div>
-              <span>VERIFY</span>
-              <strong>tools/list</strong>
-              <p>Expect 37 tools from the current v3.6.0 server.</p>
-            </div>
-            <div>
-              <span>DEFAULT URL</span>
-              <strong>/api/mcp</strong>
-              <p>Use the full HTTPS URL in clients that support remote MCP servers.</p>
-            </div>
+          <aside className="pm-connect-notes">
+            <article>
+              <span>01</span>
+              <strong>Transport</strong>
+              <p>Streamable HTTP POST plus SSE-compatible responses.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>Verify</strong>
+              <p>Call <code>tools/list</code> and expect 37 tools from v3.6.0.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>Templates</strong>
+              <p>Use <code>list_web_templates</code> to see all 25 read-only studies.</p>
+            </article>
           </aside>
         </section>
+
+        <div className="pm-connect-back">
+          <Link href="/templates">Browse WebTemplate library ↗</Link>
+        </div>
       </main>
 
-      <footer className="site-footer">
-        <div className="logo"><span className="logo-mark">P</span><span>PromptMika</span></div>
-        <p>v3.6.0 · 37 tools · remote MCP</p>
-        <div><Link href="/">Home</Link><Link href="/design">Design</Link></div>
-      </footer>
-    </>
+      <SiteFooter />
+    </div>
   );
 }
