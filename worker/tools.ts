@@ -48,7 +48,7 @@ function docStats(content: string) {
 }
 
 function extractMeta(html: string, name: string): string {
-  const escaped = name.replace(/[.*+?^$()|[\]\\]/g, "\\export const TOOLS: Record<string, ToolDef> = {");
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const a = html.match(new RegExp(`<meta[^>]+(?:name|property)=["']${escaped}["'][^>]+content=["']([^"']*)["'][^>]*>`, "i"));
   const b = html.match(new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+(?:name|property)=["']${escaped}["'][^>]*>`, "i"));
   return (a?.[1] ?? b?.[1] ?? "").trim();
