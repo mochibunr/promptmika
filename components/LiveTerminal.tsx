@@ -19,7 +19,7 @@ const FALLBACK = [
 
 const PREFACE: Line[] = [
   { text: "$ promptmika --open", cls: "cmd" },
-  { text: "tools/list \u00b7 23 tools", cls: "dim" },
+  { text: "tools/list \u00b7 37 tools", cls: "dim" },
   { text: "list_references \u00b7 162 files \u00b7 reading shelf\u2026", cls: "dim" },
 ];
 
