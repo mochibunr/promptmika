@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
+import { SiteNav, SiteFooter } from "@/components/SiteChrome";
 import { renderMarkdown, parseYamlFrontmatter, YamlView } from "@/lib/render-md";
 
 const DOCS = [
@@ -28,44 +29,35 @@ export function DocReader({
   const siblings = DOCS.filter((d) => d.href !== href);
 
   return (
-    <>
-      <nav className="top-nav">
-        <Link href="/" className="logo">
-          <span className="logo-mark">P</span>
-          <span>PromptMika</span>
-        </Link>
-        <div className="nav-center">
-          <Link href="/#workflow">Workflow</Link>
-          <Link href="/#packs">Packs</Link>
-          <Link href="/#tools">Tools</Link>
-          <Link href="/design">Design systems</Link>
-        </div>
-        <Link href="/connect" className="nav-button">Connect MCP</Link>
-      </nav>
+    <div className="pm-site">
+      <SiteNav />
 
-      <main className="doc-shell">
-        <header className="doc-hero-v2">
+      <main className="pm-content-shell">
+        <header className="pm-content-hero">
           <div>
-            <span className="section-kicker">{uri} / MCP RESOURCE</span>
+            <span className="pm-kicker">{uri} / MCP RESOURCE</span>
             <h1>{title}</h1>
             <p>{note}</p>
           </div>
-          <div className="doc-meta-panel">
-            <span>READ ALSO</span>
+
+          <aside className="pm-content-side">
+            <span>READ NEXT</span>
             {siblings.map((s) => (
-              <Link key={s.href} href={s.href}>{s.label}<b>↗</b></Link>
+              <Link key={s.href} href={s.href}>
+                {s.label}<b>↗</b>
+              </Link>
             ))}
-          </div>
+          </aside>
         </header>
 
-        <section className="doc-page">
-          <aside className="doc-aside">
-            <span className="section-kicker">RESOURCE</span>
+        <section className="pm-doc-layout">
+          <aside className="pm-doc-rail">
+            <span className="pm-kicker">RESOURCE</span>
             <code>{uri}</code>
-            <p>Served both as a website document and through PromptMika's MCP reference tools.</p>
+            <p>Available on the website and through PromptMika's reference tools. Large documents remain pageable over MCP.</p>
           </aside>
 
-          <article className="doc doc-spatial">
+          <article className="doc">
             {(() => {
               const fm = parseYamlFrontmatter(md);
               return fm ? (
@@ -80,11 +72,7 @@ export function DocReader({
         </section>
       </main>
 
-      <footer className="site-footer">
-        <div className="logo"><span className="logo-mark">P</span><span>PromptMika</span></div>
-        <p>v3.6.0 · resource: {uri}</p>
-        <div><Link href="/">Home</Link><Link href="/connect">Connect</Link></div>
-      </footer>
-    </>
+      <SiteFooter />
+    </div>
   );
 }
