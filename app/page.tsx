@@ -1,128 +1,90 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import Reveal from "@/components/Reveal";
 import { LiveTerminal } from "@/components/LiveTerminal";
 import { CmdPalette } from "@/components/CmdPalette";
 import { CopyUrl, MCPUrl } from "@/components/MCPUrl";
 
-/* ---------- tiny cut-paper decorations ---------- */
+const PACKS = [
+  ["load_contract", "Start here", "Design language, policy digest, and skill contract."],
+  ["load_frontend_design", "Build the interface", "Frontend craft, responsive rules, anti-slop guidance, and DESIGN.md."],
+  ["load_design_systems", "Pick an art direction", "58-style catalog, selection rules, and implementation references."],
+  ["load_horizontal_craft", "Polish the details", "Typography, color, motion, accessibility, icons, forms, and UX laws."],
+  ["load_backend_api", "Shape the backend", "Backend patterns, API contracts, and integration guidance."],
+  ["load_security", "Break it before users do", "Nine vulnerability catalogs across language families."],
+  ["load_testing", "Prove it works", "Unit, integration, e2e, mocking, and coverage strategy."],
+  ["load_state_management", "Control state", "Redux, Zustand, Jotai, signals, persistence, and tradeoffs."],
+  ["load_systems_devops", "Ship the system", "Architecture, builds, DevOps, performance, and interop."],
+  ["load_context_engine", "Stay coherent", "Long-session context, iteration loops, and quality gates."],
+  ["load_token_efficiency", "Spend context wisely", "Compression, selective loading, and self-review."],
+  ["load_creative_writing", "Write with intent", "Narrative, prose, tone, and style."],
+  ["load_specialized_pages", "Use page recipes", "Landing pages, portfolios, prototypes, decks, tools, and more."],
+] as const;
 
-function Starburst({ line1, line2 }: { line1: string; line2: string }) {
+const TOOL_GROUPS = [
+  {
+    eyebrow: "orient",
+    title: "Context & references",
+    tools: [
+      ["promptmika_info", "See server capabilities, version, packs, tools, and reference count."],
+      ["get_context", "Describe the task; PromptMika recommends the smallest useful context set."],
+      ["search_references", "Search the embedded knowledge base by topic."],
+      ["inspect_reference", "Preview headings, stats, and metadata before loading a large file."],
+      ["load_reference", "Load exactly one reference with paging."],
+      ["list_references", "List the whole embedded reference shelf."],
+      ["load_claude_policy", "Load the compact policy or the full version only when needed."],
+    ],
+  },
+  {
+    eyebrow: "research",
+    title: "Web & extraction",
+    tools: [
+      ["web_search", "Search the web with free-first fallbacks."],
+      ["web_fetch", "Fetch raw, text, Markdown, links, or JSON."],
+      ["web_curl", "Inspect headers, redirects, cookies, timing, and response bodies."],
+      ["web_scrape", "Use PromptMika's multi-strategy scraper."],
+      ["browser_scrape", "Try Jina, cache, then direct extraction for difficult pages."],
+      ["web_crawl", "Crawl politely with depth, domain, robots, and rate controls."],
+      ["web_batch_fetch", "Fetch up to ten URLs in one guarded call."],
+      ["extract_html", "Turn supplied HTML into text, Markdown, links, or a structural summary."],
+      ["compare_extractions", "Compare raw, text, and Markdown output before choosing one."],
+    ],
+  },
+  {
+    eyebrow: "verify",
+    title: "Debug & build",
+    tools: [
+      ["browser_verify", "Check deployed-page status, metadata, H1s, viewport, alt coverage, and links."],
+      ["debug_website", "Diagnose markup, HTTP behavior, common error signatures, and page structure."],
+      ["debug_screenshot", "Check screenshot readiness and capture dimensions without pretending pixels were rendered."],
+      ["security_scan", "Scan supplied source for suspicious patterns and actionable fixes."],
+      ["generate_scaffold", "Generate a secure project scaffold with build instructions."],
+      ["list_web_templates", "List web-oriented recipes in the knowledge base."],
+      ["search_web_templates", "Find page recipes by purpose or style."],
+      ["load_web_template", "Load one selected template recipe."],
+    ],
+  },
+] as const;
+
+function Burst() {
   const points: string[] = [];
-  const spikes = 14;
-  for (let i = 0; i < spikes * 2; i++) {
-    const r = i % 2 === 0 ? 62 : 47;
-    const a = (Math.PI * i) / spikes - Math.PI / 2;
-    points.push(`${65 + r * Math.cos(a)},${65 + r * Math.sin(a)}`);
+  for (let i = 0; i < 28; i++) {
+    const radius = i % 2 === 0 ? 63 : 45;
+    const angle = (Math.PI * i) / 14 - Math.PI / 2;
+    points.push(`${65 + radius * Math.cos(angle)},${65 + radius * Math.sin(angle)}`);
   }
+
   return (
-    <svg className="starburst" width="130" height="130" viewBox="0 0 130 130" role="img" aria-label={`${line1} ${line2}`}>
-      <polygon points={points.join(" ")} fill="var(--orange)" stroke="var(--brown-deep)" strokeWidth="3" />
-      <text x="65" y="60" textAnchor="middle" fontSize="26" fill="var(--brown-deep)">
-        {line1}
-      </text>
-      <text x="65" y="84" textAnchor="middle" fontSize="19" fill="var(--brown-deep)">
-        {line2}
-      </text>
+    <svg className="hero-burst" viewBox="0 0 130 130" aria-label="37 tools">
+      <polygon points={points.join(" ")} />
+      <text x="65" y="57" textAnchor="middle">37</text>
+      <text x="65" y="80" textAnchor="middle">TOOLS</text>
     </svg>
   );
 }
-
-function Sparkle({ size = 20, className = "" }: { size?: number; className?: string }) {
-  return (
-    <svg className={`sparkle ${className}`} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 0C13.1 7.4 16.6 10.9 24 12C16.6 13.1 13.1 16.6 12 24C10.9 16.6 7.4 13.1 0 12C7.4 10.9 10.9 7.4 12 0Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-function SquiggleCheck() {
-  return (
-    <svg className="squiggle-check" width="30" height="22" viewBox="0 0 30 22" aria-hidden="true">
-      <path d="M2 12 Q6 20 10 13 Q14 4 18 10 L28 3" fill="none" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function Ticker() {
-  const items = ["162 files", "13 packs", "37 tools", "zero dependencies", "one endpoint", "SSRF-guarded"];
-  const strip = (hidden: boolean) => (
-    <div className="ticker-half" aria-hidden={hidden || undefined}>
-      {items.map((t) => (
-        <span key={t}>
-          {t} <span className="spark">✷</span>
-        </span>
-      ))}
-    </div>
-  );
-  return (
-    <div className="ticker" aria-label="PromptMika by the numbers">
-      <div className="ticker-track">
-        {strip(false)}
-        {strip(true)}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- data ---------- */
-
-const PACKS: { name: string; desc: string; files: number; size: string; tone?: string; tape?: boolean }[] = [
-  { name: "load_frontend_design", desc: "Design philosophy, component patterns, responsive layout, anti-slop rules.", files: 4, size: "pack-lg" },
-  { name: "load_security", desc: "Nine vulnerability catalogs — root causes to remediations, per language family.", files: 9, size: "pack-sm", tone: "dark", tape: true },
-  { name: "load_contract", desc: "The skill definition + policy digest. First read of every session.", files: 2, size: "pack-md" },
-  { name: "load_specialized_pages", desc: "Landing pages, portfolios, prototypes, decks, social cards — ten artifact recipes.", files: 10, size: "pack-md", tone: "olive" },
-  { name: "load_horizontal_craft", desc: "Typography, animation, color, icons, accessibility, form validation, UX laws.", files: 12, size: "pack-sm" },
-  { name: "load_design_systems", desc: "System selection guide, index, full catalog — matched by mood and formality.", files: 3, size: "pack-sm" },
-  { name: "load_backend_api", desc: "Backend patterns, API design, integration contracts.", files: 2, size: "pack-sm" },
-  { name: "load_testing", desc: "Unit, integration, e2e, mocking, coverage strategy — with the Build-Test-Loop wired in.", files: 2, size: "pack-lg", tape: true },
-  { name: "load_state_management", desc: "Redux, Zustand, Jotai, signals — pattern selection by complexity.", files: 1, size: "pack-sm" },
-  { name: "load_context_engine", desc: "Context retention, iteration workflow, quality gates across long sessions.", files: 3, size: "pack-md" },
-  { name: "load_systems_devops", desc: "Architecture, build systems, interop, performance, universal patterns.", files: 5, size: "pack-md" },
-  { name: "load_creative_writing", desc: "Narrative, prose, style, tone.", files: 1, size: "pack-sm" },
-  { name: "load_token_efficiency", desc: "Token compression levels and the self-critique protocol.", files: 2, size: "pack-sm" },
-];
-
-const MODULES: { name: string; desc: string }[] = [
-  { name: "promptmika_info", desc: "Server/version/capability inventory: packs, tools, references, runtime notes." },
-  { name: "get_context", desc: "Task-aware context router: recommends the right packs and references before the agent builds." },
-  { name: "load_claude_policy", desc: "Loads the condensed or full CLAUDE policy with paging." },
-  { name: "inspect_reference", desc: "Reference metadata, headings, statistics, and preview without dumping the entire file." },
-  { name: "list_web_templates", desc: "Lists page recipes and web-oriented references available in PromptMika." },
-  { name: "search_web_templates", desc: "Finds page recipes by purpose, visual style, or product type." },
-  { name: "load_web_template", desc: "Loads one selected page/template recipe with paging." },
-  { name: "browser_verify", desc: "Checks a deployed page: HTTP status, metadata, H1s, viewport, image-alt coverage, forms, scripts, links." },
-  { name: "debug_website", desc: "HTTP + HTML diagnostics with common error signatures, document stats, links, and text preview." },
-  { name: "debug_screenshot", desc: "Screenshot-readiness diagnostics and exact capture target/viewport; reports when rendered pixels are unavailable." },
-  { name: "web_fetch", desc: "Any URL as raw, text, markdown, links, or JSON — byte-capped, timeout-clamped." },
-  { name: "web_search", desc: "DuckDuckGo → Serper → Bing cascade. Free path first; no key required for the primary path." },
-  { name: "web_crawl", desc: "Polite breadth-first crawler — robots-aware, same-domain, rate-limited." },
-  { name: "web_scrape", desc: "Multi-strategy public-page scraper; conventional alias for browser_scrape." },
-  { name: "browser_scrape", desc: "Jina Reader → Google Cache → direct extraction chain for difficult pages." },
-  { name: "web_curl", desc: "curl-style HTTP debugging: headers, cookies, timing, redirects, body." },
-  { name: "web_batch_fetch", desc: "Fetches up to ten URLs together through the same SSRF guard." },
-  { name: "extract_html", desc: "Turns supplied HTML into text, markdown, links, title, or a structural summary." },
-  { name: "compare_extractions", desc: "Compares raw/text/markdown extraction and suggests the more useful representation." },
-  { name: "search_references", desc: "Searches the embedded PromptMika knowledge base by topic." },
-  { name: "load_reference", desc: "Loads a selected reference by URI with paging for large documents." },
-  { name: "list_references", desc: "Lists the full embedded reference catalog." },
-  { name: "security_scan", desc: "Regex SAST across many language families, severity-sorted findings with fixes." },
-  { name: "generate_scaffold", desc: "Generates hardened project scaffolds with build commands and security-minded defaults." },
-];
-
-const STATS = [
-  { num: "162", label: "reference files, embedded" },
-  { num: "37", label: "tools, one endpoint" },
-  { num: "5k", label: "lines per pack call, max" },
-];
 
 export default function Home() {
   return (
     <>
-      {/* ---------- masthead ---------- */}
       <nav className="nav" aria-label="Primary">
         <div className="nav-pill">
           <Link className="brand" href="/">
@@ -130,265 +92,234 @@ export default function Home() {
             PromptMika
           </Link>
           <div className="nav-links">
+            <a href="#why">Why</a>
             <a href="#packs">Packs</a>
             <a href="#tools">Tools</a>
-            <a href="/design">Design</a>
-            <a href="/guide">Guide</a>
-            <Link href="/connect" className="nav-cta">
-              Connect
-            </Link>
+            <Link href="/design">58 styles</Link>
+            <Link href="/connect" className="nav-cta">Connect</Link>
           </div>
         </div>
       </nav>
 
-      {/* ---------- hero poster ---------- */}
-      <header className="hero">
-        <div className="hero-field" aria-hidden="true" />
-        <div className="container hero-grid">
-          <div className="hero-copy">
-            <Reveal>
-              <p className="eyebrow">
-                <span className="led" aria-hidden="true" />
-                an MCP server for coding agents
-              </p>
-              <h1>
-                Elite{" "}
-                <span className="word-green">knowledge,</span>
-                <br />
-                <span className="word-outline">hand-cut.</span>
-              </h1>
-              <p className="note" style={{ marginTop: "var(--space-4)", transform: "rotate(-1.2deg)" }}>
-                curated references, pasted straight into Claude, Cursor,
-                Codex&nbsp;or&nbsp;opencode ↴
-              </p>
-              <div className="cta-row">
-                <Link href="/connect" className="btn btn-primary">
-                  Connect your client
-                </Link>
-                <a href="#packs" className="btn btn-ghost">
-                  Leaf through the packs
-                </a>
-              </div>
-              <div className="cta-row">
-                <div className="endpoint-box">
-                  <span className="endpoint-url">
-                    <MCPUrl />
-                  </span>
-                  <CopyUrl />
+      <main>
+        <header className="hero hero-v2">
+          <div className="hero-field" aria-hidden="true" />
+          <div className="container hero-grid hero-grid-v2">
+            <div className="hero-copy hero-copy-v2">
+              <Reveal>
+                <p className="eyebrow"><span className="led" /> context for coding agents, cut by hand</p>
+                <h1>
+                  Give your agent
+                  <span className="hero-cut"> better taste,</span>
+                  <span className="hero-outline"> better context.</span>
+                </h1>
+                <p className="hero-deck">
+                  PromptMika is one MCP endpoint with curated design, engineering, security,
+                  debugging, and web-research references. Load what the task needs. Leave the rest out.
+                </p>
+
+                <div className="cta-row">
+                  <Link href="/connect" className="btn btn-primary">Connect PromptMika</Link>
+                  <Link href="/design" className="btn btn-ghost">Browse 58 design styles</Link>
                 </div>
-                <span className="note" style={{ transform: "rotate(-2deg)", alignSelf: "center" }}>
-                  free, no keys
-                </span>
-              </div>
+
+                <div className="hero-endpoint">
+                  <span className="endpoint-kicker">MCP endpoint</span>
+                  <div className="endpoint-box">
+                    <span className="endpoint-url"><MCPUrl /></span>
+                    <CopyUrl />
+                  </div>
+                </div>
+              </Reveal>
+              <div className="burst-anchor"><Burst /></div>
+            </div>
+
+            <Reveal className="hero-stage hero-stage-v2" delay={120}>
+              <span className="tape tl" aria-hidden="true" />
+              <LiveTerminal />
+              <span className="tape br" aria-hidden="true" />
+              <p className="term-caption">live shelf · the server lists itself</p>
             </Reveal>
-            <div className="starburst-wrap">
-              <Starburst line1="37" line2="tools!" />
+          </div>
+        </header>
+
+        <section className="ticker ticker-v2" aria-label="PromptMika stats">
+          <div className="ticker-track">
+            <div className="ticker-half">
+              <span>37 tools <i>✷</i></span>
+              <span>13 packs <i>✷</i></span>
+              <span>58 design styles <i>✷</i></span>
+              <span>162+ references <i>✷</i></span>
+              <span>one endpoint <i>✷</i></span>
+              <span>SSRF guarded <i>✷</i></span>
+            </div>
+            <div className="ticker-half" aria-hidden="true">
+              <span>37 tools <i>✷</i></span>
+              <span>13 packs <i>✷</i></span>
+              <span>58 design styles <i>✷</i></span>
+              <span>162+ references <i>✷</i></span>
+              <span>one endpoint <i>✷</i></span>
+              <span>SSRF guarded <i>✷</i></span>
             </div>
           </div>
+        </section>
 
-          <Reveal className="hero-stage" delay={150}>
-            <span className="tape tl" aria-hidden="true" />
-            <LiveTerminal />
-            <span className="tape br" aria-hidden="true" />
-            <p className="term-caption">fig. 1 — the shelf, listing itself live</p>
-          </Reveal>
-        </div>
-      </header>
+        <section className="section philosophy-band" id="why">
+          <div className="container philosophy-grid">
+            <Reveal className="philosophy-lead">
+              <span className="section-label">the premise</span>
+              <h2 className="section-title">Stop making the model guess.</h2>
+              <p className="section-sub">
+                PromptMika turns a giant reference library into selective context. It searches first,
+                recommends what matters, then loads only the relevant material.
+              </p>
+            </Reveal>
 
-      <Ticker />
-
-      {/* ---------- receipts: palette demo + stat scraps ---------- */}
-      <section className="section" aria-label="Receipts">
-        <div className="container">
-          <div className="proof-grid">
-            <Reveal className="proof-palette">
+            <Reveal className="philosophy-proof" delay={100}>
               <CmdPalette />
             </Reveal>
-            <div className="proof-stats">
-              {STATS.map((s, i) => (
-                <Reveal key={s.label} delay={i * 90}>
-                  <div className="scrap">
-                    <span className="scrap-num">{s.num}</span>
-                    <span className="scrap-label">{s.label}</span>
+
+            <Reveal className="margin-scrap" delay={180}>
+              <strong>01</strong>
+              <span>ask</span>
+              <p>Describe the actual task, not a vague category.</p>
+            </Reveal>
+            <Reveal className="margin-scrap offset" delay={240}>
+              <strong>02</strong>
+              <span>route</span>
+              <p><code>get_context</code> points at the smallest useful set of packs and references.</p>
+            </Reveal>
+            <Reveal className="margin-scrap dark" delay={300}>
+              <strong>03</strong>
+              <span>verify</span>
+              <p>Use the debug, web, test, and security tools against the result.</p>
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="section design-band">
+          <div className="container design-band-grid">
+            <Reveal className="design-poster">
+              <p className="poster-kicker">DESIGN.md / v8</p>
+              <div className="poster-number">58</div>
+              <p className="poster-word">visual languages</p>
+              <span className="poster-note">one dominant style per page ↗</span>
+            </Reveal>
+
+            <Reveal className="design-copy" delay={120}>
+              <span className="section-label">not a moodboard dump</span>
+              <h2 className="section-title">A style selector with rules.</h2>
+              <p className="section-sub">
+                Paper-Cut Editorial, Pixel Pastoral, Neo-Terminal Community, Spatial SaaS Workbench,
+                Tactile Menu Restaurant, Immersive App Showcase, and fifty-two more. Each style defines
+                composition, type, imagery, motion, responsive behavior, accessibility risks, and failure modes.
+              </p>
+              <div className="signature-row" aria-label="Paper-Cut Editorial signature">
+                <span>oversized type</span>
+                <span>warm paper</span>
+                <span>earthy green</span>
+                <span>burnt orange</span>
+                <span>controlled imperfection</span>
+              </div>
+              <Link href="/design" className="ink-link">Open the design catalog ↗</Link>
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="section" id="packs">
+          <div className="container">
+            <Reveal>
+              <span className="section-label">thirteen drawers</span>
+              <h2 className="section-title">Load a domain, not the entire library.</h2>
+              <p className="section-sub">
+                Packs are the fast path. They bundle related references under a controlled budget,
+                while large files stay pageable instead of flooding context.
+              </p>
+            </Reveal>
+
+            <div className="pack-ledger">
+              {PACKS.map(([name, kicker, desc], index) => (
+                <Reveal key={name} delay={(index % 4) * 45}>
+                  <article className="pack-ledger-row">
+                    <span className="ledger-no">{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <span className="ledger-kicker">{kicker}</span>
+                      <h3>{name}</h3>
+                    </div>
+                    <p>{desc}</p>
+                    <span className="ledger-arrow">↗</span>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section tools-band" id="tools">
+          <div className="container">
+            <Reveal>
+              <span className="section-label">the instruments</span>
+              <h2 className="section-title">Twenty-four utilities. Thirteen packs.</h2>
+              <p className="section-sub">
+                The utility layer handles context routing, web work, extraction, verification, debugging,
+                templates, security, and scaffolding. The pack layer handles deep domain knowledge.
+              </p>
+            </Reveal>
+
+            <div className="tool-columns">
+              {TOOL_GROUPS.map((group, groupIndex) => (
+                <Reveal key={group.title} delay={groupIndex * 90} className="tool-sheet">
+                  <div className="tool-sheet-head">
+                    <span>{group.eyebrow}</span>
+                    <strong>{String(groupIndex + 1).padStart(2, "0")}</strong>
+                  </div>
+                  <h3>{group.title}</h3>
+                  <div className="tool-sheet-list">
+                    {group.tools.map(([name, desc]) => (
+                      <div className="tool-line" key={name}>
+                        <code>{name}</code>
+                        <p>{desc}</p>
+                      </div>
+                    ))}
                   </div>
                 </Reveal>
               ))}
-              <Reveal delay={280}>
-                <p className="note" style={{ transform: "rotate(-1.5deg)", textAlign: "right" }}>
-                  measured against the live server, not vibes
-                </p>
-              </Reveal>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ---------- packs ---------- */}
-      <section className="section" id="packs">
-        <div className="container">
-          <Reveal>
-            <div style={{ maxWidth: 720 }}>
-              <span className="section-label">the drawer</span>
-              <h2 className="section-title">
-                Thirteen packs.{" "}
-                <span className="word-green" style={{ display: "inline-block", transform: "rotate(-1deg)" }}>
-                  Whole domains.
-                </span>
-              </h2>
-              <p className="section-sub">
-                Each pack bundles related references under a strict token budget —
-                five thousand lines a call, paged automatically. Load what the task
-                needs; nothing else rides along in your context window.
-              </p>
-            </div>
-          </Reveal>
-          <div className="pack-grid" style={{ marginTop: "var(--space-12)" }}>
-            {PACKS.map((p, i) => (
-              <Reveal key={p.name} delay={(i % 3) * 80} className={p.size}>
-                <article className={`pack-card ${p.size} ${p.tone ?? ""}`}>
-                  {p.tape && <span className="tape-bit" aria-hidden="true" />}
-                  <span className="pack-name">{p.name}</span>
-                  <span className="pack-desc">{p.desc}</span>
-                  <span className="pack-count">
-                    {p.files} {p.files === 1 ? "file" : "files"} · token-budgeted
-                  </span>
-                </article>
-              </Reveal>
-            ))}
-            <Reveal delay={160} className="pack-sm">
-              <div className="pack-card note-cell">
-                <p className="note" style={{ textAlign: "center" }}>
-                  that's the whole drawer —
-                  <br />
-                  new clippings land often ✷
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- tools index ---------- */}
-      <section className="section" id="tools">
-        <div className="container">
-          <Reveal>
-            <div style={{ maxWidth: 700 }}>
-              <span className="section-label">index of instruments</span>
-              <h2 className="section-title">Twenty-four utility tools. Thirteen packs.</h2>
-              <p className="section-sub">
-                The MCP exposes 37 tools total: 24 utility/context/debug tools plus 13 knowledge packs. Web requests are guarded and the server runs directly on Vercel.
-              </p>
-            </div>
-          </Reveal>
-          <div style={{ marginTop: "var(--space-12)" }}>
-            <Reveal delay={120}>
-              <div className="modules" role="list">
-                {MODULES.map((m, i) => (
-                  <div className="module" role="listitem" key={m.name}>
-                    <span className="module-no">{String(i + 1).padStart(2, "0")}</span>
-                    <span className="module-name">{m.name}</span>
-                    <span className="module-desc">{m.desc}</span>
-                    <span className="module-check">
-                      <SquiggleCheck />
-                    </span>
+        <section className="section connect-section" id="connect">
+          <div className="container">
+            <Reveal>
+              <div className="connect-poster">
+                <div>
+                  <span className="section-label light-label">one endpoint</span>
+                  <h2>Paste it once.<br />Use the whole shelf.</h2>
+                  <p>
+                    Stateless JSON-RPC over HTTP/SSE. Works with clients that support remote MCP servers.
+                  </p>
+                </div>
+                <div className="connect-actions">
+                  <div className="endpoint-box endpoint-dark">
+                    <span className="endpoint-url"><MCPUrl /></span>
+                    <CopyUrl />
                   </div>
-                ))}
+                  <Link href="/connect" className="btn btn-primary">Setup guide</Link>
+                </div>
               </div>
             </Reveal>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* ---------- how ---------- */}
-      <section className="section" id="how">
-        <div className="container">
-          <Reveal>
-            <div style={{ maxWidth: 640 }}>
-              <span className="section-label">procedure</span>
-              <h2 className="section-title">Paste. Load. Ship.</h2>
-            </div>
-          </Reveal>
-          <div className="steps" style={{ marginTop: "var(--space-12)" }}>
-            {[
-              {
-                n: "01",
-                t: "Point your client",
-                d: "Paste the endpoint into Claude Desktop, Claude Code, Cursor, Codex, or opencode — copy-paste configs on the setup guide.",
-              },
-              {
-                n: "02",
-                t: "Load the contract",
-                d: "load_contract reads the skill definition and policy digest first, so your agent knows the house rules.",
-              },
-              {
-                n: "03",
-                t: "Build, tested",
-                d: "Packs load per task; the agent builds against loaded references, scans its own output, ships clean.",
-              },
-            ].map((s, i) => (
-              <Reveal key={s.n} delay={i * 100}>
-                <div className="step">
-                  <span className="step-pin" aria-hidden="true" />
-                  <div className="step-num">{s.n}</div>
-                  <h3>{s.t}</h3>
-                  <p>{s.d}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- connect band ---------- */}
-      <section className="section" id="connect">
-        <div className="container">
-          <Reveal>
-            <div className="connect-band">
-              <p className="eyebrow" style={{ color: "var(--paper)" }}>
-                <span className="led" aria-hidden="true" />
-                ready when you are
-              </p>
-              <h2 style={{ marginTop: 14 }}>Dial your client in.</h2>
-              <p className="hero-sub" style={{ maxWidth: "48ch" }}>
-                Stateless JSON-RPC over streamable HTTP. Paste the URL, restart,
-                done — the setup guide has copy-paste configs for every client.
-              </p>
-              <div className="cta-row">
-                <div className="endpoint-box">
-                  <span className="endpoint-url">
-                    <MCPUrl />
-                  </span>
-                  <CopyUrl />
-                </div>
-                <Link href="/connect" className="btn btn-primary">
-                  Open the setup guide
-                </Link>
-              </div>
-            </div>
-          </Reveal>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--space-4)" }}>
-            <Sparkle size={26} />
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- footer ---------- */}
-      <footer className="footer">
-        <div className="container">
-          <Reveal>
-            <div className="footer-wordmark">
-              Prompt<span style={{ color: "var(--orange)" }}>Mika</span>
-            </div>
-          </Reveal>
-          <div className="footer-inner">
-            <span>MCP server · v3.6.0 · 37 tools · 162 references</span>
-            <div className="footer-links">
-              <Link href="/design">design</Link>
-              <Link href="/skill">skill</Link>
-              <Link href="/claude">claude</Link>
-              <Link href="/connect">setup</Link>
-              <a href="#packs">packs</a>
-            </div>
+      <footer className="footer footer-v2">
+        <div className="container footer-v2-inner">
+          <div className="footer-wordmark">Prompt<span>Mika</span></div>
+          <p>v3.6.0 · 37 tools · 58 design styles · Vercel Analytics enabled</p>
+          <div className="footer-links">
+            <Link href="/design">design</Link>
+            <Link href="/guide">guide</Link>
+            <Link href="/connect">connect</Link>
           </div>
         </div>
       </footer>
