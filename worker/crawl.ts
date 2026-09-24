@@ -1,175 +1,278 @@
-// Crawler — Cloudflare Workers compatible.
+// PromptMika site crawler: bounded BFS, RFC-aware robots, canonical dedupe, and content filtering.
 
-import { fetchGuarded, fetchWithRetry } from "./fetch";
-import { extractLinks, extractTitle, htmlToMarkdown, htmlToText, isCloudflareChallenge } from "./html";
+import { fetchWithRetry, looksBinaryContentType, PROMPTMIKA_UA } from "./fetch";
+import {
+  extractLinkRecords,
+  extractPageMetadata,
+  htmlToMarkdown,
+  htmlToText,
+  isCloudflareChallenge,
+} from "./html";
+import { loadRobotsPolicy, robotsAllows } from "./robots";
 import { assertSafeUrl } from "./ssrf";
 
 export interface CrawlPage {
   url: string;
+  finalUrl: string;
+  canonical: string;
   depth: number;
   status: number;
   title: string;
   content: string;
+  contentType: string;
+  bytes: number;
+  truncated: boolean;
   links: number;
+  words: number;
   timingMs: number;
 }
 
-const robotsCache = new Map<string, string[]>();
-
-async function loadRobotsDisallow(origin: string): Promise<string[]> {
-  const u = new URL(origin);
-  const key = u.hostname;
-  if (robotsCache.has(key)) return robotsCache.get(key) ?? [];
-  const disallow: string[] = [];
-  try {
-    const res = await fetchGuarded(`${u.protocol}//${u.host}/robots.txt`, {
-      timeoutMs: 5_000,
-      maxBytes: 50_000,
-    });
-    if (res.status === 200) {
-      let inAgent = false;
-      for (const raw of res.text.split("\n")) {
-        const line = raw.trim();
-        if (!line || line.startsWith("#")) continue;
-        const idx = line.indexOf(":");
-        if (idx < 0) continue;
-        const keyName = line.slice(0, idx).trim().toLowerCase();
-        const value = line.slice(idx + 1).trim();
-        if (keyName === "user-agent") inAgent = value.toLowerCase() === "*";
-        else if (keyName === "disallow" && inAgent && value) disallow.push(value);
-      }
-    }
-  } catch { /* robots fetch failure = allow all */ }
-  robotsCache.set(key, disallow);
-  return disallow;
+export interface CrawlOptions {
+  maxPages?: number;
+  maxDepth?: number;
+  sameDomain?: boolean;
+  includeSubdomains?: boolean;
+  extract?: "text" | "markdown" | "none";
+  delayMs?: number;
+  respectRobots?: boolean;
+  concurrency?: number;
+  includePatterns?: string[];
+  excludePatterns?: string[];
+  followNofollow?: boolean;
+  stripTracking?: boolean;
+  perPageChars?: number;
+  timeoutMs?: number;
 }
 
-async function robotsAllow(url: URL): Promise<boolean> {
-  const disallow = await loadRobotsDisallow(url.origin);
-  if (disallow.length === 0) return true;
-  const p = url.pathname + url.search;
-  for (const d of disallow) {
-    const escaped = d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\*/g, ".*");
-    if (new RegExp(`^${escaped}`).test(p)) return false;
-  }
-  return true;
-}
+const ASSET_EXTENSIONS = /\.(?:7z|avi|avif|bmp|css|csv|docx?|eot|exe|gif|gz|ico|jpe?g|js|m4a|m4v|mov|mp3|mp4|mpeg|pdf|png|pptx?|rar|svg|tar|tiff?|ttf|wav|webm|webp|woff2?|xlsx?|xml\.gz|zip)$/i;
+const TRACKING_PARAMS = new Set([
+  "fbclid", "gclid", "dclid", "msclkid", "mc_cid", "mc_eid",
+  "_ga", "_gl", "igshid", "yclid",
+]);
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function normalizeUrl(raw: string, base: URL): string | null {
+function globToRegex(glob: string): RegExp {
+  const escaped = glob.replace(/[.+^$(){}|[\]\\]/g, "\\$&")
+    .replace(/\*/g, ".*")
+    .replace(/\?/g, ".");
+  return new RegExp(escaped, "i");
+}
+
+function matchesPatterns(url: string, includes: string[], excludes: string[]): boolean {
+  if (excludes.some((pattern) => {
+    try { return globToRegex(pattern).test(url); } catch { return false; }
+  })) return false;
+  if (includes.length === 0) return true;
+  return includes.some((pattern) => {
+    try { return globToRegex(pattern).test(url); } catch { return false; }
+  });
+}
+
+function normalizeUrl(raw: string, base: URL, stripTracking: boolean): string | null {
   try {
-    const u = new URL(raw, base);
-    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
-    // Strip hash, trailing slash on non-root, default ports
-    u.hash = "";
-    if (u.pathname !== "/" && u.pathname.endsWith("/")) u.pathname = u.pathname.slice(0, -1);
-    if (u.port === "80" && u.protocol === "http:") u.port = "";
-    if (u.port === "443" && u.protocol === "https:") u.port = "";
-    return u.toString();
+    const url = new URL(raw, base);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    url.hash = "";
+
+    if (stripTracking) {
+      for (const key of [...url.searchParams.keys()]) {
+        if (key.toLowerCase().startsWith("utm_") || TRACKING_PARAMS.has(key.toLowerCase())) {
+          url.searchParams.delete(key);
+        }
+      }
+    }
+
+    const sorted = [...url.searchParams.entries()].sort(([a, av], [b, bv]) =>
+      a.localeCompare(b) || av.localeCompare(bv),
+    );
+    url.search = "";
+    for (const [key, value] of sorted) url.searchParams.append(key, value);
+
+    if (url.pathname !== "/" && url.pathname.endsWith("/")) {
+      url.pathname = url.pathname.replace(/\/+$/, "");
+    }
+    if (url.port === "80" && url.protocol === "http:") url.port = "";
+    if (url.port === "443" && url.protocol === "https:") url.port = "";
+    return url.toString();
   } catch {
     return null;
   }
 }
 
+function inHostScope(candidate: URL, seed: URL, sameDomain: boolean, includeSubdomains: boolean): boolean {
+  if (!sameDomain) return true;
+  if (candidate.hostname === seed.hostname) return true;
+  return includeSubdomains && candidate.hostname.endsWith("." + seed.hostname);
+}
+
+function isPageCandidate(url: URL): boolean {
+  return !ASSET_EXTENSIONS.test(url.pathname);
+}
+
 export async function crawlSite(
   seedUrl: string,
-  opts: {
-    maxPages?: number;
-    maxDepth?: number;
-    sameDomain?: boolean;
-    extract?: "text" | "markdown";
-    delayMs?: number;
-    respectRobots?: boolean;
-  } = {}
-): Promise<{ pages: CrawlPage[]; skipped: string[]; errors: string[] }> {
-  const maxPages = Math.min(opts.maxPages ?? 8, 25);
-  const maxDepth = opts.maxDepth ?? 2;
+  opts: CrawlOptions = {},
+): Promise<{
+  pages: CrawlPage[];
+  skipped: string[];
+  errors: string[];
+  discovered: number;
+  robots: Record<string, { status: number; source: string; sitemaps: string[] }>;
+}> {
+  const maxPages = Math.max(1, Math.min(opts.maxPages ?? 10, 40));
+  const maxDepth = Math.max(0, Math.min(opts.maxDepth ?? 2, 6));
   const sameDomain = opts.sameDomain ?? true;
+  const includeSubdomains = opts.includeSubdomains ?? false;
   const extract = opts.extract ?? "markdown";
-  const delayMs = opts.delayMs ?? 300;
+  const delayMs = Math.max(0, Math.min(opts.delayMs ?? 250, 5_000));
   const respectRobots = opts.respectRobots ?? true;
+  const concurrency = Math.max(1, Math.min(opts.concurrency ?? 2, 4));
+  const includePatterns = opts.includePatterns ?? [];
+  const excludePatterns = opts.excludePatterns ?? [];
+  const followNofollow = opts.followNofollow ?? false;
+  const stripTracking = opts.stripTracking ?? true;
+  const perPageChars = Math.max(1_000, Math.min(opts.perPageChars ?? 30_000, 80_000));
+  const timeoutMs = Math.max(2_000, Math.min(opts.timeoutMs ?? 15_000, 30_000));
 
   const seed = assertSafeUrl(seedUrl);
-  const queue: Array<{ url: string; depth: number }> = [{ url: seed.toString(), depth: 0 }];
-  const visited = new Set<string>([seed.toString()]);
+  const normalizedSeed = normalizeUrl(seed.toString(), seed, stripTracking) ?? seed.toString();
+  const queue: Array<{ url: string; depth: number }> = [{ url: normalizedSeed, depth: 0 }];
+  const queued = new Set<string>([normalizedSeed]);
+  const fetched = new Set<string>();
+  const canonicalSeen = new Set<string>();
   const pages: CrawlPage[] = [];
   const skipped: string[] = [];
   const errors: string[] = [];
+  const robotSummary: Record<string, { status: number; source: string; sitemaps: string[] }> = {};
 
-  const isInScope = (raw: string): boolean => {
-    const normalized = normalizeUrl(raw, seed);
-    if (!normalized) return false;
-    if (visited.has(normalized)) return false;
-    if (sameDomain) {
-      try {
-        if (new URL(normalized).hostname !== seed.hostname) return false;
-      } catch {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const markVisited = (raw: string) => {
-    const n = normalizeUrl(raw, seed);
-    if (n) visited.add(n);
+  const enqueue = (raw: string, base: URL, depth: number) => {
+    if (depth > maxDepth) return;
+    const normalized = normalizeUrl(raw, base, stripTracking);
+    if (!normalized || queued.has(normalized) || fetched.has(normalized)) return;
+    let url: URL;
+    try { url = new URL(normalized); } catch { return; }
+    if (!inHostScope(url, seed, sameDomain, includeSubdomains)) return;
+    if (!isPageCandidate(url)) return;
+    if (!matchesPatterns(normalized, includePatterns, excludePatterns)) return;
+    queued.add(normalized);
+    queue.push({ url: normalized, depth });
   };
 
   while (queue.length > 0 && pages.length < maxPages) {
-    const batch = queue.splice(0, Math.min(3, maxPages - pages.length));
-    if (delayMs > 0 && pages.length > 0) await sleep(delayMs);
+    const batch = queue.splice(0, Math.min(concurrency, maxPages - pages.length));
+    let effectiveDelay = delayMs;
 
-    const results = await Promise.all(
-      batch.map(async (item) => {
-        const u = new URL(item.url);
-        if (respectRobots && !(await robotsAllow(u))) {
-          markVisited(item.url);
-          return { kind: "skip" as const, url: item.url, reason: "robots.txt disallowed" };
+    const prepared = await Promise.all(batch.map(async (item) => {
+      const url = new URL(item.url);
+      if (!respectRobots) return { item, policy: null };
+
+      const policy = await loadRobotsPolicy(url.origin);
+      robotSummary[url.origin] = {
+        status: policy.status,
+        source: policy.source,
+        sitemaps: policy.sitemaps,
+      };
+      if (policy.crawlDelayMs !== undefined) effectiveDelay = Math.max(effectiveDelay, policy.crawlDelayMs);
+      return { item, policy };
+    }));
+
+    if ((pages.length > 0 || fetched.size > 0) && effectiveDelay > 0) {
+      await sleep(effectiveDelay);
+    }
+
+    const results = await Promise.all(prepared.map(async ({ item, policy }) => {
+      const requested = new URL(item.url);
+      fetched.add(item.url);
+
+      if (policy && !robotsAllows(policy, requested)) {
+        return { kind: "skip" as const, text: item.url + " (robots.txt disallowed)" };
+      }
+
+      try {
+        const res = await fetchWithRetry(item.url, {
+          timeoutMs,
+          maxBytes: 650_000,
+          userAgent: PROMPTMIKA_UA,
+        }, 1);
+
+        if (looksBinaryContentType(res.contentType)) {
+          return { kind: "skip" as const, text: item.url + " (non-text content: " + (res.contentType || "binary") + ")" };
         }
-        try {
-          const res = await fetchWithRetry(item.url, {
-            timeoutMs: 12_000,
-            maxBytes: 500_000,
-          }, 1);
-          if (isCloudflareChallenge(res.text)) {
-            return { kind: "skip" as const, url: item.url, reason: "Cloudflare challenge" };
-          }
-          const links = extractLinks(res.text, u);
-          if (item.depth < maxDepth) {
-            for (const link of links) {
-              if (pages.length + queue.length >= maxPages) break;
-              if (isInScope(link)) {
-                markVisited(link);
-                queue.push({ url: link, depth: item.depth + 1 });
-              }
-            }
-          }
-          const content = (extract === "markdown" ? htmlToMarkdown(res.text) : htmlToText(res.text)).slice(0, 40_000);
-          return {
-            kind: "page" as const,
-            page: {
-              url: item.url,
-              depth: item.depth,
-              status: res.status,
-              title: extractTitle(res.text),
-              content,
-              links: links.length,
-              timingMs: res.timingMs,
-            },
-          };
-        } catch (e: any) {
-          return { kind: "error" as const, url: item.url, message: e.message };
+        if (isCloudflareChallenge(res.text)) {
+          return { kind: "skip" as const, text: item.url + " (browser challenge)" };
         }
-      })
-    );
-    for (const r of results) {
-      if (r.kind === "page") pages.push(r.page);
-      else if (r.kind === "skip") skipped.push(`${r.url} (${r.reason})`);
-      else errors.push(`${r.url}: ${r.message}`);
+
+        const finalUrl = new URL(res.finalUrl);
+        if (!inHostScope(finalUrl, seed, sameDomain, includeSubdomains)) {
+          return { kind: "skip" as const, text: item.url + " (redirected out of crawl scope to " + res.finalUrl + ")" };
+        }
+
+        const meta = extractPageMetadata(res.text, finalUrl);
+        const canonical = normalizeUrl(meta.canonical || res.finalUrl, finalUrl, stripTracking) || res.finalUrl;
+        if (canonicalSeen.has(canonical) && canonical !== item.url) {
+          return { kind: "skip" as const, text: item.url + " (duplicate canonical: " + canonical + ")" };
+        }
+        canonicalSeen.add(canonical);
+
+        const links = extractLinkRecords(res.text, finalUrl);
+        const robotsMeta = meta.robots.toLowerCase();
+        const pageNofollow = robotsMeta.split(",").some((token) => token.trim() === "nofollow");
+
+        if (item.depth < maxDepth && !pageNofollow) {
+          for (const link of links) {
+            if (!followNofollow && link.nofollow) continue;
+            enqueue(link.url, finalUrl, item.depth + 1);
+          }
+        }
+
+        let fullContent = "";
+        if (extract === "markdown") fullContent = htmlToMarkdown(res.text);
+        else if (extract === "text") fullContent = htmlToText(res.text);
+
+        const content = fullContent.slice(0, perPageChars);
+        const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+
+        return {
+          kind: "page" as const,
+          page: {
+            url: item.url,
+            finalUrl: res.finalUrl,
+            canonical,
+            depth: item.depth,
+            status: res.status,
+            title: meta.title || meta.ogTitle,
+            content,
+            contentType: res.contentType,
+            bytes: res.bytes,
+            truncated: res.truncated || fullContent.length > perPageChars,
+            links: links.length,
+            words,
+            timingMs: res.timingMs,
+          } satisfies CrawlPage,
+        };
+      } catch (error) {
+        return {
+          kind: "error" as const,
+          text: item.url + ": " + (error as Error).message,
+        };
+      }
+    }));
+
+    for (const result of results) {
+      if (result.kind === "page") pages.push(result.page);
+      else if (result.kind === "skip") skipped.push(result.text);
+      else errors.push(result.text);
     }
   }
-  return { pages, skipped, errors };
+
+  return {
+    pages: pages.slice(0, maxPages),
+    skipped,
+    errors,
+    discovered: queued.size,
+    robots: robotSummary,
+  };
 }
