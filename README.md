@@ -50,7 +50,8 @@ Or use the bundled plugin in this repo (`.codex-plugin/`).
 | Pack | Files | Description |
 |------|-------|-------------|
 | `load_contract` | 3 | Skill definition + policy digest + project design language. Load first. |
-| `load_frontend_design` | 5 | Project design language + design philosophy, component patterns, responsive layout, anti-slop rules |
+| `load_frontend_design` | 6 | Project design language + design philosophy, component patterns, responsive layout, anti-slop rules |
+| `load_apple_design` | 1 | `apple://APPLE.md` — Apple-inspired Liquid Glass material + component interaction behavior |
 | `load_design_systems` | 3 | System selection guide, index, full catalog |
 | `load_horizontal_craft` | 12 | Typography, animation, color, icons, accessibility, UX laws |
 | `load_backend_api` | 2 | Backend patterns, API design, integration |
@@ -62,6 +63,8 @@ Or use the bundled plugin in this repo (`.codex-plugin/`).
 | `load_token_efficiency` | 2 | Token optimization, self-critique |
 | `load_context_engine` | 3 | Context retention, iteration workflow |
 | `load_specialized_pages` | 10 | Landing pages, portfolios, prototypes |
+
+For Apple/iOS/Liquid Glass tasks, `get_context` recognizes the intent and recommends `load_apple_design`. The same document can be loaded directly with `load_reference(path="apple://APPLE.md")`.
 
 All packs are token-budgeted (10,000 lines per call). Files are served whole up to 10,000 lines — longer files are paginated; use `file_offset` to page through large packs.
 
