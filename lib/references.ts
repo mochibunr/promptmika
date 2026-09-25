@@ -4,6 +4,7 @@ import path from "node:path";
 const REFERENCES_DIR = path.join(process.cwd(), "references");
 const SKILL_FILE = path.join(process.cwd(), "SKILL.md");
 const DESIGN_FILE = path.join(process.cwd(), "DESIGN.md");
+const APPLE_FILE = path.join(process.cwd(), "APPLE.md");
 const GUIDELINES_FILE = path.join(process.cwd(), "GUIDELINES.md");
 const CLAUDE_FILE = path.join(process.cwd(), "user-policy", "CLAUDE.md");
 const CLAUDE_DIGEST_FILE = path.join(process.cwd(), "user-policy", "CLAUDE.digest.md");
@@ -88,6 +89,14 @@ export function readDesignFile(): { content: string; mimeType: string } | undefi
   }
 }
 
+export function readAppleFile(): { content: string; mimeType: string } | undefined {
+  try {
+    return { content: fs.readFileSync(APPLE_FILE, "utf-8"), mimeType: "text/markdown" };
+  } catch {
+    return undefined;
+  }
+}
+
 export function readGuidelinesFile(): { content: string; mimeType: string } | undefined {
   try {
     return { content: fs.readFileSync(GUIDELINES_FILE, "utf-8"), mimeType: "text/markdown" };
@@ -124,6 +133,16 @@ export function resolveDocument(
     if (uri !== "design://DESIGN.md") return undefined;
     const d = readDesignFile();
     return d ? { ...d, name: "DESIGN.md" } : undefined;
+  }
+  if (uri.startsWith("apple://")) {
+    const target = uri.slice("apple://".length);
+    if (target !== "APPLE.md" && target !== "apple" && target !== "") return undefined;
+    const a = readAppleFile();
+    return a ? { ...a, name: "APPLE.md" } : undefined;
+  }
+  if (uri === "APPLE.md" || uri === "references://APPLE.md") {
+    const a = readAppleFile();
+    return a ? { ...a, name: "APPLE.md" } : undefined;
   }
   if (uri.startsWith("guidelines://")) {
     if (uri !== "guidelines://GUIDELINES.md") return undefined;
@@ -166,7 +185,15 @@ function readHead(p: string): string {
 
 export function searchReferences(query: string): ReferenceDoc[] {
   const q = query.toLowerCase();
-  const all = listReferences();
+  const all = [
+    ...listReferences(),
+    {
+      uri: "apple://APPLE.md",
+      name: "APPLE.md",
+      path: APPLE_FILE,
+      mimeType: "text/markdown",
+    },
+  ];
   return all
     .map((doc) => {
       let score = 0;
