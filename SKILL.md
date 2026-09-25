@@ -270,6 +270,9 @@ handled). Fix anything that fails — silently, before delivery.
   `horizontal-craft/anti-ai-slop.md`) covers the core UI set in one call.
 
 ### Apple Liquid Glass — when replicating Apple's design language
+- For any Apple/iOS/Liquid Glass implementation, first load `apple://APPLE.md` or call `load_apple_design`.
+- That reference contains the project-level material model plus studied idle/hold/drag/release behavior for Liquid Button, Toggle, Slider, Bottom Tabs, Control Center, Magnifier, adaptive luminance, and related fallbacks.
+- `get_context` should recognize Apple/iOS/Liquid Glass/refraction-oriented tasks and recommend this reference automatically.
 Source-verified from Apple's WWDC25/WWDC18 sessions and SwiftUI docs. The one rule to hold onto before
 diving in: **it's a navigation-layer material** — toolbars, tab bars, sidebars, floating controls —
 never the content underneath it, and never stacked on more glass. Everything else — the two variants,
