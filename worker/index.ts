@@ -46,7 +46,7 @@ async function handleRpc(rpc: JsonRpcRequest, env: Env): Promise<unknown> {
     return {
       protocolVersion: "2024-11-05",
       capabilities: { tools: {} },
-      serverInfo: { name: "promptmika", version: "3.7.0" },
+      serverInfo: { name: "promptmika", version: "3.8.0" },
     };
   }
 
@@ -192,7 +192,7 @@ async function handleRequest(req: Request, env: Env): Promise<Response> {
   if (url.pathname === "/health") {
     return jsonResponse(JSON.stringify({
       status: "ok",
-      version: "3.7.0",
+      version: "3.8.0",
       tools: Object.keys(TOOLS).length,
       transports: ["sse", "http"],
     }));
