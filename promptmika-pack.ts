@@ -13,6 +13,10 @@ const PACKS = {
     description: "First-run contract read: project design language + condensed policy digest + full skill definition. Small docs first so truncation-happy clients still get them. Load BEFORE anything else in a new session.",
     files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
   },
+  load_apple_design: {
+    description: "Apple-inspired Liquid Glass visual and behavioral reference: material pipeline, button/toggle/slider/bottom-tabs interaction states, hold/drag/release physics, adaptive luminance, Control Center, magnifier, fallbacks, accessibility, and performance. Use for Apple/iOS/Liquid Glass UI work.",
+    files: ["apple://APPLE.md"],
+  },
   load_frontend_design: {
     description: "Core frontend/UI design references: project design language first (design://DESIGN.md), then design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md).",
     files: ["design://DESIGN.md", "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md", "horizontal-craft/anti-ai-slop.md", "guidelines://GUIDELINES.md"],
