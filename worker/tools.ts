@@ -120,11 +120,16 @@ export const TOOLS: Record<string, ToolDef> = {
     handler: async (args) => {
       const task = String(args.task ?? "").trim();
       const max = Math.max(1, Math.min(Number(args.max_references ?? 8), 15));
-      const matches = searchReferences(task).slice(0, max);
       const lower = task.toLowerCase();
+      const appleIntent = /\bapple\b|\bios\b|liquid\s*glass|glass\s*(button|toggle|slider|tab|tabs|navbar|navigation)|refraction|chromatic\s+aberration|control\s+center|magnifier/.test(lower);
+      let matches = searchReferences(task).slice(0, max);
+      if (appleIntent && !matches.some((m) => m.name === "APPLE.md")) {
+        matches = [{ name: "APPLE.md", score: 100 }, ...matches].slice(0, max);
+      }
       const recommendedPacks: string[] = [];
       const choose = (name: string, re: RegExp) => { if (re.test(lower)) recommendedPacks.push(name); };
       choose("load_frontend_design", /front|ui|ux|css|react|website|layout|design|component/);
+      if (appleIntent) recommendedPacks.push("load_apple_design");
       choose("load_design_systems", /design system|style|theme|visual|brand/);
       choose("load_backend_api", /backend|api|server|endpoint|database|auth/);
       choose("load_security", /security|vuln|xss|sql|csrf|ssrf|secret|auth/);
@@ -142,7 +147,7 @@ export const TOOLS: Record<string, ToolDef> = {
       const previews = matches.map((m) => {
         const doc = resolveDocument(m.name);
         return {
-          path: m.name,
+          path: m.name === "APPLE.md" ? "apple://APPLE.md" : m.name,
           score: m.score,
           preview: doc?.content.slice(0, 420).replace(/\s+/g, " ").trim() ?? ""
         };
@@ -583,7 +588,7 @@ export const TOOLS: Record<string, ToolDef> = {
   },
 
   load_reference: {
-    description: "Load a knowledge file by URI: references://{path}, skill://SKILL.md, design://DESIGN.md (the project's design language), guidelines://GUIDELINES.md (AI web UX/UI/motion guidelines), claude://CLAUDE.digest.md, claude://CLAUDE.md. Files over 20000 lines are returned in batches.",
+    description: "Load a knowledge file by URI: references://{path}, skill://SKILL.md, design://DESIGN.md, apple://APPLE.md (Apple-inspired Liquid Glass behavior/material reference), guidelines://GUIDELINES.md, claude://CLAUDE.digest.md, claude://CLAUDE.md. Files over 20000 lines are returned in batches.",
     inputSchema: {
       type: "object",
       properties: {
