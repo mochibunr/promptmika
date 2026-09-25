@@ -4,6 +4,7 @@ import path from "node:path";
 const REFS_DIR = path.join(import.meta.dirname, "..", "references");
 const SKILL_FILE = path.join(import.meta.dirname, "..", "SKILL.md");
 const DESIGN_FILE = path.join(import.meta.dirname, "..", "DESIGN.md");
+const APPLE_FILE = path.join(import.meta.dirname, "..", "APPLE.md");
 const GUIDELINES_FILE = path.join(import.meta.dirname, "..", "GUIDELINES.md");
 const CLAUDE_FILE = path.join(import.meta.dirname, "..", "user-policy", "CLAUDE.md");
 const CLAUDE_DIGEST_FILE = path.join(import.meta.dirname, "..", "user-policy", "CLAUDE.digest.md");
@@ -43,6 +44,7 @@ walk(REFS_DIR, "", refs);
 
 const skill = fs.readFileSync(SKILL_FILE, "utf-8");
 const design = fs.readFileSync(DESIGN_FILE, "utf-8");
+const apple = fs.readFileSync(APPLE_FILE, "utf-8");
 const guidelines = fs.readFileSync(GUIDELINES_FILE, "utf-8");
 const claude = fs.readFileSync(CLAUDE_FILE, "utf-8");
 const digest = fs.readFileSync(CLAUDE_DIGEST_FILE, "utf-8");
@@ -52,6 +54,7 @@ const embedded = {
   specials: {
     "SKILL.md": { content: skill, mimeType: "text/markdown" },
     "DESIGN.md": { content: design, mimeType: "text/markdown" },
+    "APPLE.md": { content: apple, mimeType: "text/markdown" },
     "GUIDELINES.md": { content: guidelines, mimeType: "text/markdown" },
     "CLAUDE.md": { content: claude, mimeType: "text/markdown" },
     "CLAUDE.digest.md": { content: digest, mimeType: "text/markdown" },
@@ -59,4 +62,4 @@ const embedded = {
 };
 
 fs.writeFileSync(OUT_FILE, JSON.stringify(embedded));
-console.log(`Bundled ${refs.length} references + 5 special files -> ${OUT_FILE}`);
+console.log(`Bundled ${refs.length} references + 6 special files -> ${OUT_FILE}`);
