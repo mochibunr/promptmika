@@ -176,5 +176,6 @@ npx vercel --prod
 ├── promptmika-pack.ts          # opencode plugin
 ├── wrangler.toml               # Cloudflare Worker config
 ├── SKILL.md                    # Skill definition
+├── APPLE.md                    # Apple/iOS 26–27 Liquid Glass design reference
 └── DESIGN.md                   # Project design language (served at design://DESIGN.md, rendered at /design)
 ```
