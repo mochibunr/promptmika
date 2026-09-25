@@ -8,6 +8,11 @@ for (const r of embeddedRefs.references) refsMap.set(r.name, { content: r.conten
 export function resolveDocument(uri: string): { content: string; mimeType: string; name: string } | undefined {
   if (uri.startsWith("skill://")) return { ...embeddedRefs.specials["SKILL.md"], name: "SKILL.md" };
   if (uri.startsWith("design://")) return { ...embeddedRefs.specials["DESIGN.md"], name: "DESIGN.md" };
+  if (uri.startsWith("apple://")) {
+    const target = uri.slice("apple://".length);
+    if (target === "APPLE.md" || target === "apple" || target === "") return { ...embeddedRefs.specials["APPLE.md"], name: "APPLE.md" };
+    return undefined;
+  }
   if (uri.startsWith("guidelines://")) return { ...embeddedRefs.specials["GUIDELINES.md"], name: "GUIDELINES.md" };
   if (uri.startsWith("claude://")) {
     const target = uri.slice("claude://".length);
@@ -17,6 +22,7 @@ export function resolveDocument(uri: string): { content: string; mimeType: strin
   }
   const name = uri.startsWith("references://") ? uri.slice("references://".length) : uri;
   if (name === "DESIGN.md") return { ...embeddedRefs.specials["DESIGN.md"], name: "DESIGN.md" };
+  if (name === "APPLE.md") return { ...embeddedRefs.specials["APPLE.md"], name: "APPLE.md" };
   if (name === "GUIDELINES.md") return { ...embeddedRefs.specials["GUIDELINES.md"], name: "GUIDELINES.md" };
   const doc = refsMap.get(name);
   return doc ? { ...doc, name } : undefined;
