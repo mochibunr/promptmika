@@ -3,7 +3,7 @@ import { registerAppTool, registerAppResource, RESOURCE_MIME_TYPE } from "@model
 import { z } from "zod";
 import fs from "node:fs";
 import path from "node:path";
-import { readReference, listReferences, searchReferences, readSkillFile, readDesignFile, readClaudeFile, readClaudeDigestFile, resolveDocument } from "./references";
+import { readReference, listReferences, searchReferences, readSkillFile, readDesignFile, readAppleFile, readClaudeFile, readClaudeDigestFile, resolveDocument } from "./references";
 import { scanPath, summarize, type Finding, type Severity } from "./security-scanner";
 import { generateScaffold, SUPPORTED_LANGUAGES, PROJECT_TYPES } from "./scaffold-generator";
 import { registerPackTools } from "./pack-tools";
@@ -65,6 +65,21 @@ server.registerResource(
 );
 
 server.registerResource(
+  "Apple Liquid Glass design reference",
+  "apple://APPLE.md",
+  {
+    description: "PromptMika's Apple-inspired Liquid Glass visual and behavioral reference: material layers, component interaction states, hold/drag/release physics, adaptive luminance, fallbacks, accessibility, and performance.",
+  },
+  async (uri) => {
+    const apple = readAppleFile();
+    if (!apple) return { contents: [] };
+    return {
+      contents: [{ uri: uri.href, mimeType: apple.mimeType, text: apple.content }],
+    };
+  }
+);
+
+server.registerResource(
   "User default CLAUDE.md policy",
   "claude://CLAUDE.md",
   {
@@ -120,9 +135,9 @@ const BATCH_DEFAULT = 10000;
 
 server.tool(
   "load_reference",
-  "Load a knowledge file by URI: references://{path}, skill://SKILL.md, design://DESIGN.md (project design language), claude://CLAUDE.digest.md (condensed policy — read this first), claude://CLAUDE.md (full policy, on demand only). Files over 10000 lines are returned in 10000-line batches — page through with offset/limit. NEVER claim to know a file you have not fully read; read large files batch by batch.",
+  "Load a knowledge file by URI: references://{path}, skill://SKILL.md, design://DESIGN.md, apple://APPLE.md (Apple-inspired Liquid Glass behavior/material reference), claude://CLAUDE.digest.md (condensed policy — read this first), claude://CLAUDE.md (full policy, on demand only). Files over 10000 lines are returned in 10000-line batches — page through with offset/limit. NEVER claim to know a file you have not fully read; read large files batch by batch.",
   {
-    path: z.string().describe("File URI, e.g. 'references://DESIGN_BIBLE.md', 'design://DESIGN.md', 'skill://SKILL.md', 'claude://CLAUDE.digest.md', 'claude://CLAUDE.md' (bare names like 'DESIGN_BIBLE.md' are treated as references://DESIGN_BIBLE.md; 'claude://digest' aliases the digest)"),
+    path: z.string().describe("File URI, e.g. 'references://DESIGN_BIBLE.md', 'design://DESIGN.md', 'apple://APPLE.md', 'skill://SKILL.md', 'claude://CLAUDE.digest.md', 'claude://CLAUDE.md' (bare APPLE.md is also accepted; 'claude://digest' aliases the digest)"),
     offset: z.number().int().min(0).optional().describe("0-based line offset for paging (default 0)"),
     limit: z.number().int().min(1).max(10000).optional().describe("Max lines to return (default: whole file if 10000 lines or fewer, otherwise 10000)"),
   },
