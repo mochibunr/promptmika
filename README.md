@@ -68,6 +68,10 @@ For Apple/iOS/Liquid Glass tasks, `get_context` recognizes the intent and recomm
 
 All packs are token-budgeted (10,000 lines per call). Files are served whole up to 10,000 lines — longer files are paginated; use `file_offset` to page through large packs.
 
+### Large/raw fetch paging
+
+`web_fetch` and `web_batch_fetch` distinguish network-capture truncation from tool-output paging. Large extracted bodies are never silently sliced: responses include `output_truncated`, `next_content_offset`, and an exact continuation hint. Use `content_offset` + `max_chars` (or `max_chars_each` for batch fetches) to continue raw GitHub/docs content without losing the remainder.
+
 ## Web Library (TS/JS/Node.js)
 
 The web tools (`fetch`, `crawl`, `search`, `scrape`) are also available as a standalone library. Zero external dependencies, SSRF-guarded, free search (no API keys).
