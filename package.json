@@ -9,7 +9,7 @@
     "start": "next start",
     "build:ui": "vite build --config ui/vite.config.ts && node -e \"require('fs').copyFileSync('dist-ui/index.html','public/mcp-app.html')\"",
     "build:refs": "npx tsx scripts/build-references.ts",
-    "prebuild": "npm run build:ui"
+    "prebuild": "npm run build:refs && npm run build:ui"
   },
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.7.5",
