@@ -30,6 +30,10 @@ export const PACKS: Record<string, PackDef> = {
     description: "First-run contract read: the project design language (DESIGN.md) + the condensed user policy digest + the full skill definition. Ordered small-docs-first so clients that truncate large tool results still receive DESIGN.md and the digest intact. Load this BEFORE anything else in a new session.",
     files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
   },
+  load_apple_design: {
+    description: "Apple-inspired Liquid Glass visual and behavioral reference: material pipeline, button/toggle/slider/bottom-tabs interaction states, hold/drag/release physics, adaptive luminance, Control Center, magnifier, fallbacks, accessibility, and performance. Use for Apple/iOS/Liquid Glass UI work.",
+    files: ["apple://APPLE.md"],
+  },
   load_frontend_design: {
     description: "Core frontend/UI design references: the project's own design language first (design://DESIGN.md — overrides generic defaults), then design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md).",
     files: ["design://DESIGN.md", "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md", "horizontal-craft/anti-ai-slop.md", "guidelines://GUIDELINES.md"],
