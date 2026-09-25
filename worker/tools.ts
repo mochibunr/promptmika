@@ -375,6 +375,8 @@ export const TOOLS: Record<string, ToolDef> = {
         urls: prop("array", "URLs to fetch (max 12)", { items: { type: "string" } }),
         extract: prop("string", "Extraction mode", { enum: ["auto", "raw", "text", "markdown", "links", "json"], default: "auto" }),
         max_bytes_each: prop("number", "Maximum captured bytes per URL (default 250000, max 750000)", { default: 250000 }),
+        content_offset: prop("number", "0-based character offset into each extracted result (default 0). Use continuation offsets to page large/raw documents.", { default: 0 }),
+        max_chars_each: prop("number", "Maximum extracted characters returned per URL per call (default 12000, max 60000). Larger results include an explicit continuation offset instead of being silently clipped.", { default: 12000 }),
         timeout_ms: prop("number", "Per-URL total timeout in ms (default 18000, max 30000)", { default: 18000 }),
         retries: prop("number", "Retries for temporary/network failures (default 1, max 2)", { default: 1 }),
         concurrency: prop("number", "Parallel requests (default 4, max 6)", { default: 4 }),
@@ -386,6 +388,8 @@ export const TOOLS: Record<string, ToolDef> = {
       const urls = (Array.isArray(args.urls) ? args.urls : []).slice(0, 12).map(String);
       const extract = String(args.extract ?? "auto");
       const maxBytes = Math.max(1000, Math.min(Number(args.max_bytes_each ?? 250000), 750000));
+      const contentOffsetArg = Math.max(0, Number(args.content_offset ?? 0));
+      const maxCharsEach = Math.max(1000, Math.min(Number(args.max_chars_each ?? 12000), 60000));
       const timeoutMs = Math.max(1000, Math.min(Number(args.timeout_ms ?? 18000), 30000));
       const retries = Math.max(0, Math.min(Number(args.retries ?? 1), 2));
       const concurrency = Math.max(1, Math.min(Number(args.concurrency ?? 4), 6));
@@ -415,6 +419,15 @@ export const TOOLS: Record<string, ToolDef> = {
             }
 
             const quality = mode === "markdown" ? extractionQuality(content, res.text) : undefined;
+            const contentTotalChars = content.length;
+            const contentOffset = Math.min(contentOffsetArg, contentTotalChars);
+            const contentEnd = Math.min(contentOffset + maxCharsEach, contentTotalChars);
+            const pageContent = content.slice(contentOffset, contentEnd);
+            const outputTruncated = contentEnd < contentTotalChars;
+            const nextContentOffset = outputTruncated ? contentEnd : null;
+            const continuation = outputTruncated
+              ? `web_fetch(url=${JSON.stringify(url)}, extract=${JSON.stringify(mode)}, content_offset=${contentEnd}, max_chars=${maxCharsEach}, max_bytes=${maxBytes})`
+              : null;
             return {
               url,
               ok: res.ok,
@@ -426,11 +439,21 @@ export const TOOLS: Record<string, ToolDef> = {
               content_type: res.contentType,
               charset: res.charset,
               redirects: res.redirectChain,
-              truncated: res.truncated,
+              truncated: res.truncated || outputTruncated,
+              capture_truncated: res.truncated,
+              output_truncated: outputTruncated,
               extract_mode: mode,
               quality,
               headers: includeHeaders ? res.headers : undefined,
-              content: content.slice(0, 40000),
+              content_total_chars: contentTotalChars,
+              content_offset: contentOffset,
+              content_returned_chars: pageContent.length,
+              next_content_offset: nextContentOffset,
+              continuation,
+              capture_warning: res.truncated
+                ? `Network capture hit max_bytes=${maxBytes}; increase max_bytes if more source bytes are required.`
+                : undefined,
+              content: pageContent,
             };
           } catch (error) {
             return { url, ok: false, error: (error as Error).message };
@@ -810,7 +833,7 @@ export const TOOLS: Record<string, ToolDef> = {
 
   web_fetch: {
     description:
-      "General-purpose HTTP fetcher with redirects, retries, cookies, custom headers/body, auto extraction, structured links/metadata, truncation reporting, and structured JSON output when needed.",
+      "General-purpose HTTP fetcher with redirects, retries, cookies, custom headers/body, auto extraction, structured links/metadata, explicit capture-vs-output truncation reporting, and deterministic content paging for large/raw documents.",
     inputSchema: {
       type: "object",
       properties: {
@@ -825,6 +848,8 @@ export const TOOLS: Record<string, ToolDef> = {
         extract: prop("string", "Extraction mode", { enum: ["auto", "raw", "text", "markdown", "links", "structured_links", "metadata", "json"], default: "auto" }),
         response_format: prop("string", "Return just readable content or a structured envelope", { enum: ["content", "json"], default: "content" }),
         max_bytes: prop("number", "Response byte cap (default 350000, max 1048576)", { default: 350000 }),
+        content_offset: prop("number", "0-based character offset into extracted content (default 0). Use next_content_offset to continue a large/raw response.", { default: 0 }),
+        max_chars: prop("number", "Maximum extracted characters returned in this call (default 30000, max 120000). Results beyond this are paged with a continuation offset.", { default: 30000 }),
         timeout_ms: prop("number", "Total timeout across redirects in ms (default 18000, max 30000)", { default: 18000 }),
       },
       required: ["url"],
@@ -871,7 +896,19 @@ export const TOOLS: Record<string, ToolDef> = {
         content = res.text;
       }
 
-      if (String(args.response_format ?? "content") === "json") {
+      const contentTotalChars = content.length;
+      const contentOffset = Math.min(Math.max(0, Number(args.content_offset ?? 0)), contentTotalChars);
+      const maxChars = Math.max(1000, Math.min(Number(args.max_chars ?? 30000), 120000));
+      const contentEnd = Math.min(contentOffset + maxChars, contentTotalChars);
+      const pageContent = content.slice(contentOffset, contentEnd);
+      const outputTruncated = contentEnd < contentTotalChars;
+      const nextContentOffset = outputTruncated ? contentEnd : null;
+      const responseFormat = String(args.response_format ?? "content");
+      const continuation = outputTruncated
+        ? `web_fetch(url=${JSON.stringify(String(args.url))}, extract=${JSON.stringify(mode)}, response_format=${JSON.stringify(responseFormat)}, content_offset=${contentEnd}, max_chars=${maxChars}, max_bytes=${Number(args.max_bytes ?? 350000)})`
+        : null;
+
+      if (responseFormat === "json") {
         return JSON.stringify({
           ok: res.ok,
           status: res.status,
@@ -884,12 +921,22 @@ export const TOOLS: Record<string, ToolDef> = {
           content_length: res.contentLength ?? null,
           content_type: res.contentType,
           charset: res.charset,
-          truncated: res.truncated,
+          truncated: res.truncated || outputTruncated,
+          capture_truncated: res.truncated,
+          output_truncated: outputTruncated,
           redirects: res.redirectChain,
           headers: res.headers,
           extract_mode: mode,
           quality,
-          content,
+          content_total_chars: contentTotalChars,
+          content_offset: contentOffset,
+          content_returned_chars: pageContent.length,
+          next_content_offset: nextContentOffset,
+          continuation,
+          capture_warning: res.truncated
+            ? `Network capture hit max_bytes=${Number(args.max_bytes ?? 350000)}; increase max_bytes if more source bytes are required.`
+            : undefined,
+          content: pageContent,
         }, null, 2);
       }
 
@@ -902,10 +949,16 @@ export const TOOLS: Record<string, ToolDef> = {
         "Content-Type: " + (res.contentType || "?"),
         "Charset: " + res.charset,
         "Redirects: " + res.redirects,
-        "Truncated: " + res.truncated,
+        "Capture Truncated: " + res.truncated,
+        "Output Truncated: " + outputTruncated,
+        "Content Chars: " + contentTotalChars,
+        "Returned Chars: " + contentOffset + "-" + contentEnd,
+        nextContentOffset !== null ? "Next Content Offset: " + nextContentOffset : "",
         quality ? "Extraction quality: " + quality.score + "/100" : "",
+        res.truncated ? "Capture warning: network capture hit max_bytes; increase max_bytes to retrieve more source bytes." : "",
         "",
-        content,
+        pageContent,
+        continuation ? "\n--- Continue exactly with: " + continuation + " ---" : "",
       ].filter((line) => line !== "").join("\n");
     },
   },
