@@ -100,8 +100,13 @@ export async function POST(req: Request) {
     return jsonResponse(jsonRpcError(rpc?.id ?? null, -32600, "Invalid Request"), 400);
   }
 
+  // Some MCP clients still attempt to JSON-decode the response to notifications.
+  // Returning an empty 204 makes those clients fail with:
+  // "JSON.parse ... Unexpected EOF".
+  // Keep the notification response body valid JSON for compatibility; clients
+  // that correctly treat notifications as response-less simply ignore it.
   if (rpc.method === "notifications/initialized") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS });
+    return jsonResponse({}, 200);
   }
 
   let payload: ReturnType<typeof jsonRpcOk> | ReturnType<typeof jsonRpcError>;
