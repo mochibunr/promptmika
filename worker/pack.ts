@@ -30,6 +30,10 @@ export const PACKS: Record<string, PackDef> = {
     description: "First-run contract read: the project design language (DESIGN.md) + the condensed user policy digest + the full skill definition. Ordered small-docs-first so clients that truncate large tool results still receive DESIGN.md and the digest intact. Load this BEFORE anything else in a new session.",
     files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
   },
+  load_reactbits_design: {
+    description: "ReactBits frontend design library bridge: operating rules, current template catalog, and upstream-source instructions for reading full templates on demand.",
+    files: ["reactbits-design/SOURCE.md", "reactbits-design/SKILL.md", "reactbits-design/TEMPLATES.md"],
+  },
   load_apple_design: {
     description: "Apple-inspired Liquid Glass visual and behavioral reference: material pipeline, button/toggle/slider/bottom-tabs interaction states, hold/drag/release physics, adaptive luminance, Control Center, magnifier, fallbacks, accessibility, and performance. Use for Apple/iOS/Liquid Glass UI work.",
     files: ["apple://APPLE.md"],
