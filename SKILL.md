@@ -10,6 +10,7 @@ read the others first.
 - Security — input handling, secrets, auth
 - Web Search, Copyright & Privacy — fresh-data mandate, quoting limits, memory filesystem
 - Design & Frontend — the design-reference mandate + a Liquid Glass cheat sheet
+- ReactBits Design Integration — optional on-demand React frontend templates and selection workflow
 - Apple Liquid Glass — Full Reference — implementation code, every platform
 - Computer Use & Artifacts — file creation, storage API, connectors
 - Design Taste Skills — six anti-slop frontend skills, shared core + what's distinctive per skill
@@ -269,6 +270,20 @@ handled). Fix anything that fails — silently, before delivery.
   own design language — then `DESIGN_BIBLE.md`, `FRONTEND_PROMPTS.md`, `RESPONSIVE_DESIGN.md`,
   `horizontal-craft/anti-ai-slop.md`) covers the core UI set in one call.
 
+### ReactBits Design Integration
+
+ReactBits is an optional, on-demand frontend template library for React/Next.js UI work. It is a reference and implementation source, not the project's design language.
+
+- Use `load_reactbits_design` when the task explicitly mentions ReactBits, asks for pre-built React components, animations, background effects, text animations, or similar frontend enhancement work.
+- First load `references://reactbits-design/SOURCE.md`, `references://reactbits-design/SKILL.md`, and `references://reactbits-design/TEMPLATES.md`, or call `load_reactbits_design`.
+- Treat `design://DESIGN.md`, the user's brief, the existing codebase, official design systems, accessibility requirements, and performance constraints as higher priority than ReactBits.
+- Use `TEMPLATES.md` only to discover candidates. Never select a template from its filename alone.
+- For every shortlisted template, fetch and read the FULL upstream template from `https://raw.githubusercontent.com/mochibunr/Skills/main/reactbits-design/references/<Category>/<Template>.md` before deciding or integrating it.
+- Verify dependencies, React compatibility, props, responsive behavior, accessibility, reduced-motion behavior, performance, and the exact integration point.
+- Select MULTIPLE, SINGLE, or NONE per category. NONE is correct when the existing UI is stronger or an effect would distract.
+- Prefer the smallest set of components that materially improves the result. Customize them to the project rather than assembling a library showcase.
+- Never make ReactBits a mandatory reference for unrelated backend, infrastructure, or non-visual tasks.
+- After selection, follow the ReactBits confirmation/integration workflow and then run PromptMika's normal Build-Test-Loop.
 ### Apple Liquid Glass — when replicating Apple's design language
 - For any Apple/iOS/Liquid Glass implementation, first load `apple://APPLE.md` or call `load_apple_design`.
 - That reference contains the project-level material model plus studied idle/hold/drag/release behavior for Liquid Button, Toggle, Slider, Bottom Tabs, Control Center, Magnifier, adaptive luminance, and related fallbacks.
@@ -955,6 +970,7 @@ gap; they're back and confirmed live as of this check.*
 |---|---|---|
 | `load_contract` | 3 | first-run read: `skill://SKILL.md` + digest + `design://DESIGN.md` — load before anything else |
 | `load_frontend_design` | 5 | `design://DESIGN.md` first, then `DESIGN_BIBLE`, `FRONTEND_PROMPTS`, `RESPONSIVE_DESIGN`, `anti-ai-slop` |
+| `load_reactbits_design` | 3 | ReactBits operating rules + template catalog; selected full templates are fetched from upstream on demand |
 | `load_design_systems` | 3 | system selection: `design-system.md`, `index-summary.json`, `INDEX.md` |
 | `load_horizontal_craft` | 12 | typography, animation, color, icons, accessibility, form/UX craft |
 | `load_backend_api` | 2 | `CODE_PROMPTS`, `API_INTEGRATION` |
@@ -1002,6 +1018,7 @@ HTML or challenge text as page content.
 **Design** — `DESIGN_BIBLE.md` · `design-system.md` · `design-systems/` (match via
 `index-summary.json`, then that folder's `DESIGN.md` + `tokens.css`) · `horizontal-craft/` ·
 `RESPONSIVE_DESIGN.md` · `FRONTEND_PROMPTS.md` · `horizontal-craft/anti-ai-slop.md` ·
+`reactbits-design/SOURCE.md` · `reactbits-design/SKILL.md` · `reactbits-design/TEMPLATES.md` ·
 `landing-page.md` · `portfolio.md` · `prototype.md` · `content-page.md` · `web-tool.md` · `deck.md` ·
 `social-card.md` · `info-interactive.md` · `canvas-and-device.md` · `export.md` · `quality-gate.md` ·
 `build_systems.md` · `interop_guide.md` · `performance_guide.md` · `universal_patterns.md`
