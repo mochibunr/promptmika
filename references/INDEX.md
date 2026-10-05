@@ -44,6 +44,16 @@ Legacy note: old references to `xiaohongshu-card.md` should route to `social-car
 
 Template rule: choose the artifact skill first, then use `TEMPLATE-ROUTER.md` to decide whether a template applies.
 
+### ReactBits Design
+
+| File | Purpose |
+|---|---|
+| `reactbits-design/SOURCE.md` | PromptMika bridge, priority rules, upstream retrieval workflow, and quality constraints. |
+| `reactbits-design/SKILL.md` | Upstream ReactBits operating contract and design workflow snapshot. |
+| `reactbits-design/TEMPLATES.md` | Current ReactBits template catalog used for candidate discovery. |
+
+ReactBits is intentionally loaded on demand. Full shortlisted templates are fetched from the upstream repository rather than vendoring the entire 315-file skill tree into PromptMika.
+
 ## Design Systems
 
 ### `design-systems/`
