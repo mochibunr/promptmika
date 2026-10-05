@@ -26,6 +26,73 @@ export interface ToolDef {
 }
 
 
+function searchReactBitsDesign(task: string, limit = 6) {
+  const doc = resolveDocument("references://reactbits-design/TEMPLATES.md");
+  if (!doc) return [];
+
+  const lowerTask = task.toLowerCase();
+  const explicit = /\breact\s*bits\b|\breactbits\b/.test(lowerTask);
+  const categoryHints: Record<string, RegExp> = {
+    animations: /\banimat(?:e|ed|ion|ions?)\b|\bmotion\b|\bhover\b|\bcursor\b|\bclick\b|\btransition\b|\bscroll\b|\bmagnet(?:ic)?\b|\btrail\b|\breveal\b/,
+    backgrounds: /\bbackground\b|\bhero\b|\bambient\b|\bparticle(?:s)?\b|\bgradient\b|\bgrid\b|\bnoise\b|\bglow\b|\blight\b|\bwave(?:s)?\b|\bliquid\b|\bcanvas\b|\batmosphere\b/,
+    components: /\bcomponent(?:s)?\b|\bcard(?:s)?\b|\bnav(?:igation)?\b|\bdock\b|\bmenu\b|\bgallery\b|\bcarousel\b|\bslider\b|\bsidebar\b|\bbento\b|\bmodal\b|\bprofile\b|\bstepper\b|\bbutton(?:s)?\b|\btab(?:s)?\b/,
+    "text-animations": /\btext\b|\btypograph(?:y|ic)\b|\bheadline\b|\btitle\b|\bhero text\b|\btypewriter\b|\bscramble\b|\bglitch\b|\bblur\b|\bgradient text\b|\bshiny\b|\bcount(?:er)?\b/
+  };
+
+  const rows: Array<{
+    category: string;
+    template: string;
+    what_it_does: string;
+    dependencies: string;
+    best_for: string;
+    score: number;
+  }> = [];
+
+  let category = "";
+  for (const line of doc.content.split("\n")) {
+    const heading = line.match(/^##\s+(.+?)\s+\(\d+\)$/);
+    if (heading) {
+      category = heading[1].toLowerCase();
+      continue;
+    }
+    if (!category.startsWith("animations") && !category.startsWith("backgrounds") && !category.startsWith("components") && !category.startsWith("text-animations")) continue;
+    if (!/^\|/.test(line) || /^\|\s*-+/.test(line)) continue;
+    const cells = line.split("|").slice(1, -1).map((v) => v.trim());
+    if (cells.length !== 4 || cells[0].toLowerCase() === "template") continue;
+
+    const haystack = cells.join(" ").toLowerCase();
+    let score = 0;
+    for (const term of lowerTask.split(/[^a-z0-9-]+/).filter((t) => t.length >= 3)) {
+      if (haystack.includes(term)) score += 2;
+    }
+    const hint = categoryHints[category];
+    if (hint?.test(lowerTask)) score += 3;
+    if (explicit) score += 2;
+
+    if (score > 0) rows.push({ category, template: cells[0], what_it_does: cells[1], dependencies: cells[2], best_for: cells[3], score });
+  }
+
+  const deduped = new Map<string, typeof rows[number]>();
+  for (const row of rows) {
+    const key = row.template.toLowerCase();
+    const existing = deduped.get(key);
+    if (!existing || row.score > existing.score) deduped.set(key, row);
+  }
+
+  return [...deduped.values()]
+    .sort((a, b) => b.score - a.score || a.category.localeCompare(b.category) || a.template.localeCompare(b.template))
+    .slice(0, Math.max(1, Math.min(limit, 8)))
+    .map((row) => ({
+      category: row.category,
+      template: row.template,
+      what_it_does: row.what_it_does,
+      dependencies: row.dependencies,
+      best_for: row.best_for,
+      score: row.score,
+      source: "https://raw.githubusercontent.com/mochibunr/Skills/main/reactbits-design/references/" + row.category + "/" + row.template + ".md",
+    }));
+}
+
 function docStats(content: string) {
   const lines = content.split("\n");
   const words = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -122,22 +189,14 @@ export const TOOLS: Record<string, ToolDef> = {
       const max = Math.max(1, Math.min(Number(args.max_references ?? 8), 15));
       const lower = task.toLowerCase();
       const appleIntent = /\bapple\b|\bios\b|liquid\s*glass|glass\s*(button|toggle|slider|tab|tabs|navbar|navigation)|refraction|chromatic\s+aberration|control\s+center|magnifier/.test(lower);
-      const reactBitsIntent = /react\s*bits|reactbits|pre[- ]built\s+react|component\s+library|react\s+components?|text[- ]animations?|background\s+effects?|add\s+(some\s+)?visual\s+effects|interactive\s+elements/.test(lower);
+      const reactBitsIntent = /react\s*bits|reactbits/.test(lower);
       let matches = searchReferences(task).slice(0, max);
       if (appleIntent && !matches.some((m) => m.name === "APPLE.md")) {
         matches = [{ name: "APPLE.md", score: 100 }, ...matches].slice(0, max);
       }
-      if (reactBitsIntent) {
-        const reactBitsRefs = ["reactbits-design/SOURCE.md", "reactbits-design/TEMPLATES.md"];
-        for (let i = reactBitsRefs.length - 1; i >= 0; i--) {
-          const name = reactBitsRefs[i];
-          if (!matches.some((m) => m.name === name)) matches = [{ name, score: 99 - i }, ...matches].slice(0, max);
-        }
-      }
       const recommendedPacks: string[] = [];
       const choose = (name: string, re: RegExp) => { if (re.test(lower)) recommendedPacks.push(name); };
       choose("load_frontend_design", /front|ui|ux|css|react|website|layout|design|component/);
-      if (reactBitsIntent) recommendedPacks.push("load_reactbits_design");
       if (appleIntent) recommendedPacks.push("load_apple_design");
       choose("load_design_systems", /design system|style|theme|visual|brand/);
       choose("load_backend_api", /backend|api|server|endpoint|database|auth/);
@@ -153,6 +212,7 @@ export const TOOLS: Record<string, ToolDef> = {
       const templateMatches = /front|ui|ux|website|landing|portfolio|design|style|brand|app|dashboard|commerce/i.test(task)
         ? searchWebTemplateLibrary(task).slice(0, 5).map(({ id, name, folder, kind, description, liveDemo, score }) => ({ id, name, folder, kind, description, liveDemo, score }))
         : [];
+      const reactbitsMatches = searchReactBitsDesign(task, reactBitsIntent ? 8 : 6);
       const previews = matches.map((m) => {
         const doc = resolveDocument(m.name);
         return {
@@ -166,8 +226,9 @@ export const TOOLS: Record<string, ToolDef> = {
         task,
         recommended_packs: [...new Set(recommendedPacks)],
         references: previews,
+        reactbits_matches: reactbitsMatches,
         web_template_matches: templateMatches,
-        next_step: "Load only the packs/references relevant to the task, then execute against those references."
+        next_step: "Use returned ReactBits matches only when they fit the prompt; read the full upstream source before implementation."
       }, null, 2);
     },
   },
