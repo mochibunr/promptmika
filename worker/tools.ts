@@ -122,13 +122,22 @@ export const TOOLS: Record<string, ToolDef> = {
       const max = Math.max(1, Math.min(Number(args.max_references ?? 8), 15));
       const lower = task.toLowerCase();
       const appleIntent = /\bapple\b|\bios\b|liquid\s*glass|glass\s*(button|toggle|slider|tab|tabs|navbar|navigation)|refraction|chromatic\s+aberration|control\s+center|magnifier/.test(lower);
+      const reactBitsIntent = /react\s*bits|reactbits|pre[- ]built\s+react|component\s+library|react\s+components?|text[- ]animations?|background\s+effects?|add\s+(some\s+)?visual\s+effects|interactive\s+elements/.test(lower);
       let matches = searchReferences(task).slice(0, max);
       if (appleIntent && !matches.some((m) => m.name === "APPLE.md")) {
         matches = [{ name: "APPLE.md", score: 100 }, ...matches].slice(0, max);
       }
+      if (reactBitsIntent) {
+        const reactBitsRefs = ["reactbits-design/SOURCE.md", "reactbits-design/TEMPLATES.md"];
+        for (let i = reactBitsRefs.length - 1; i >= 0; i--) {
+          const name = reactBitsRefs[i];
+          if (!matches.some((m) => m.name === name)) matches = [{ name, score: 99 - i }, ...matches].slice(0, max);
+        }
+      }
       const recommendedPacks: string[] = [];
       const choose = (name: string, re: RegExp) => { if (re.test(lower)) recommendedPacks.push(name); };
       choose("load_frontend_design", /front|ui|ux|css|react|website|layout|design|component/);
+      if (reactBitsIntent) recommendedPacks.push("load_reactbits_design");
       if (appleIntent) recommendedPacks.push("load_apple_design");
       choose("load_design_systems", /design system|style|theme|visual|brand/);
       choose("load_backend_api", /backend|api|server|endpoint|database|auth/);
