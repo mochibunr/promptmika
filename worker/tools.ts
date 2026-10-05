@@ -150,7 +150,7 @@ export const TOOLS: Record<string, ToolDef> = {
   // ── PromptMika context / inspection tools ─────────────
 
   promptmika_info: {
-    description: "Describe the running PromptMika server: version, capabilities, packs, tool names, reference count, and runtime notes.",
+    description: "Describe the running PromptMika server: version, capabilities, packs, tool names, reference count, and runtime notes. For most tasks, call get_context first: it is the faster task-first entry point and automatically selects relevant references, packs, web-template matches, and ReactBits matches.",
     inputSchema: { type: "object", properties: {} },
     handler: async () => {
       return JSON.stringify({
@@ -168,7 +168,8 @@ export const TOOLS: Record<string, ToolDef> = {
           "Runs directly on the Vercel MCP endpoint.",
           "Web requests are SSRF-guarded.",
           "Reference and pack tools use embedded build-time knowledge.",
-          "Web templates are read-only study references loaded on demand from WyvernCW/WebTemplate; direct cloning is forbidden."
+          "Web templates are read-only study references loaded on demand from WyvernCW/WebTemplate; direct cloning is forbidden.",
+          "For task-specific work, prefer get_context first; it is the fast path for relevant context and automatically surfaces matching ReactBits design references."
         ]
       }, null, 2);
     },
