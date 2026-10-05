@@ -270,6 +270,15 @@ handled). Fix anything that fails — silently, before delivery.
   own design language — then `DESIGN_BIBLE.md`, `FRONTEND_PROMPTS.md`, `RESPONSIVE_DESIGN.md`,
   `horizontal-craft/anti-ai-slop.md`) covers the core UI set in one call.
 
+### Style selection — references are candidates, not defaults
+
+- Never reuse the same visual style, layout pattern, component treatment, or effect merely because it worked on a previous task.
+- Treat styles surfaced by `get_context`, design-system references, ReactBits, or other references as candidates to evaluate — not instructions to copy blindly.
+- Judge the candidate against the user's brief, the project's existing visual language, content, platform conventions, usability, accessibility, and overall visual quality.
+- If the surfaced style feels weak, generic, repetitive, mismatched, dated, overused, or simply looks bad for the project, reject it. Do not force the pick just because PromptMika surfaced it.
+- When a candidate is rejected, search the available references for another suitable style/component/layout, compare the alternatives briefly internally, and choose the strongest fit. A good NONE choice is better than a bad visual addition.
+- Prefer meaningful variation across projects and within a project: change the visual approach when the content or product warrants it, while preserving an intentional design system rather than introducing random stylistic drift.
+- The final result should look like it was designed for this project, not assembled from the first matching reference.
 ### ReactBits Design Integration
 
 ReactBits is an optional, on-demand frontend template library for React/Next.js UI work. It is a reference and implementation source, not the project's design language.
