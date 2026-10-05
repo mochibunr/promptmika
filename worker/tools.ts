@@ -175,7 +175,7 @@ export const TOOLS: Record<string, ToolDef> = {
   },
 
   get_context: {
-    description: "Build a task-specific PromptMika context brief. Given what you are trying to do, recommends the most relevant packs and references and returns concise previews so an agent knows what to load next without guessing.",
+    description: "Build a task-specific PromptMika context brief. Returns the most relevant PromptMika references and automatically surfaces concrete ReactBits matches when the task contains a relevant component or visual-effect concept.",
     inputSchema: {
       type: "object",
       properties: {
