@@ -274,8 +274,8 @@ handled). Fix anything that fails — silently, before delivery.
 
 ReactBits is an optional, on-demand frontend template library for React/Next.js UI work. It is a reference and implementation source, not the project's design language.
 
-- Use `load_reactbits_design` when the task explicitly mentions ReactBits, asks for pre-built React components, animations, background effects, text animations, or similar frontend enhancement work.
-- First load `references://reactbits-design/SOURCE.md`, `references://reactbits-design/SKILL.md`, and `references://reactbits-design/TEMPLATES.md`, or call `load_reactbits_design`.
+- Automatically surface concrete ReactBits matches when the task naturally contains a matching component or visual-effect concept; do not require a separate ReactBits pack recommendation.
+- When a ReactBits match is surfaced, read the full upstream template before implementation.
 - Treat `design://DESIGN.md`, the user's brief, the existing codebase, official design systems, accessibility requirements, and performance constraints as higher priority than ReactBits.
 - Use `TEMPLATES.md` only to discover candidates. Never select a template from its filename alone.
 - For every shortlisted template, fetch and read the FULL upstream template from `https://raw.githubusercontent.com/mochibunr/Skills/main/reactbits-design/references/<Category>/<Template>.md` before deciding or integrating it.
