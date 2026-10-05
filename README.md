@@ -51,6 +51,7 @@ Or use the bundled plugin in this repo (`.codex-plugin/`).
 |------|-------|-------------|
 | `load_contract` | 3 | Skill definition + policy digest + project design language. Load first. |
 | `load_frontend_design` | 6 | Project design language + design philosophy, component patterns, responsive layout, anti-slop rules |
+| `load_reactbits_design` | 3 | ReactBits operating rules + current template catalog; selected full templates are fetched from upstream on demand |
 | `load_apple_design` | 1 | `apple://APPLE.md` — Apple-inspired Liquid Glass material + component interaction behavior |
 | `load_design_systems` | 3 | System selection guide, index, full catalog |
 | `load_horizontal_craft` | 12 | Typography, animation, color, icons, accessibility, UX laws |
@@ -176,7 +177,7 @@ npx vercel --prod
 │   └── embedded-refs.json      # 162 references bundled at build time
 ├── scripts/
 │   └── build-references.ts     # Bundles references into Worker
-├── references/                 # Knowledge base (markdown)
+├── references/                 # Knowledge base (markdown), including the ReactBits integration snapshot
 ├── skills/                     # Codex plugin skills
 ├── .codex-plugin/              # Codex plugin manifest
 ├── .mcp.json                   # Codex MCP server config
