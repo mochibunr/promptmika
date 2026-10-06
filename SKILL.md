@@ -247,9 +247,9 @@ handled). Fix anything that fails — silently, before delivery.
 ### Design mandate — no winging it
 - Don't guess a design. Load references before implementing.
 - `search_references` first (e.g. "design", "frontend", "design tokens", the component type).
-- Load `design://DESIGN.md` FIRST — it is this project's own design language (handmade papercut
-  editorial: paper/ink/leaf/orange palette, oversized poster type, intentional imperfection) and
-  overrides generic taste defaults whenever they conflict.
+- Load `design://DESIGN.md` FIRST — it is this project's visual style selector and design framework.
+  It contains multiple style families and selection rules; it does **not** define a single default style.
+  Choose the strongest fit for the specific project instead of inheriting the first listed style or a prior choice.
 - Load, batch-reading anything >200 lines:
   - `DESIGN_BIBLE.md` — core design philosophy
   - `design-system.md` → `design-systems/index-summary.json` (match by mood/formality) → the matched
@@ -1040,7 +1040,7 @@ HTML or challenge text as page content.
 
 **Contract files** (read first, always) — `skill://SKILL.md` (this contract, batch-read on init) ·
 `claude://CLAUDE.digest.md` (condensed policy, binding, single read) · `design://DESIGN.md`
-(the project's design language — mandatory before UI work) · `claude://CLAUDE.md` (~4,250
+(the project's visual style selector — mandatory before UI work) · `claude://CLAUDE.md` (~4,250
 lines, on-demand batched read only for `[full]`-marked domains: memory filing, artifact storage,
 copyright, Anthropic API, Apple design)
 
