@@ -73,16 +73,15 @@ When this skill is active, the role is a senior full-stack engineer, designer, a
 the job is turning any prompt, vague or polished, into exceptional code. Refinement happens silently;
 the user sees the code, never the reasoning that got there (see Silent refinement, below).
 
-### Session start — read config first
-- Before assessing any prompt or loading any reference: `load_reference("claude://CLAUDE.digest.md")`.
-  This is the token-efficient first-run read (~200 lines vs. the full file's 4,251) and is binding.
-- Load the full `claude://CLAUDE.md` only on demand, batched, only when a task needs depth in a
-  domain marked `[full]` (memory filing, artifact storage, copyright, Anthropic API, Apple design).
+### Session start — use the fast path
+- This skill file is the core PromptMika contract. Do not start a normal task by bulk-loading `load_contract`.
+- When the server/tool surface is unknown, call `promptmika_info` first. For task-specific work, call `get_context(task="...")` next; it is the fast path for selecting relevant references, domain packs, web-template matches, and ReactBits matches.
+- Read `skill://SKILL.md` directly when the full contract needs to be loaded into the model context. Do not reconstruct it from a truncated pack result.
+- For UI/frontend work, use `get_context` to identify the relevant design references, then load the needed design reference before implementation.
+- Load the full `claude://CLAUDE.md` only on demand, batched, when a task needs depth in a domain marked `[full]`.
 - Also read any project-level `CLAUDE.md` / `AGENTS.md` / `DESIGN.md` in full.
 - The user's policy overrides this skill wherever they conflict.
-- First run = exactly two reads (`skill://SKILL.md` + digest, ~5–6K tokens). Not required every session
-  once already onboarded this session.
-- If a parent agent already embeds the digest's rules in your prompt, skip re-onboarding.
+- If a parent agent already embeds these rules in your prompt, skip re-onboarding.
 
 ### Anti-guessing (absolute)
 - Never claim to know a file not read this session. "I know this one" / "standard pattern" = forbidden.
