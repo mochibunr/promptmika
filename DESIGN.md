@@ -787,7 +787,7 @@ selection:
   - Prefer the less visually aggressive style for task-heavy interfaces.
   - Prefer the more expressive style for campaign, portfolio, editorial, or launch pages.
   - Prefer the style with lower implementation risk when scores are otherwise effectively tied.
-  - If still tied and no project-specific evidence separates candidates, default to paper-cut-editorial.
+  - If still tied and no project-specific evidence separates candidates, gather more evidence from the project and references; never use a fixed style as a tie-break default.
   secondaryStyleRules:
   - 'The secondary style may influence at most two channels: typography, iconography, texture, accent color, illustration
     treatment, or section boundaries.'
@@ -9860,16 +9860,16 @@ The point is to make a deliberate art-direction choice instead of defaulting to 
 ## 1. System Overview and Shared Design DNA
 The system-level philosophy and the reference-level observations reinforce each other. The following rules define the common ground every style must preserve.
 ### 1.1 System overview
-This system defines a **highly art-directed, expressive editorial web language** synthesized from all supplied references: handmade papercut typography, retro pixel script over landscape photography, glitch-fashion collage, organic nature-led ecommerce, lime pixel-editorial agency design, dark terminal/Web3 UI, classic Macintosh-inspired storytelling, playful packaging illustration, bold cartoon campaign pages, experimental pet commerce, dreamy dark indie software, post-digital AIGC portfolios, surreal trend-report collage, Y2K sticker portfolios, retro marketplace pop, neo-brutal education, cosmic event storytelling, creator-economy character editorial, retro cartoon type specimens, and modular retro-browser type specimens.
+This system is a **visual style selector**, not a single design language. It contains diverse reference families: handmade papercut typography, retro pixel script over landscape photography, glitch-fashion collage, organic nature-led ecommerce, lime pixel-editorial agency design, dark terminal/Web3 UI, classic Macintosh-inspired storytelling, playful packaging illustration, bold cartoon campaign pages, experimental pet commerce, dreamy dark indie software, post-digital AIGC portfolios, surreal trend-report collage, Y2K sticker portfolios, retro marketplace pop, neo-brutal education, cosmic event storytelling, creator-economy character editorial, retro cartoon type specimens, and modular retro-browser type specimens.
 
-These references differ on the surface, but their shared DNA is unusually consistent:
+These references are intentionally different. The selector should preserve the chosen family's identity rather than impose one shared visual style:
 
-- typography behaves like imagery;
-- layouts are asymmetric and poster-like;
-- imperfection is deliberate;
-- low-resolution, handmade, or tactile graphics are treated as premium design materials;
-- palettes are narrow and confident;
-- sections use strong color blocking;
+- use a clear visual hierarchy and deliberate art direction;
+- let typography, imagery, layout, and interaction support the project's content;
+- avoid generic templates and unexplained decorative treatment;
+- preserve the selected style family's own composition, materials, and visual grammar;
+- keep palettes and effects purposeful rather than ornamental;
+- maintain accessibility, responsiveness, and interaction clarity;
 - controls stay simple while art direction carries personality;
 - generic card grids are minimized;
 - every composition has an obvious visual idea.
