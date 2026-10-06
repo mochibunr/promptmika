@@ -38,7 +38,7 @@ modePolicy:
   maxSecondaryModesPerPage: 1
   maxModesPerSection: 2
   secondaryModeVisualShareMax: 30%
-  defaultMode: paper-cut-editorial
+  defaultMode: null
   canonicalStyles:
   - paper-cut-editorial
   - pixel-pastoral
@@ -755,14 +755,14 @@ selection:
       behavior: autoselect and keep style strength moderate
     low:
       maxExclusive: 0.65
-      behavior: apply gating/tie-break rules; default to paper-cut-editorial only when no candidate clearly fits
+      behavior: apply gating/tie-break rules; select the strongest candidate for the project, or use no authored style when none clearly fits
   styleStrengthBands:
     subtle:
       range: 0.35-0.50
       use: utility-heavy or information-dense pages
     balanced:
       range: 0.50-0.70
-      use: default brand expression
+      use: balanced brand expression
     strong:
       range: 0.70-0.85
       use: campaign, launch, portfolio, editorial pages
