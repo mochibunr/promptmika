@@ -27,8 +27,8 @@ export interface PackResult {
 
 export const PACKS: Record<string, PackDef> = {
   load_contract: {
-    description: "First-run contract read: the project design language (DESIGN.md) + the condensed user policy digest + the full skill definition. Ordered small-docs-first so clients that truncate large tool results still receive DESIGN.md and the digest intact. Load this BEFORE anything else in a new session.",
-    files: ["design://DESIGN.md", "claude://CLAUDE.digest.md", "skill://SKILL.md"],
+    description: "Optional compact contract context: the project design language (DESIGN.md) + the condensed user policy digest. Do not use this as the default task entry point; read skill://SKILL.md directly when the full skill contract is needed, then use get_context for task-specific context.",
+    files: ["design://DESIGN.md", "claude://CLAUDE.digest.md"],
   },
   load_reactbits_design: {
     description: "ReactBits frontend design library bridge: operating rules, current template catalog, and upstream-source instructions for reading full templates on demand.",
