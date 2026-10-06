@@ -27,7 +27,7 @@ export interface PackResult {
 
 export const PACKS: Record<string, PackDef> = {
   load_contract: {
-    description: "Optional compact contract context: the project design language (DESIGN.md) + the condensed user policy digest. Do not use this as the default task entry point; read skill://SKILL.md directly when the full skill contract is needed, then use get_context for task-specific context.",
+    description: "Optional compact contract context: the project visual style selector (DESIGN.md) + the condensed user policy digest. Do not use this as the default task entry point; read skill://SKILL.md directly when the full skill contract is needed, then use get_context for task-specific context.",
     files: ["design://DESIGN.md", "claude://CLAUDE.digest.md"],
   },
   load_reactbits_design: {
@@ -39,7 +39,7 @@ export const PACKS: Record<string, PackDef> = {
     files: ["apple://APPLE.md"],
   },
   load_frontend_design: {
-    description: "Core frontend/UI design references: the project's own design language first (design://DESIGN.md — overrides generic defaults), then design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md).",
+    description: "Core frontend/UI design references: use design://DESIGN.md as a neutral style selector (it has no default style), then the design philosophy bible, frontend component patterns, responsive mobile-first layout, anti-AI-slop rules, and the AI Web UX/UI/Motion Guidelines (guidelines://GUIDELINES.md).",
     files: ["design://DESIGN.md", "DESIGN_BIBLE.md", "FRONTEND_PROMPTS.md", "RESPONSIVE_DESIGN.md", "horizontal-craft/anti-ai-slop.md", "guidelines://GUIDELINES.md"],
   },
   load_design_systems: {
