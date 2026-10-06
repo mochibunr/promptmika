@@ -1,10 +1,9 @@
 ---
-name: Expressive Editorial Web Design System & Reference Style Selector
+name: Expressive Editorial Web Style Selector
 version: 8.0.0
 status: normative
 purpose: Help AI website-generation agents classify a project, select the most appropriate visual language from fifty-eight
-  analyzed reference families, and execute that style consistently without copying reference brands or collapsing into generic
-  SaaS design.
+  analyzed reference families. It provides selection and execution rules; it does not define a single default visual style.
 sourcePolicy:
   copyReferenceBrands: false
   copyReferenceLogos: false
@@ -22,7 +21,7 @@ designDNA:
   - limited palettes
   - strong art direction
   - minimal generic card UI
-  prohibitedDefaults:
+  prohibitedPatterns:
   - generic SaaS hero
   - glassmorphism
   - liquid-glass navigation
@@ -38,7 +37,6 @@ modePolicy:
   maxSecondaryModesPerPage: 1
   maxModesPerSection: 2
   secondaryModeVisualShareMax: 30%
-  defaultMode: null
   canonicalStyles:
   - paper-cut-editorial
   - pixel-pastoral
