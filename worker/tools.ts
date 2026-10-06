@@ -208,7 +208,6 @@ export const TOOLS: Record<string, ToolDef> = {
       choose("load_context_engine", /context|agent|workflow|iterate|quality/);
       choose("load_token_efficiency", /token|prompt|compact|context window/);
       choose("load_specialized_pages", /landing|portfolio|dashboard|prototype|deck|social|page/);
-      if (recommendedPacks.length === 0) recommendedPacks.push("load_contract");
 
       const templateMatches = /front|ui|ux|website|landing|portfolio|design|style|brand|app|dashboard|commerce/i.test(task)
         ? searchWebTemplateLibrary(task).slice(0, 5).map(({ id, name, folder, kind, description, liveDemo, score }) => ({ id, name, folder, kind, description, liveDemo, score }))
@@ -229,7 +228,7 @@ export const TOOLS: Record<string, ToolDef> = {
         references: previews,
         reactbits_matches: reactbitsMatches,
         web_template_matches: templateMatches,
-        next_step: "Use returned ReactBits matches only when they fit the prompt; read the full upstream source before implementation."
+        next_step: "Read skill://SKILL.md for the full PromptMika contract when needed. Use selected packs and references only when relevant. Use returned ReactBits matches only when they fit the prompt; read the full upstream source before implementation."
       }, null, 2);
     },
   },
