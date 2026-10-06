@@ -10,17 +10,12 @@ sourcePolicy:
   copyReferenceText: false
   copyReferenceArtwork: false
   reuseVisualLanguageOnly: true
-designDNA:
-  dominantTraits:
-  - expressive typography
-  - intentional imperfection
-  - editorial asymmetry
-  - bold color blocking
-  - tactile grain
-  - pixel or hand-drawn graphics
-  - limited palettes
-  - strong art direction
-  - minimal generic card UI
+selectionPrinciples:
+  - choose visual language from the project brief, content, audience, platform, and existing product identity
+  - prefer a coherent dominant style over mixing unrelated aesthetics
+  - preserve strong art direction and intentional hierarchy
+  - favor project-specific composition over generic templates
+  - reject a style when it feels weak, repetitive, mismatched, dated, or visually distracting
   prohibitedPatterns:
   - generic SaaS hero
   - glassmorphism
